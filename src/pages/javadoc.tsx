@@ -7,3 +7,4 @@ export default function Javadoc() {
   }, []);
   return <p>Opening Javadoc…</p>;
 }
+

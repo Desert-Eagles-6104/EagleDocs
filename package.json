@@ -13,7 +13,12 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint:css": "stylelint \"src/**/*.{css,scss}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
+    "check": "npm run typecheck && npm run lint && npm run lint:css && npm run format:check"
   },
   "dependencies": {
     "@docusaurus/core": "3.9.2",
@@ -26,8 +31,16 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
-    "@docusaurus/tsconfig": "3.9.2",
+    "@docusaurus/tsconfig": "^3.9.2",
     "@docusaurus/types": "3.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-css-modules": "^2.12.0",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "prettier": "^3.7.4",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^39.0.1",
     "typescript": "~5.6.2"
   },
   "browserslist": {

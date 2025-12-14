@@ -9,3 +9,62 @@
   height: 200px;
   width: 200px;
 }
+
+/* feature cards */
+
+.cardLink {
+  grid-column: span 4;
+  text-decoration: none !important;
+}
+
+.card {
+  height: 100%;
+  border-radius: 16px;
+  padding: 1.1rem 1.1rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-background-surface-color);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.06);
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.cardLink:hover .card {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.cardDesc {
+  margin: 0.5rem 0 0.75rem;
+  opacity: 0.8;
+}
+
+.cardFooter {
+  margin-top: auto;
+  opacity: 0.9;
+}
+
+.cardCta {
+  font-weight: 600;
+}
+
+/* responsive */
+@media (max-width: 996px) {
+  .heroContent {
+    text-align: center;
+    margin: 0 auto;
+  }
+  .buttons {
+    justify-content: center;
+  }
+  .heroMeta {
+    justify-content: center;
+  }
+  .cardLink {
+    grid-column: span 12;
+  }
+}
