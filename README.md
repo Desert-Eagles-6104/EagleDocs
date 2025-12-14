@@ -4,38 +4,47 @@ This website is built using [Docusaurus](https://docusaurus.io/), a modern stati
 
 ## Installation
 
+To install the required dependencies, run the following command:
+
 ```bash
-yarn
+yarn install
 ```
 
 ## Local Development
 
-```bash
-yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
+### Start Development Server
+To start the development server, make sure the `fetch-javadoc.sh` script is executable and then run:
 
 ```bash
-yarn build
+chmod +x scripts/fetch-javadoc.sh
+npm run start
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+The development server will be available at `http://localhost:3000`.
+
+### Stop Development Server
+To stop the development server, use the following command:
+
+```bash
+kill -9 $(lsof -t -i :3000)
+```
+
+## Building the Website
+
+To build the static version of the website, use:
+
+```bash
+npm run build
+```
+
+The output will be generated in the `build` directory.
 
 ## Deployment
 
-Using SSH:
+To deploy the website, you can use the following command:
 
 ```bash
-USE_SSH=true yarn deploy
+npm run deploy
 ```
 
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Ensure you have the necessary permissions and configurations set up for deployment.

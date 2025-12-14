@@ -19,6 +19,7 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
+  trailingSlash: true,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -88,11 +89,7 @@ const config: Config = {
           position: 'left',
           label: 'Tutorial',
         },
-        { 
-          href: '/javadoc/index.html', 
-          label: 'Javadoc', 
-          position: 'left' 
-        },
+        { to: '/javadoc', label: 'Javadoc', position: 'left', target: '_blank', rel: 'noopener noreferrer' },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/Desert-Eagles-6104/EagleDocs',
