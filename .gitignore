@@ -1,5 +1,6 @@
 .tmp_javadoc
 _tmp_javadoc
+static/javadoc/
 # Dependencies
 /node_modules
 
