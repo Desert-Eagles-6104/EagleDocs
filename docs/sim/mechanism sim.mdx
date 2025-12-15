@@ -1,0 +1,175 @@
+---
+title: MechanismSim
+sidebar_label: MechanismSim
+description: Sim framework...
+tags: [sim, phoenix6, swerve]
+keywords: [FRC, CTRE, sim]     
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import DocHeader from "@site/src/components/DocHeader";
+
+---
+
+<DocHeader
+  title="MechanismSim"
+  pkg="frc.DELib25.Subsystems.MotorSubsystems.MotorBase.MechanismSim"
+  className="MechanismSim<S extends Num, I extends Num, O extends Num>"
+  javadocPath="/javadoc/frc/DELib25/Subsystems/MotorSubsystems/MotorBase/MechanismSim/MechanismSim.html"
+  sourcePath="frc/DELib25/Subsystems/MotorSubsystems/MotorBase/MechanismSim/MechanismSim.java"
+/>
+
+## What this class does
+
+`MechanismSim` is a small simulation loop for “motor-driven mechanisms” (arm / elevator / wrist / roller / etc).
+
+In SIM, CTRE/Phoenix will still compute a **commanded motor voltage** (based on your closed-loop control), but it needs “sensor feedback” to actually close the loop. This class bridges that gap:
+
+1. Reads Phoenix’s **commanded motor terminal voltage**
+2. Feeds that voltage into a WPILib **plant model** (`LinearSystemSim`)
+3. Integrates the plant forward by `dt`
+4. Writes the resulting **rotor** position/velocity back into TalonFX sim (`setRawRotorPosition`, `setRotorVelocity`)
+5. Mirrors the same sensor state to any followers
+
+---
+
+## Key idea: rotor units vs mechanism units
+
+Phoenix sim sensor setters are **rotor units**:
+
+- Position: **rotations**
+- Velocity: **rotations per second (RPS)**
+
+So if your plant tracks *mechanism* position/velocity, you must convert into rotor units before returning them in:
+
+- `getSimulatedRotorPositionRotations()`
+- `getSimulatedRotorVelocityRPS()`
+
+---
+
+## Timing model
+
+A `Notifier` runs the sim periodically:
+
+- period = `config.simPeriodSec` (commonly `0.005` for 200 Hz)
+
+This improves closed-loop stability in sim, but costs CPU.
+
+---
+
+## Main loop (what happens every tick)
+
+Here’s the core logic (trimmed to the important parts):
+
+```java
+protected void updateSimState() {
+    var simState = this.masterIO.getSimState();
+
+    double busVolts = RobotController.getBatteryVoltage();
+    simState.setSupplyVoltage(busVolts);
+
+    double simVoltage = this.addFriction(simState.getMotorVoltage(), this.frictionVoltage);
+
+    this.sim.setInput(simVoltage);
+
+    double dt = this.timestampDeltaCalculator.update();
+    sim.update(dt);
+
+    this.manualRotorPositionOverride.get()
+        .ifPresent(pos -> this.setSimulatedRotorPositionRotations(pos));
+
+    double rotorPosition = this.getSimulatedRotorPositionRotations();
+    double rotorVel = this.getSimulatedRotorVelocityRPS();
+
+    double rotorAcceleration = (rotorVel - this.lastRotorVelocityRPS) / dt;
+    this.lastRotorVelocityRPS = rotorVel;
+
+    simState.setRawRotorPosition(rotorPosition);
+    simState.setRotorVelocity(rotorVel);
+    simState.setRotorAcceleration(rotorAcceleration);
+
+    for (SimTalonFXIO follower : this.followerIOs) {
+        var st = follower.getSimState();
+        st.setSupplyVoltage(busVolts);
+        st.setRawRotorPosition(rotorPosition);
+        st.setRotorVelocity(rotorVel);
+        st.setRotorAcceleration(rotorAcceleration);
+    }
+}
+```
+
+---
+
+Subclassing
+
+You must implement:
+
+protected abstract double getSimulatedRotorPositionRotations();
+protected abstract double getSimulatedRotorVelocityRPS();
+
+Optional hook (currently a no-op default):
+
+protected void setSimulatedRotorPositionRotations(double rotorPositionRotations) {}
+
+Example: plant tracks mechanism units, convert to rotor
+
+Let’s say your plant state is mechanism rotations, and your gear ratio is sensorPerMechanismRatio (rotor rotations per mechanism rotation):
+
+```java
+public class ArmSim extends MechanismSim<N2, N1, N1> {
+    private final double sensorPerMechanismRatio;
+
+    public ArmSim(
+        LinearSystemSim<N2, N1, N1> sim,
+        MechanismSimConfig config,
+        SimTalonFXIO master,
+        SimTalonFXIO[] followers,
+        double sensorPerMechanismRatio
+    ) {
+        super(sim, config, master, followers);
+        this.sensorPerMechanismRatio = sensorPerMechanismRatio;
+    }
+
+    @Override
+    protected double getSimulatedRotorPositionRotations() {
+        double mechanismRot = /* read from your sim state */;
+        return mechanismRot * sensorPerMechanismRatio;
+    }
+
+    @Override
+    protected double getSimulatedRotorVelocityRPS() {
+        double mechanismRps = /* read from your sim state */;
+        return mechanismRps * sensorPerMechanismRatio;
+    }
+}
+```
+
+Friction model (simple + optional)
+
+addFriction(voltage, frictionVoltage) applies a Coulomb-ish deadband:
+
+- if |V| < frictionVoltage → output 0
+- else subtract friction in direction of motion
+
+```java
+protected double addFriction(double motorVoltage, double frictionVoltage) {
+    if (Math.abs(motorVoltage) < frictionVoltage) return 0.0;
+    if (motorVoltage > 0.0) return motorVoltage - frictionVoltage;
+    return motorVoltage + frictionVoltage;
+}
+```
+
+You can tune it live:
+
+mechanismSim.setFrictionVoltage(0.4); // volts
+
+---
+
+Notes / gotchas
+
+- Threading: Notifier runs on a separate thread — don’t block inside updateSimState().
+- dt stability: if dt is ever $\approx$ 0, acceleration will blow up. Your TimestampDeltaCalculator should protect against that (or clamp dt).
+- Followers: followers get the same simulated sensor signals as master (typical FRC pattern).

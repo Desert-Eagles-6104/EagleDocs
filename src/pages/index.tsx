@@ -5,7 +5,6 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
-import Link from '@docusaurus/Link';
 import FeatureCard from '../components/HomepageFeatures/FeatureCard';
 
 function HomepageHeader() {

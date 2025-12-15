@@ -1,6 +1,10 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import remarkCodeImport from "remark-code-import";
+
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -32,6 +36,23 @@ const config: Config = {
     locales: ['en'],
   },
 
+  customFields: {
+    github: {
+      owner: "Desert-Eagles-6104",
+      repo: "offseason2025",
+      branch: "sim",
+      // path inside the repo where your Java sources live:
+      srcRoot: "src/main/java/",
+    },
+  },
+
+  stylesheets: [
+    {
+      href: "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css",
+      type: "text/css",
+    },
+  ],
+
   plugins: [
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
@@ -50,10 +71,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          remarkPlugins: [remarkCodeImport, remarkMath],
+          rehypePlugins: [rehypeKatex],
         },
 
         theme: {
@@ -81,12 +100,12 @@ const config: Config = {
           position: 'left',
           label: 'Tutorial',
         },
-        { 
-          to: '/javadoc', 
-          label: 'Javadoc', 
-          position: 'left', 
-          target: '_blank', 
-          rel: 'noopener noreferrer' 
+        {
+          to: "/javadoc/",
+          label: "Javadoc",
+          position: "left",
+          target: "_blank",
+          rel: "noopener noreferrer",
         },
         {
           href: 'https://github.com/Desert-Eagles-6104/EagleDocs',
@@ -122,6 +141,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      additionalLanguages: ['java', 'bash',  'yaml', 'json', 'latex'],
     },
   } satisfies Preset.ThemeConfig,
 };

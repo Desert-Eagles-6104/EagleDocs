@@ -13,6 +13,7 @@ yarn install
 ## Local Development
 
 ### Start Development Server
+
 To start the development server, make sure the `fetch-javadoc.sh` script is executable and then run:
 
 ```bash
@@ -23,10 +24,20 @@ npm run start
 The development server will be available at `http://localhost:3000`.
 
 ### Stop Development Server
+
 To stop the development server, use the following command:
 
 ```bash
 kill -9 $(lsof -t -i :3000)
+```
+
+### Restart Development Server
+
+To restart the development server, use the following commands:
+
+```bash
+kill -9 $(lsof -t -i :3000)
+npm run start
 ```
 
 ## Building the Website
