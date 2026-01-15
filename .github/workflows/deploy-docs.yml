@@ -21,16 +21,16 @@ jobs:
         run: npm ci
 
       - name: Setup SSH for robot2026 deploy key
+        shell: bash
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.ROBOT2026_SSH_KEY }}" > ~/.ssh/robot2026_actions
+          printf '%s\n' "${{ secrets.ROBOT2026_SSH_KEY }}" > ~/.ssh/robot2026_actions
           chmod 600 ~/.ssh/robot2026_actions
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          cat >> ~/.ssh/config << 'EOF'
+          cat > ~/.ssh/config << 'EOF'
           Host github.com
             IdentityFile ~/.ssh/robot2026_actions
             IdentitiesOnly yes
-            StrictHostKeyChecking yes
           EOF
 
       - name: Build
