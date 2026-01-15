@@ -7,7 +7,7 @@ import remarkCodeImport from "remark-code-import";
 
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
+  
 const config: Config = {
   title: 'EgaleDocs',
   tagline: 'Desert Eagles official document site',
@@ -19,10 +19,10 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://deserteagles6104.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/docs/',
   trailingSlash: true,
 
   onBrokenLinks: 'warn',
