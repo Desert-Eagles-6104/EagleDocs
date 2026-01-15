@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="https://github.com/Desert-Eagles-6104/offseason2025.git"
-BRANCH="sim"
+REPO_URL="git@github.com:Desert-Eagles-6104/robot2026.git"
+BRANCH="main"
 
 TMP_DIR="_tmp_javadoc"
 
