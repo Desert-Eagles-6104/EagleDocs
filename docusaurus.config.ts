@@ -7,9 +7,9 @@ import remarkCodeImport from "remark-code-import";
 
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-  
+
 const config: Config = {
-  title: 'EgaleDocs',
+  title: 'EagleDocs',
   tagline: 'Desert Eagles official document site',
   favicon: 'img/logo.svg',
 
