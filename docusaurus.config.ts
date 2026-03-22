@@ -39,8 +39,8 @@ const config: Config = {
   customFields: {
     github: {
       owner: "Desert-Eagles-6104",
-      repo: "offseason2025",
-      branch: "sim",
+      repo: "robot2026",
+      branch: "main",
       // path inside the repo where your Java sources live:
       srcRoot: "src/main/java/",
     },
