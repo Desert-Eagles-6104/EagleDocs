@@ -1,63 +1,63 @@
 ---
-title: Control requests
+title: בקשות בקרה
 ---
 
-## Open-loop
+## בקרה בחוג פתוח (Open-loop) {#open-loop}
 
 - **`DutyCycleOut`**
 
-  - What: Percent output of the H-bridge, from −1 to +1.
-  - Feels like: “Power level.”
-  - Notes: Scales with battery voltage; can add `.withEnableFOC(true)` for better behavior.
-  - Use when: Simple teleop control, intake rollers, quick tests.
+  - מה זה: פלט יחסי של גשר ה־H, בטווח שבין −1 ל־+1.
+  - איך לחשוב על זה: ״רמת עוצמה״.
+  - הערות: הפלט משתנה בהתאם למתח הסוללה; אפשר להוסיף `.withEnableFOC(true)` לשיפור ההתנהגות.
+  - מתי להשתמש: שליטה פשוטה ב־teleop, גלילי intake ובדיקות מהירות.
 
 - **`VoltageOut`**
 
-  - What: Direct voltage command in volts (e.g., `6`, `12`).
-  - Feels like: “Give me exactly this many volts,” less affected by battery sag.
-  - Notes: Still open-loop (no PID). You can also `.withEnableFOC(true)`.
-  - Use when: You want consistent output across battery conditions but don’t need regulation to a target.
+  - מה זה: בקשת מתח ישירה בוולטים, למשל `6` או `12`.
+  - איך לחשוב על זה: ״תן לי בדיוק את המתח הזה״. הפלט מושפע פחות מנפילות מתח בסוללה.
+  - הערות: זו עדיין בקרה בחוג פתוח, ללא PID. אפשר להוסיף גם `.withEnableFOC(true)`.
+  - מתי להשתמש: כשרוצים פלט עקבי במצבי סוללה שונים, בלי צורך בבקרה שמווסתת את המנגנון לערך יעד.
 
-## Closed-loop (PID)
+## בקרה בחוג סגור (PID) {#closed-loop-pid}
 
 - **`PositionVoltage`**
 
-  - What: Position PID to a target **position** (in **rotations** of the sensor).
-  - Notes: Uses your configured PID slot (default slot 0; change with `.withSlot(n)`). Accepts optional `.withFeedForward(volts)`.
-  - Use when: Arms, elevators, steer motors — “go to and hold this angle/position.”
+  - מה זה: בקרת PID להגעה ל־**מיקום** יעד, ביחידות של **סיבובי החיישן**.
+  - הערות: משתמשת ב־slot של ה־PID שהגדרתם. ברירת המחדל היא slot 0; משנים אותו עם `.withSlot(n)`. אפשר להוסיף `.withFeedForward(volts)`.
+  - מתי להשתמש: זרועות, מעליות ומנועי היגוי, כשצריך ״להגיע לזווית או למיקום הזה ולהישאר שם״.
 
 - **`VelocityVoltage`**
 
-  - What: Velocity PID to a target **speed** (in **rotations/second**).
-  - Notes: Uses velocity gains in the selected slot. Optional `.withFeedForward(volts)` for kS/kV/kA style FF.
-  - Use when: Shooter wheels, swerve drive wheels — “spin and hold this speed.”
+  - מה זה: בקרת PID להגעה ל־**מהירות** יעד, ביחידות של **סיבובים לשנייה**.
+  - הערות: משתמשת במקדמי בקרת המהירות שב־slot הנבחר. אפשר להוסיף `.withFeedForward(volts)` עבור Feedforward בסגנון kS/kV/kA.
+  - מתי להשתמש: גלגלי ירי וגלגלי הנעה של swerve, כשצריך ״להסתובב במהירות הזאת ולשמור עליה״.
 
-### Closed-loop + profiling (Motion Magic)
+### חוג סגור עם פרופיל תנועה (Motion Magic) {#closed-loop--profiling-motion-magic}
 
 - **`MotionMagicVoltage`**
 
-  - What: Position control with **built-in trapezoid/S-curve motion profiling** to your target position.
-  - Notes: Follows your Motion Magic configs (cruise velocity, acceleration, jerk). Still uses a PID slot for the inner loop.
-  - Use when: You want smooth, controlled moves to a position (arms/elevators) without writing your own planner.
+  - מה זה: בקרת מיקום עם **פרופיל תנועה מובנה בצורת טרפז או עקומת S**, להגעה למיקום היעד.
+  - הערות: פועלת לפי הגדרות Motion Magic שלכם: מהירות שיוט, תאוצה ו־jerk (קצב שינוי התאוצה). החוג הפנימי עדיין משתמש ב־slot של PID.
+  - מתי להשתמש: כשרוצים תנועה חלקה ומבוקרת למיקום מסוים, למשל בזרועות או במעליות, בלי לכתוב מתכנן תנועה משלכם.
 
 - **`MotionMagicVelocityVoltage`**
 
-  - What: Velocity control with **Motion Magic ramping** (respects accel/jerk) to reach/hold a target speed.
-  - Notes: Great for limiting current spikes and smoothing spin-ups.
-  - Use when: Shooters/flywheels/swerve drive where you want a **gentle ramp to a velocity setpoint**.
+  - מה זה: בקרת מהירות עם **שינוי הדרגתי באמצעות Motion Magic**, תוך עמידה במגבלות התאוצה וה־jerk, כדי להגיע למהירות יעד ולשמור עליה.
+  - הערות: שימושית להגבלת קפיצות בזרם ולהאצה חלקה של מנגנונים מסתובבים.
+  - מתי להשתמש: במנגנוני ירי, בגלגלי תנופה ובהנעת swerve, כשרוצים **עלייה הדרגתית למהירות היעד**.
 
 ---
 
-## Tiny “when to pick what” cheat sheet
+## מדריך קצר לבחירת בקשת בקרה {#tiny-when-to-pick-what-cheat-sheet}
 
-- Just drive it: **`DutyCycleOut`**
-- Consistent manual power (independent of battery): **`VoltageOut`**
-- Go/hold angle or position: **`PositionVoltage`**
-- Go/hold speed: **`VelocityVoltage`**
-- Smooth move to a position (no jerk): **`MotionMagicVoltage`**
-- Smooth ramp to a speed (no jerk): **`MotionMagicVelocityVoltage`**
+- הפעלה פשוטה של המנוע: **`DutyCycleOut`**
+- פלט ידני עקבי, ללא תלות במתח הסוללה: **`VoltageOut`**
+- הגעה לזווית או למיקום ושמירה עליהם: **`PositionVoltage`**
+- הגעה למהירות ושמירה עליה: **`VelocityVoltage`**
+- תנועה חלקה למיקום, ללא שינויי תאוצה חדים: **`MotionMagicVoltage`**
+- מעבר הדרגתי למהירות, ללא שינויי תאוצה חדים: **`MotionMagicVelocityVoltage`**
 
-## Example snippets
+## דוגמאות קוד {#example-snippets}
 
 ```java
 // Open-loop percent
@@ -79,9 +79,9 @@ fx.setControl(new MotionMagicVoltage(15.0).withSlot(1));
 fx.setControl(new MotionMagicVelocityVoltage(70.0).withSlot(0));
 ```
 
-## Gotchas / tips
+## דגשים וטיפים {#gotchas--tips}
 
-- **Units**: Phoenix 6 uses **rotations** and **rotations/second** for the integrated sensor by default.
-- **Slots**: Make sure you put the right PID gains in the slot you’re commanding with `.withSlot(n)`.
-- **Motion Magic configs**: Set cruise velocity / acceleration / jerk in your `TalonFXConfiguration.MotionMagic` section, or you won’t see profiling.
-- **Feedforward**: You can use `.withFeedForward(...)` per command, and/or bake kS/kV/kA into your slot’s FF. For gravity-loaded mechanisms, include kG in your position loop.
+- **יחידות**: כברירת מחדל, Phoenix 6 משתמש ב־**סיבובים** וב־**סיבובים לשנייה** עבור החיישן המובנה.
+- **Slots**: ודאו שמקדמי ה־PID המתאימים מוגדרים ב־slot שאתם בוחרים באמצעות `.withSlot(n)`.
+- **הגדרות Motion Magic**: הגדירו מהירות שיוט, תאוצה ו־jerk בתוך `TalonFXConfiguration.MotionMagic`; אחרת פרופיל התנועה לא יפעל.
+- **Feedforward**: אפשר להשתמש ב־`.withFeedForward(...)` בכל בקשת בקרה, להגדיר kS/kV/kA ב־Feedforward של ה־slot, או לשלב בין השניים. במנגנונים שפועלים נגד כוח הכבידה, הוסיפו kG לחוג בקרת המיקום.

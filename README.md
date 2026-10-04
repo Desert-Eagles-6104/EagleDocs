@@ -1,61 +1,79 @@
-# Website
+# אתר התיעוד
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+<!-- markdownlint-disable MD033 -->
 
-## Installation
+<a id="website"></a>
 
-To install the required dependencies, run the following command:
+האתר נבנה באמצעות [Docusaurus](https://docusaurus.io/), כלי מודרני ליצירת אתרים סטטיים.
+
+<a id="installation"></a>
+
+## התקנה
+
+כדי להתקין את התלויות הנדרשות, הריצו את הפקודה הבאה:
 
 ```bash
 yarn install
 ```
 
-## Local Development
+<a id="local-development"></a>
 
-### Start Development Server
+## פיתוח מקומי
 
-To start the development server, make sure the `fetch-javadoc.sh` script is executable and then run:
+<a id="start-development-server"></a>
+
+### הפעלת שרת הפיתוח
+
+כדי להפעיל את שרת הפיתוח, ודאו שיש הרשאת הרצה לסקריפט `fetch-javadoc.sh`, ואז הריצו:
 
 ```bash
 chmod +x scripts/fetch-javadoc.sh
 npm run start
 ```
 
-The development server will be available at `http://localhost:3000`.
+שרת הפיתוח יהיה זמין בכתובת `http://localhost:3000`.
 
-### Stop Development Server
+<a id="stop-development-server"></a>
 
-To stop the development server, use the following command:
+### עצירת שרת הפיתוח
+
+כדי לעצור את שרת הפיתוח, הריצו את הפקודה הבאה:
 
 ```bash
 kill -9 $(lsof -t -i :3000)
 ```
 
-### Restart Development Server
+<a id="restart-development-server"></a>
 
-To restart the development server, use the following commands:
+### הפעלה מחדש של שרת הפיתוח
+
+כדי להפעיל מחדש את שרת הפיתוח, הריצו את הפקודות הבאות:
 
 ```bash
 kill -9 $(lsof -t -i :3000)
 npm run start
 ```
 
-## Building the Website
+<a id="building-the-website"></a>
 
-To build the static version of the website, use:
+## בניית האתר
+
+כדי לבנות את הגרסה הסטטית של האתר, הריצו:
 
 ```bash
 npm run build
 ```
 
-The output will be generated in the `build` directory.
+קובצי הפלט ייווצרו בתיקייה `build`.
 
-## Deployment
+<a id="deployment"></a>
 
-To deploy the website, you can use the following command:
+## פריסה
+
+כדי לפרוס את האתר, אפשר להריץ את הפקודה הבאה:
 
 ```bash
 npm run deploy
 ```
 
-Ensure you have the necessary permissions and configurations set up for deployment.
+ודאו שההרשאות וההגדרות הנדרשות לפריסה מוגדרות מראש.

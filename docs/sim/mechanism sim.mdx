@@ -1,7 +1,7 @@
 ---
 title: MechanismSim
 sidebar_label: MechanismSim
-description: Sim framework...
+description: סימולציה של מנגנונים מונעי מנוע באמצעות Phoenix ו־WPILib.
 tags: [sim, phoenix6, swerve]
 keywords: [FRC, CTRE, sim]     
 ---
@@ -22,47 +22,47 @@ import DocHeader from "@site/src/components/DocHeader";
   sourcePath="frc/DELib26/Subsystems/MotorSubsystems/MotorBase/MechanismSim/MechanismSim.java"
 />
 
-## What this class does
+## מה המחלקה עושה {#what-this-class-does}
 
-`MechanismSim` is a small simulation loop for “motor-driven mechanisms” (arm / elevator / wrist / roller / etc).
+`MechanismSim` היא לולאת סימולציה קטנה למנגנונים מונעי מנוע, כמו זרוע, מעלית, מפרק קצה או גליל.
 
-In SIM, CTRE/Phoenix will still compute a **commanded motor voltage** (based on your closed-loop control), but it needs “sensor feedback” to actually close the loop. This class bridges that gap:
+במצב SIM, CTRE/Phoenix עדיין מחשב את **המתח המבוקש למנוע** לפי הבקרה שלכם בחוג סגור, אבל נדרש משוב מחיישנים כדי לסגור את החוג בפועל. המחלקה משלימה את המשוב החסר:
 
-1. Reads Phoenix’s **commanded motor terminal voltage**
-2. Feeds that voltage into a WPILib **plant model** (`LinearSystemSim`)
-3. Integrates the plant forward by `dt`
-4. Writes the resulting **rotor** position/velocity back into TalonFX sim (`setRawRotorPosition`, `setRotorVelocity`)
-5. Mirrors the same sensor state to any followers
+1. קוראת מ־Phoenix את **המתח המבוקש בהדקי המנוע**.
+2. מזינה את המתח הזה ל־**מודל פיזיקלי של המנגנון** ב־WPILib (`LinearSystemSim`).
+3. מקדמת את המודל בזמן באמצעות אינטגרציה לאורך `dt`.
+4. מעדכנת את סימולציית ה־TalonFX במיקום ובמהירות של **הרוטור** שהתקבלו (`setRawRotorPosition`, `setRotorVelocity`).
+5. מעתיקה את אותו מצב חיישן לכל מנועי ה־followers.
 
 ---
 
-## Key idea: rotor units vs mechanism units
+## הרעיון המרכזי: יחידות רוטור לעומת יחידות מנגנון {#key-idea-rotor-units-vs-mechanism-units}
 
-Phoenix sim sensor setters are **rotor units**:
+המתודות שמעדכנות חיישנים בסימולציית Phoenix מקבלות ערכים ב־**יחידות רוטור**:
 
-- Position: **rotations**
-- Velocity: **rotations per second (RPS)**
+- מיקום: **סיבובים**.
+- מהירות: **סיבובים לשנייה (RPS)**.
 
-So if your plant tracks *mechanism* position/velocity, you must convert into rotor units before returning them in:
+לכן, אם המודל שלכם עוקב אחר המיקום והמהירות של *המנגנון*, צריך להמיר אותם ליחידות רוטור לפני שמחזירים אותם מהמתודות:
 
 - `getSimulatedRotorPositionRotations()`
 - `getSimulatedRotorVelocityRPS()`
 
 ---
 
-## Timing model
+## תזמון הסימולציה {#timing-model}
 
-A `Notifier` runs the sim periodically:
+`Notifier` מפעיל את הסימולציה במחזוריות:
 
-- period = `config.simPeriodSec` (commonly `0.005` for 200 Hz)
+- זמן המחזור הוא `config.simPeriodSec`, בדרך כלל `0.005` שניות עבור תדר של 200 Hz.
 
-This improves closed-loop stability in sim, but costs CPU.
+כך משתפרת יציבות הבקרה בחוג סגור בסימולציה, במחיר של שימוש רב יותר ב־CPU.
 
 ---
 
-## Main loop (what happens every tick)
+## הלולאה הראשית: מה קורה בכל מחזור {#main-loop-what-happens-every-tick}
 
-Here’s the core logic (trimmed to the important parts):
+זו הלוגיקה המרכזית, לאחר צמצום לחלקים החשובים:
 
 ```java
 protected void updateSimState() {
@@ -103,20 +103,20 @@ protected void updateSimState() {
 
 ---
 
-Subclassing
+יצירת מחלקה יורשת
 
-You must implement:
+צריך לממש את המתודות הבאות:
 
 protected abstract double getSimulatedRotorPositionRotations();
 protected abstract double getSimulatedRotorVelocityRPS();
 
-Optional hook (currently a no-op default):
+מתודה שאפשר לדרוס לפי הצורך; מימוש ברירת המחדל שלה כרגע אינו עושה דבר:
 
 protected void setSimulatedRotorPositionRotations(double rotorPositionRotations) {}
 
-Example: plant tracks mechanism units, convert to rotor
+דוגמה: המרת מצב המודל מיחידות מנגנון ליחידות רוטור
 
-Let’s say your plant state is mechanism rotations, and your gear ratio is sensorPerMechanismRatio (rotor rotations per mechanism rotation):
+נניח שמצב המודל נמדד בסיבובי המנגנון, ויחס התמסורת הוא `sensorPerMechanismRatio`, כלומר מספר סיבובי הרוטור לכל סיבוב של המנגנון:
 
 ```java
 public class ArmSim extends MechanismSim<N2, N1, N1> {
@@ -147,12 +147,12 @@ public class ArmSim extends MechanismSim<N2, N1, N1> {
 }
 ```
 
-Friction model (simple + optional)
+מודל חיכוך פשוט שאפשר להוסיף לפי הצורך
 
-addFriction(voltage, frictionVoltage) applies a Coulomb-ish deadband:
+`addFriction(voltage, frictionVoltage)` מחילה אזור מת שמדמה בקירוב חיכוך קולון:
 
-- if |V| < frictionVoltage → output 0
-- else subtract friction in direction of motion
+- אם |V| < frictionVoltage, הפלט הוא 0.
+- אחרת, מפחיתים את השפעת החיכוך בכיוון התנועה.
 
 ```java
 protected double addFriction(double motorVoltage, double frictionVoltage) {
@@ -162,14 +162,14 @@ protected double addFriction(double motorVoltage, double frictionVoltage) {
 }
 ```
 
-You can tune it live:
+אפשר לכוון את החיכוך בזמן הריצה:
 
 mechanismSim.setFrictionVoltage(0.4); // volts
 
 ---
 
-Notes / gotchas
+דגשים ודברים שכדאי לשים לב אליהם
 
-- Threading: Notifier runs on a separate thread — don’t block inside updateSimState().
-- dt stability: if dt is ever $\approx$ 0, acceleration will blow up. Your TimestampDeltaCalculator should protect against that (or clamp dt).
-- Followers: followers get the same simulated sensor signals as master (typical FRC pattern).
+- **Threads**: `Notifier` פועל ב־thread נפרד. אל תבצעו פעולות חוסמות בתוך `updateSimState()`.
+- **יציבות `dt`**: אם `dt` הוא $\approx$ 0, התאוצה המחושבת עלולה לגדול מאוד. `TimestampDeltaCalculator` צריך למנוע מצב כזה, או שצריך להגביל את `dt` לערך מינימלי.
+- **Followers**: מנועי ה־followers מקבלים את אותם אותות חיישן מדומים כמו מנוע ה־master, כמקובל ב־FRC.
