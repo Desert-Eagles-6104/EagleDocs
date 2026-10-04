@@ -29,3 +29,21 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+/* Keep technical content readable within Hebrew documentation. */
+html[dir='rtl'] pre,
+html[dir='rtl'] code,
+html[dir='rtl'] .katex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+html[dir='rtl'] pre {
+  text-align: left;
+}
+
+html[dir='rtl'] :not(pre) > code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+

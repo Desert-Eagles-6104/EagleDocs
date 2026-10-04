@@ -20,9 +20,9 @@ function HomepageHeader() {
           <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
 
           <div className={styles.heroMeta}>
-            <span className={styles.badge}>Fast</span>
-            <span className={styles.badge}>Searchable</span>
-            <span className={styles.badge}>Team-friendly</span>
+            <span className={styles.badge}>מהיר</span>
+            <span className={styles.badge}>כולל חיפוש</span>
+            <span className={styles.badge}>מותאם לעבודה קבוצתית</span>
           </div>
         </div>
       </div>
@@ -41,31 +41,31 @@ export default function Home(): ReactNode {
         <div className={clsx("container", styles.section)}>
           <div className={styles.sectionHeader}>
             <Heading as="h2" className={styles.sectionTitle}>
-              Quick start
+              מתחילים כאן
             </Heading>
             <p className={styles.sectionSubtitle}>
-              Jump into the docs, browse API references, or find team guides.
+              קראו את התיעוד, עיינו בתיעוד ה־API או מצאו מדריכים לקבוצה.
             </p>
           </div>
 
           <div className={styles.grid}>
             <FeatureCard
-              title="Documentation"
-              description="Guides, setup steps, conventions, and workflows in one place."
+              title="תיעוד"
+              description="מדריכים, הוראות התקנה, מוסכמות ותהליכי עבודה במקום אחד."
               href="/docs/intro"
-              cta="Go to docs →"
+              cta="לתיעוד ←"
             />
             <FeatureCard
               title="Javadoc / API"
-              description="Browse generated API docs for DELib and robot code."
+              description="עיינו בתיעוד ה־API שנוצר אוטומטית עבור DELib וקוד הרובוט."
               href="/javadoc"
-              cta="Open Javadoc →"
+              cta="לפתיחת Javadoc ←"
             />
             <FeatureCard
-              title="Tools & Tips"
-              description="Commands, scripts, and debugging notes for faster iteration."
+              title="כלים וטיפים"
+              description="פקודות, סקריפטים וטיפים לניפוי שגיאות שיעזרו לכם להתקדם מהר יותר."
               href="/docs/category/tools"
-              cta="See tools →"
+              cta="לכלים ←"
             />
           </div>
         </div>

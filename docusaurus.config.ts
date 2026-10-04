@@ -10,7 +10,7 @@ import remarkCodeImport from "remark-code-import";
 
 const config: Config = {
   title: 'EagleDocs',
-  tagline: 'Desert Eagles official document site',
+  tagline: 'אתר התיעוד הרשמי של Desert Eagles',
   favicon: 'img/logo.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -32,8 +32,15 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'he',
+    locales: ['he'],
+    localeConfigs: {
+      he: {
+        label: 'עברית',
+        direction: 'rtl',
+        htmlLang: 'he',
+      },
+    },
   },
 
   customFields: {
@@ -60,6 +67,7 @@ const config: Config = {
         docsRouteBasePath: '/docs',
         blogRouteBasePath: '/blog',
         hashed: true,
+        language: ['he', 'en'],
         indexPages: true,
       },
     ],
@@ -90,7 +98,7 @@ const config: Config = {
     navbar: {
       title: 'EagleDocs',
       logo: {
-        alt: 'EagleDocs Logo',
+        alt: 'הלוגו של EagleDocs',
         src: 'img/logo.svg',
       },
       items: [
@@ -98,7 +106,7 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'מדריכים',
         },
         {
           to: "/javadoc/",
@@ -118,16 +126,16 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'תיעוד',
           items: [
             {
-              label: 'Tutorial',
+              label: 'מדריכים',
               to: '/docs/intro',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'קישורים נוספים',
           items: [
             {
               label: 'GitHub',
@@ -136,7 +144,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Desert Eagles 6104, Built with Docusaurus.`,
+      copyright: `כל הזכויות שמורות © ${new Date().getFullYear()} Desert Eagles 6104. נבנה באמצעות Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

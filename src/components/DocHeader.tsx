@@ -36,7 +36,7 @@ function Badge({ children }: { children: React.ReactNode }) {
         borderRadius: 999,
         border: "1px solid var(--ifm-toc-border-color)",
         fontSize: "0.8rem",
-        marginRight: 8,
+        marginInlineEnd: 8,
         marginBottom: 6,
       }}
     >
@@ -88,19 +88,19 @@ export default function DocHeader(props: Props) {
       {title && <h2 style={{ marginTop: 0, marginBottom: "0.5rem" }}>{title}</h2>}
 
       <div style={{ marginBottom: 10 }}>
-        {status && <Badge>Status: {status}</Badge>}
-        {since && <Badge>Since: {since}</Badge>}
+        {status && <Badge>מצב: {{ stable: "יציב", beta: "בטא", experimental: "ניסיוני", deprecated: "הוצא משימוש" }[status]}</Badge>}
+        {since && <Badge>החל מגרסה: {since}</Badge>}
       </div>
 
       <div style={{ lineHeight: 1.6 }}>
         {pkg && (
           <div>
-            <b>Package:</b> <code>{pkg}</code>
+            <b>חבילה:</b> <code>{pkg}</code>
           </div>
         )}
         {className && (
           <div>
-            <b>Class:</b> <code>{className}</code>
+            <b>מחלקה:</b> <code>{className}</code>
           </div>
         )}
 
@@ -116,7 +116,7 @@ export default function DocHeader(props: Props) {
             ) : null}
           {githubUrl && (
             <Link to={githubUrl} target="_blank" rel="noopener noreferrer">
-              View source on GitHub
+              צפייה בקוד המקור ב־GitHub
             </Link>
           )}
         </div>

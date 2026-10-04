@@ -21,7 +21,7 @@ export default function FeatureCard({title, description, href, cta}: FeatureCard
         <p className={styles.cardDesc}>{description}</p>
         {href && (
           <div className={styles.cardFooter}>
-            <span className={styles.cardCta}>{cta ?? "Learn more →"}</span>
+            <span className={styles.cardCta}>{cta ?? "למידע נוסף ←"}</span>
           </div>
         )}
       </div>
