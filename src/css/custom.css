@@ -30,20 +30,49 @@
 }
 
 /* Keep technical content readable within Hebrew documentation. */
-html[dir='rtl'] pre,
-html[dir='rtl'] code,
-html[dir='rtl'] .katex {
+/* Documentation content */
+/* Normal documentation */
+/* Normal documentation */
+.theme-doc-markdown h1,
+.theme-doc-markdown h2,
+.theme-doc-markdown h3,
+.theme-doc-markdown h4,
+.theme-doc-markdown h5,
+.theme-doc-markdown h6,
+.theme-doc-markdown p,
+.theme-doc-markdown ul,
+.theme-doc-markdown ol,
+.theme-doc-markdown li,
+.theme-doc-markdown blockquote {
+  /*rtl:begin:ignore*/
+  direction: rtl !important;
+  text-align: right !important;
+  /*rtl:end:ignore*/
+}
+
+/* Inline code */
+.theme-doc-markdown :not(pre) > code {
+  /*rtl:begin:ignore*/
   direction: ltr;
   unicode-bidi: isolate;
-}
+  /*rtl:end:ignore*/
 
-html[dir='rtl'] pre {
-  text-align: left;
-}
-
-html[dir='rtl'] :not(pre) > code {
   display: inline-block;
   max-width: 100%;
   overflow-wrap: anywhere;
 }
 
+/* Code blocks */
+.theme-doc-markdown pre,
+.theme-doc-markdown pre code {
+  /*rtl:begin:ignore*/
+  direction: ltr !important;
+  text-align: left !important;
+  /*rtl:end:ignore*/
+}
+
+/* Math */
+.theme-doc-markdown .katex {
+  /*rtl:ignore*/
+  direction: ltr;
+}

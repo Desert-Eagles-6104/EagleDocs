@@ -14,7 +14,6 @@ trap cleanup EXIT
 rm -rf "$TMP_DIR"
 git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$TMP_DIR"
 
-# ✅ Fix for GitHub Actions/Linux
 chmod +x "$TMP_DIR/gradlew"
 
 (cd "$TMP_DIR" && ./gradlew -q javadoc)

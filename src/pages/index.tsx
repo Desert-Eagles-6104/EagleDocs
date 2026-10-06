@@ -49,7 +49,7 @@ export default function Home(): ReactNode {
           </div>
 
           <div className={styles.grid}>
-            <FeatureCard
+            {/* <FeatureCard
               title="תיעוד"
               description="מדריכים, הוראות התקנה, מוסכמות ותהליכי עבודה במקום אחד."
               href="/docs/intro"
@@ -66,7 +66,7 @@ export default function Home(): ReactNode {
               description="פקודות, סקריפטים וטיפים לניפוי שגיאות שיעזרו לכם להתקדם מהר יותר."
               href="/docs/category/tools"
               cta="לכלים ←"
-            />
+            /> */}
           </div>
         </div>
       </main>
