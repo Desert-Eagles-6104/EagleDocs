@@ -5,8 +5,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "prefetch-javadoc": "bash scripts/fetch-javadoc.sh",
-    "start": "npm run prefetch-javadoc && npx docusaurus start --config ./docusaurus.config.ts",
-    "build": "npm run prefetch-javadoc && npx docusaurus build --config ./docusaurus.config.ts",
+    "start": "npx docusaurus start --config ./docusaurus.config.ts",
+    "build": "npx docusaurus build --config ./docusaurus.config.ts",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

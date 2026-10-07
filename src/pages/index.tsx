@@ -19,11 +19,6 @@ function HomepageHeader() {
           </Heading>
           <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
 
-          <div className={styles.heroMeta}>
-            <span className={styles.badge}>מהיר</span>
-            <span className={styles.badge}>כולל חיפוש</span>
-            <span className={styles.badge}>מותאם לעבודה קבוצתית</span>
-          </div>
         </div>
       </div>
     </header>
@@ -49,16 +44,16 @@ export default function Home(): ReactNode {
           </div>
 
           <div className={styles.grid}>
-            {/* <FeatureCard
-              title="תיעוד"
+            <FeatureCard
+              title="לימוד java"
               description="מדריכים, הוראות התקנה, מוסכמות ותהליכי עבודה במקום אחד."
-              href="/docs/intro"
+              href="/docs/תרגול%20java/התחלה/"
               cta="לתיעוד ←"
             />
             <FeatureCard
               title="Javadoc / API"
               description="עיינו בתיעוד ה־API שנוצר אוטומטית עבור DELib וקוד הרובוט."
-              href="/javadoc"
+              href="/javadoc/"
               cta="לפתיחת Javadoc ←"
             />
             <FeatureCard
@@ -66,10 +61,13 @@ export default function Home(): ReactNode {
               description="פקודות, סקריפטים וטיפים לניפוי שגיאות שיעזרו לכם להתקדם מהר יותר."
               href="/docs/category/tools"
               cta="לכלים ←"
-            /> */}
+            />
           </div>
         </div>
       </main>
     </Layout>
   );
 }
+
+//http://localhost:3000/docs/javadoc/
+//http://localhost:3000/docs/javadoc/

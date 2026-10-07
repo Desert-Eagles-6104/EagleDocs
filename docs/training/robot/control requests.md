@@ -1,5 +1,6 @@
 ---
 title: בקשות בקרה
+unlisted: true
 ---
 
 ## בקרה בחוג פתוח (Open-loop) {#open-loop}
