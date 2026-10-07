@@ -2,6 +2,7 @@
 title: קלט ופלט דיגיטליים
 tags: [DigitalInput, DigitalOutput, roboRIO, boolean signal, sensors, beam break, limit switches, hall-effect sensors, LEDs, relays, circuits]
 keywords: [DigitalInput, DigitalOutput, boolean signal, HIGH, LOW, beam break sensor, active-low, roboRIO, Java, WPILib]
+unlisted: true
 ---
 ## DigitalInput
 
