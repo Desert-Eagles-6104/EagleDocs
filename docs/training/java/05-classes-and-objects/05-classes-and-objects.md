@@ -133,7 +133,7 @@ public class Motor {
 ---
 
 
-![מבנה של מחלקה](./class-example.png) 
+![מבנה של מחלקה](./assets/class-example.png) 
 
 ## מתודות בתוך מחלקה
 
@@ -204,7 +204,7 @@ motor
 
 ---
 
-![מחלקה ואובייקט](./class-object.png)
+![מחלקה ואובייקט](./assets/class-object.png)
 
 ## פירוק השורה
 
@@ -449,7 +449,7 @@ speed = 0.5
 
 ---
 
-![מבנה של Constructor](./constructor-example.png)
+![מבנה של Constructor](./assets/constructor-example.png)
 
 ## Constructor עם כמה פרמטרים
 

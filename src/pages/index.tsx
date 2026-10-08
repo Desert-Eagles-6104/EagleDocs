@@ -39,28 +39,31 @@ export default function Home(): ReactNode {
               מתחילים כאן
             </Heading>
             <p className={styles.sectionSubtitle}>
-              קראו את התיעוד, עיינו בתיעוד ה־API או מצאו מדריכים לקבוצה.
+              כל מה שצריך כדי להתחיל לתכנת, להכיר את קוד הרובוט
+              ולהתקדם בצוות התוכנה.
             </p>
           </div>
 
           <div className={styles.grid}>
             <FeatureCard
-              title="לימוד java"
-              description="מדריכים, הוראות התקנה, מוסכמות ותהליכי עבודה במקום אחד."
-              href="/docs/תרגול%20java/התחלה/"
-              cta="לתיעוד ←"
+              title="הכשרות Java"
+              description="לומדים Java מהבסיס, מתרגלים תכנות ומתקדמים בהדרגה לעבודה עם קוד הרובוט."
+              href="/docs/docs/java-training/"
+              cta="להתחלת הלמידה ←"
             />
+
             <FeatureCard
-              title="Javadoc / API"
-              description="עיינו בתיעוד ה־API שנוצר אוטומטית עבור DELib וקוד הרובוט."
-              href="/javadoc/"
-              cta="לפתיחת Javadoc ←"
+              title="תיעוד הקוד (Javadoc)"
+              description="תיעוד המחלקות, המתודות והמערכות של DELib וקוד הרובוט, שנוצר ישירות מקוד המקור."
+              href="pathname:///javadoc/"
+              cta="לצפייה בתיעוד ←"
             />
+
             <FeatureCard
-              title="כלים וטיפים"
-              description="פקודות, סקריפטים וטיפים לניפוי שגיאות שיעזרו לכם להתקדם מהר יותר."
-              href="/docs/category/tools"
-              cta="לכלים ←"
+              title="קוד הרובוט"
+              description="היכרות עם מבנה הפרויקט, מערכות הרובוט והאופן שבו הקוד שלנו עובד."
+              href="/docs/category/robot"
+              cta="להיכרות עם הרובוט ←"
             />
           </div>
         </div>

@@ -24,7 +24,7 @@ int teamNumber = 6104;
 
 כאשר נגדיר משתנה ב-Java, הצורה הכללית שלו תיראה כך:
 
-![מבנה של משתנה ב-Java](./variable-example.png)
+![מבנה של משתנה ב-Java](./assets/variable-example.png)
 
 לכל משתנה יש שלושה חלקים עיקריים:
 

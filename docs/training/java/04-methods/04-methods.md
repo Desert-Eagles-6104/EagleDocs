@@ -60,7 +60,7 @@ void sayHello() {
 הפונקציה מורכבת מכמה חלקים.
 
 
-![מבנה של פונקציה פשוטה](./method-simple.png) 
+![מבנה של פונקציה פשוטה](./assets/method-simple.png) 
 
 בדוגמה הזו:
 
@@ -218,7 +218,7 @@ printSpeed(1.0);
 
 ---
 
-![פונקציה עם פרמטר](./method-parameter.png)
+![פונקציה עם פרמטר](./assets/method-parameter.png)
 
 ## מהו פרמטר?
 
@@ -655,7 +655,7 @@ private
 
 ---
 
-![פונקציה עם רמת גישה](./method-access.png)
+![פונקציה עם רמת גישה](./assets/method-access.png)
 
 ## `static`
 
@@ -710,7 +710,7 @@ sayHello();
 
 ---
 
-![פונקציה עם static](./method-static.png)
+![פונקציה עם static](./assets/method-static.png)
 
 ## דוגמה מלאה
 
