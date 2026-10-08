@@ -3,6 +3,8 @@ sidebar_position: 3
 title: תנאים
 ---
 
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
 עד עכשיו למדנו איך לשמור מידע במשתנים ואיך לבצע עליו פעולות.
 
 עכשיו נלמד איך לגרום לתוכנית **לקבל החלטות**.
@@ -377,6 +379,7 @@ if (mechanismPosition >= 40.0) {
 }
 ```
 
+
 ## תרגול
 
 ### תרגיל 1 - מה יודפס?
@@ -389,25 +392,13 @@ if (gamePieceCount > 0) {
 }
 ```
 
-<details>
-<summary>פתרון</summary>
-
-יודפס:
-
-```text
-Has game piece
-```
-
-כי:
-
-```java
-2 > 0
-```
-
-הוא `true`.
-
-</details>
-
+<ExerciseHelp
+  hints={[
+    "בדקו את התנאי שבתוך ה-if. מה הערך של gamePieceCount, והאם הוא מקיים את התנאי?",
+    "הקוד שבתוך ה-if מתבצע רק אם התנאי מחזיר true. בדקו האם 2 גדול מ-0."
+  ]}
+  solution={`Has game piece`}
+/>
 
 ### תרגיל 2 - `if` ו-`else`
 
@@ -423,22 +414,14 @@ if (speed >= 0.5) {
 }
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```text
-Slow
-```
-
-כי:
-
-```java
-0.4 >= 0.5
-```
-
-הוא `false`.
-
-</details>
+<ExerciseHelp
+  hints={[
+    "בדקו את התנאי שבתוך ה-if. האם הערך של speed גדול או שווה ל-0.5?",
+    "אם התנאי שב-if מחזיר false, התוכנית עוברת לבלוק של ה-else.",
+    "השוו בין 0.4 ל-0.5. איזה מבין שני הבלוקים יתבצע?"
+  ]}
+  solution={`Slow`}
+/>
 
 ### תרגיל 3 - מצאו את הטעות
 
@@ -452,20 +435,18 @@ if (count = 5) {
 }
 ```
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "בדקו את התנאי שבתוך ה-if. האם אנחנו מנסים לשנות את הערך של count או לבדוק אם הוא שווה לערך מסוים?",
+    "ב-Java יש הבדל בין האופרטור שמשמש להשמת ערך לבין האופרטור שמשמש להשוואה בין ערכים.",
+    "כדי לבדוק שוויון בין שני ערכים משתמשים בשני סימני שווה, ולא בסימן אחד."
+  ]}
+  solution={`int count = 5;
 
-השתמשנו ב-`=` במקום ב-`==`.
-
-צריך להיות:
-
-```java
 if (count == 5) {
     System.out.println("Correct");
-}
-```
-
-</details>
+}`}
+/>
 
 ### תרגיל 4 - `else if`
 
@@ -493,11 +474,13 @@ Low
 Critical
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```java
-double batteryVoltage = 11.5;
+<ExerciseHelp
+  hints={[
+    "יש כאן שלושה מצבים אפשריים, אבל רק אחד מהם צריך להתבצע. חשבו כיצד אפשר לשלב if, else if ו-else.",
+    "התחילו בבדיקת המתח הגבוה ביותר. אם התנאי הראשון לא מתקיים, בדקו אם המתח גדול או שווה ל-10.",
+    "השתמשו ב-if עבור batteryVoltage >= 12, ב-else if עבור batteryVoltage >= 10, וב-else עבור כל מצב אחר. שימו לב לסדר הבדיקות."
+  ]}
+  solution={`double batteryVoltage = 11.5;
 
 if (batteryVoltage >= 12) {
     System.out.println("Good");
@@ -505,10 +488,8 @@ if (batteryVoltage >= 12) {
     System.out.println("Low");
 } else {
     System.out.println("Critical");
-}
-```
-
-</details>
+}`}
+/>
 
 ### תרגיל 5 - שילוב תנאים
 
@@ -527,16 +508,19 @@ Ready
 
 רק אם **שני המשתנים** הם `true`.
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "חשבו מה צריך לקרות כדי שההודעה תודפס. האם מספיק שרק אחד מהמשתנים יהיה true?",
+    "יש אופרטור לוגי שמחזיר true רק כאשר שני התנאים מתקיימים. איזה אופרטור זה?",
+    "השתמשו ב-&& כדי לחבר את שני המשתנים בתוך תנאי if. זכרו שאפשר להשתמש במשתני boolean ישירות, בלי להשוות אותם ל-true."
+  ]}
+  solution={`boolean seesTarget = true;
+boolean mechanismReady = false;
 
-```java
 if (seesTarget && mechanismReady) {
     System.out.println("Ready");
-}
-```
-
-</details>
+}`}
+/>
 
 ### תרגיל 6 - `||`
 
@@ -555,16 +539,19 @@ Detected
 
 אם לפחות אחד מהם מזהה משהו.
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "כדי להדפיס את ההודעה, מספיק שאחד משני החיישנים יחזיר true. האם צריך להשתמש ב-&& או ב-||?",
+    "האופרטור || מחזיר true אם לפחות אחד מהתנאים מתקיים.",
+    "כתבו תנאי if שמשלב את leftSensor ואת rightSensor באמצעות ||. בתוך התנאי הדפיסו את ההודעה המבוקשת."
+  ]}
+  solution={`boolean leftSensor = false;
+boolean rightSensor = true;
 
-```java
 if (leftSensor || rightSensor) {
     System.out.println("Detected");
-}
-```
-
-</details>
+}`}
+/>
 
 ### תרגיל 7 - אתגר
 
@@ -588,16 +575,21 @@ Ready to score
 - המצלמה רואה מטרה
 - מהירות המנגנון גדולה או שווה ל-`0.7`
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "חשבו מה צריך לקרות כדי שהרובוט יהיה מוכן לניקוד. האם מספיק שחלק מהתנאים מתקיימים, או שכולם חייבים להתקיים?",
+    "אפשר לשלב כמה תנאים לוגיים בתוך if אחד. חשבו איזה אופרטור מתאים למצב שבו כל התנאים חייבים להתקיים.",
+    "שני התנאים הראשונים כבר מיוצגים באמצעות משתני boolean. עבור מהירות המנגנון צריך ליצור ביטוי השוואה. שלבו את שלושתם בתוך תנאי אחד."
+  ]}
+  solution={`boolean hasGamePiece = true;
+boolean seesTarget = true;
+double mechanismSpeed = 0.8;
 
-```java
 if (hasGamePiece && seesTarget && mechanismSpeed >= 0.7) {
     System.out.println("Ready to score");
-}
-```
+}`}
+/>
 
-</details>
 
 ## סיכום
 

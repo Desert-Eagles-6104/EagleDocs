@@ -3,6 +3,8 @@ sidebar_position: 1
 title: משתנים
 ---
 
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
 בשיעור הזה נלמד איך לשמור ערכים בקוד, לשנות אותם ולהשתמש בהם.
 
 בקוד של רובוט כמעט כל דבר נשמר במשתנים:
@@ -84,7 +86,7 @@ int teamNumber = 6105;
 
 ```java
 int teamNumber = 6104;
-int fuelCount = 8;
+int gamePieceCount = 8;
 int motorCount = 4;
 ```
 
@@ -105,9 +107,9 @@ double distance = 2.35;
 
 ```java
 boolean seesTarget = true;
-boolean hasFuel = false;
+boolean hasgamePiece = false;
 ```
-
+  
 ל-`boolean` יכולים להיות רק שני ערכים:
 
 ```java
@@ -118,7 +120,7 @@ false
 הוא שימושי מאוד לדברים כמו:
 
 - האם חיישן מופעל?
-- האם הרובוט מחזיק Fuel?
+- האם הרובוט מחזיק gamePiece?
 - האם המצלמה רואה מטרה?
 - האם האוטונומי הסתיים?
 
@@ -144,33 +146,33 @@ String robotName = "Eagle";
 לדוגמה:
 
 ```java
-int fuelCount = 5;
+int gamePieceCount = 5;
 
-fuelCount = 8;
+gamePieceCount = 8;
 ```
 
-בהתחלה הערך של `fuelCount` הוא `5`.
+בהתחלה הערך של `gamePieceCount` הוא `5`.
 
 לאחר השורה:
 
 ```java
-fuelCount = 8;
+gamePieceCount = 8;
 ```
 
-הערך הקודם מוחלף, ועכשיו `fuelCount` מכיל `8`.
+הערך הקודם מוחלף, ועכשיו `gamePieceCount` מכיל `8`.
 
 שימו לב שלא כתבנו שוב `int`.
 
 כותבים את סוג המשתנה רק כאשר **יוצרים** אותו:
 
 ```java
-int fuelCount = 5;
+int gamePieceCount = 5;
 ```
 
 לאחר מכן משתמשים רק בשם שלו:
 
 ```java
-fuelCount = 8;
+gamePieceCount = 8;
 ```
 
 ## שימוש במשתנה
@@ -180,9 +182,9 @@ fuelCount = 8;
 לדוגמה:
 
 ```java
-int fuelCount = 8;
+int gamePieceCount = 8;
 
-System.out.println(fuelCount);
+System.out.println(gamePieceCount);
 ```
 
 התוצאה תהיה:
@@ -194,12 +196,12 @@ System.out.println(fuelCount);
 אפשר גם להשתמש במשתנים בחישובים:
 
 ```java
-int fuelCount = 8;
-int addedFuel = 3;
+int gamePieceCount = 8;
+int addedgamePiece = 3;
 
-int totalFuel = fuelCount + addedFuel;
+int totalgamePiece = gamePieceCount + addedgamePiece;
 
-System.out.println(totalFuel);
+System.out.println(totalgamePiece);
 ```
 
 התוצאה:
@@ -231,7 +233,7 @@ double x = 0.5;
 ```java
 teamNumber
 motorSpeed
-fuelCount
+gamePieceCount
 distanceFromTarget
 ```
 
@@ -246,61 +248,72 @@ distanceFromTarget
 - `seesTarget` שמכיל `true`
 - `teamName` שמכיל `"Desert Eagles"`
 
+<ExerciseHelp
+  hints={[
+    "לכל משתנה צריך לבחור טיפוס נתונים שמתאים לערך שהוא שומר. חשבו אילו מהערכים הם מספרים שלמים, מספרים עשרוניים, ערכים בוליאניים או טקסט.",
+    "השתמשו בטיפוסים int, double, boolean ו-String. כל אחד מהם מתאים לאחד מהמשתנים בתרגיל.",
+    "זכרו את מבנה ההגדרה: טיפוס נתונים, שם המשתנה, סימן השמה וערך. טקסט נכתב בתוך מרכאות, ואילו מספרים וערכים בוליאניים נכתבים ללא מרכאות."
+  ]}
+  solution={`int teamNumber = 6104;
+double motorSpeed = 0.75;
+boolean seesTarget = true;
+String teamName = "Desert Eagles";`}
+/>
+
 ### תרגיל 2 - מצאו את הטעות
 
 איזו שורה לא תקינה? נסו להבין למה לפני שאתם מריצים.
 
 ```java
-int fuelCount = 8;
+int gamePieceCount = 8;
 double motorSpeed = 0.6;
 boolean seesTarget = "true";
 String robotName = "Eagle";
 ```
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "בדקו את טיפוס הנתונים של כל משתנה והשוו אותו לערך שמכניסים אליו. האם כולם מתאימים?",
+    "התמקדו בשורה שמגדירה את seesTarget. מה ההבדל בין ערך בוליאני לבין טקסט?",
+    "מרכאות הופכות את true למחרוזת מסוג String. משתנה boolean צריך לקבל ערך בוליאני ולא מחרוזת."
+  ]}
+  solution={`int gamePieceCount = 8;
+double motorSpeed = 0.6;
+boolean seesTarget = true;
+String robotName = "Eagle";`}
+/>
 
-השורה:
+השורה השגויה היא:
 
 ```java
 boolean seesTarget = "true";
 ```
 
-לא תקינה.
-
-`boolean` מקבל את הערכים `true` או `false` ללא מרכאות:
-
-```java
-boolean seesTarget = true;
-```
-
-</details>
+הערכים `true` ו-`false` נכתבים ללא מרכאות כאשר משתמשים בטיפוס `boolean`.
 
 ### תרגיל 3 - שינוי ערך
 
 מה יודפס בסוף?
 
 ```java
-int fuelCount = 5;
+int gamePieceCount = 5;
 
-fuelCount = 10;
-fuelCount = 3;
+gamePieceCount = 10;
+gamePieceCount = 3;
 
-System.out.println(fuelCount);
+System.out.println(gamePieceCount);
 ```
 
 נסו לענות לפני שאתם מריצים.
 
-<details>
-<summary>פתרון</summary>
-
-```text
-3
-```
-
-כל השמה חדשה מחליפה את הערך הקודם.
-
-</details>
+<ExerciseHelp
+  hints={[
+    "עקבו אחר הערך של gamePieceCount שורה אחר שורה. מה קורה כאשר משייכים ערך חדש למשתנה שכבר קיים?",
+    "השמה חדשה מחליפה את הערך הקודם של המשתנה. הערך המקורי לא נשמר אוטומטית.",
+    "המשתנה מתחיל ב-5, אחר כך משתנה ל-10, ולבסוף מקבל ערך חדש. איזה ערך נמצא בו בזמן ההדפסה?"
+  ]}
+  solution={`3`}
+/>
 
 ### תרגיל 4 - כתבו לבד
 
@@ -312,3 +325,20 @@ System.out.println(fuelCount);
 - האם הרובוט מופעל
 
 ולאחר מכן מדפיסה את כל המשתנים.
+
+<ExerciseHelp
+  hints={[
+    "התחילו בהגדרת ארבעה משתנים. חשבו איזה טיפוס נתונים מתאים לכל אחד מהם.",
+    "מספר הקבוצה הוא int, שם הקבוצה הוא String, מהירות המנוע היא double, ומצב ההפעלה של הרובוט הוא boolean.",
+    "כדי להדפיס משתנה משתמשים ב-System.out.println. אפשר להעביר לפונקציה את שם המשתנה ישירות, בלי מרכאות. זכרו להדפיס את כל ארבעת המשתנים."
+  ]}
+  solution={`int teamNumber = 6104;
+String teamName = "Desert Eagles";
+double motorSpeed = 0.75;
+boolean robotEnabled = true;
+
+System.out.println(teamNumber);
+System.out.println(teamName);
+System.out.println(motorSpeed);
+System.out.println(robotEnabled);`}
+/>

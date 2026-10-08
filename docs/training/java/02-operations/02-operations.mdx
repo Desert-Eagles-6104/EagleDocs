@@ -3,6 +3,8 @@ sidebar_position: 2
 title: פעולות וחישובים
 ---
 
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
 עד עכשיו למדנו איך לשמור ערכים בתוך משתנים.
 
 לדוגמה:
@@ -363,6 +365,7 @@ System.out.println(distance);
 3.5
 ```
 
+
 ## תרגול
 
 ### תרגיל 1 - חישוב פשוט
@@ -380,80 +383,35 @@ System.out.println(result);
 
 נסו לענות לפני שאתם מריצים.
 
-<details>
-<summary>פתרון</summary>
-
-```text
-10
-```
-
-הכפל מתבצע קודם:
-
-```text
-3 * 2 = 6
-4 + 6 = 10
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "שימו לב שיש בביטוי גם חיבור וגם כפל. האם Java מבצעת את הפעולות בהכרח משמאל לימין?",
+    "היזכרו בסדר פעולות החשבון: כפל מתבצע לפני חיבור.",
+    "חשבו קודם את b * 2, ורק לאחר מכן הוסיפו את a."
+  ]}
+  solution={`10`}
+/>
 
 ### תרגיל 2 - שינוי משתנה
 
-מה יהיה הערך של `fuelCount` בסוף?
+מה יהיה הערך של `gamePieceCount` בסוף?
 
 ```java
-int fuelCount = 5;
+int gamePieceCount = 5;
 
-fuelCount += 3;
-fuelCount--;
-fuelCount *= 2;
+gamePieceCount += 3;
+gamePieceCount--;
+gamePieceCount *= 2;
 ```
 
-<details>
-<summary>פתרון</summary>
-
-בהתחלה:
-
-```text
-5
-```
-
-אחרי:
-
-```java
-fuelCount += 3;
-```
-
-נקבל:
-
-```text
-8
-```
-
-אחרי:
-
-```java
-fuelCount--;
-```
-
-נקבל:
-
-```text
-7
-```
-
-ואחרי:
-
-```java
-fuelCount *= 2;
-```
-
-נקבל:
-
-```text
-14
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "עקבו אחר הערך של gamePieceCount שורה אחר שורה. כל פעולה משנה את הערך שהתקבל בפעולה הקודמת.",
+    "זכרו: += מוסיף לערך הקיים, -- מקטין אותו ב-1, ו-*= מכפיל את הערך הקיים.",
+    "התחילו מ-5. הוסיפו 3, הפחיתו 1, ולבסוף הכפילו את התוצאה ב-2."
+  ]}
+  solution={`14`}
+/>
 
 ### תרגיל 3 - מה הבעיה?
 
@@ -465,22 +423,20 @@ int result = 7 / 2;
 System.out.println(result);
 ```
 
-<details>
-<summary>פתרון</summary>
+<ExerciseHelp
+  hints={[
+    "חשבו מה טיפוסי הנתונים של שני המספרים בפעולת החילוק. האם מדובר במספרים שלמים או עשרוניים?",
+    "כאשר מחלקים שני ערכים מסוג int, התוצאה היא מספר שלם. החלק העשרוני לא נשמר.",
+    "התוצאה המתמטית של 7 חלקי 2 היא 3.5. אבל מכיוון שמדובר בחילוק של מספרים שלמים, Java משמיטה את החלק העשרוני."
+  ]}
+  solution={`3`}
+/>
 
-```text
-3
-```
-
-מכיוון ששני המספרים הם `int`, Java מבצעת חילוק של מספרים שלמים.
-
-אם רוצים לקבל `3.5`:
+אם רוצים לקבל תוצאה עשרונית, אפשר להשתמש במספרים עשרוניים:
 
 ```java
 double result = 7.0 / 2.0;
 ```
-
-</details>
 
 ### תרגיל 4 - כתיבה עצמאית
 
@@ -491,29 +447,23 @@ int autoScore = 12;
 int teleopScore = 35;
 ```
 
-צרו משתנה חדש בשם:
-
-```java
-totalScore
-```
-
-שישמור את סכום שניהם.
+צרו משתנה חדש בשם `totalScore` שישמור את סכום שניהם.
 
 הדפיסו אותו למסך.
 
-<details>
-<summary>פתרון</summary>
-
-```java
-int autoScore = 12;
+<ExerciseHelp
+  hints={[
+    "כדי לשמור תוצאה של חישוב, אפשר ליצור משתנה חדש ולהציב בו ביטוי חשבוני.",
+    "הניקוד הוא מספר שלם, ולכן השתמשו ב-int. כדי לחשב את הסכום, השתמשו באופרטור + בין שני המשתנים הקיימים.",
+    "צרו משתנה בשם totalScore והשימו בו את הסכום של autoScore ו-teleopScore. לאחר מכן השתמשו ב-System.out.println כדי להדפיס את totalScore."
+  ]}
+  solution={`int autoScore = 12;
 int teleopScore = 35;
 
 int totalScore = autoScore + teleopScore;
 
-System.out.println(totalScore);
-```
-
-</details>
+System.out.println(totalScore);`}
+/>
 
 ### תרגיל 5 - אתגר קטן
 
@@ -531,26 +481,21 @@ int gamePieceCount = 10;
 
 כתבו קוד שמעדכן את `gamePieceCount` בהתאם ומדפיס את הכמות הסופית.
 
-<details>
-<summary>פתרון</summary>
-
-```java
-int gamePieceCount = 10;
+<ExerciseHelp
+  hints={[
+    "חשבו כיצד כל פעולה של הרובוט משפיעה על מספר חלקי המשחק שהוא מחזיק. האם הכמות גדלה או קטנה?",
+    "אפשר לעדכן משתנה קיים באמצעות האופרטורים += ו-=, בלי לכתוב מחדש את כל הביטוי.",
+    "בצעו שלושה עדכונים לפי הסדר: הוספת 5, הפחתת 3 והוספת 2. לאחר מכן הדפיסו את הערך הסופי של gamePieceCount."
+  ]}
+  solution={`int gamePieceCount = 10;
 
 gamePieceCount += 5;
 gamePieceCount -= 3;
 gamePieceCount += 2;
 
-System.out.println(gamePieceCount);
-```
+System.out.println(gamePieceCount);`}
+/>
 
-התוצאה:
-
-```text
-14
-```
-
-</details>
 
 ## סיכום
 
