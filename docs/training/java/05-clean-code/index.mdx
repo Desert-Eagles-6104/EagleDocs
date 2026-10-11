@@ -1,0 +1,773 @@
+---
+title: כתיבת קוד מסודר
+---
+
+עד עכשיו רוב הקוד שלנו היה קטן יחסית.
+
+ככל שהתוכניות גדלות, לא מספיק שהקוד רק **יעבוד**.
+
+הוא גם צריך להיות:
+
+- קל לקריאה
+- קל לשינוי
+- קל למציאת תקלות
+- מובן למתכנתים אחרים
+
+זה חשוב במיוחד בתכנות רובוט, שבו הרבה אנשים עובדים על אותו פרויקט.
+
+## הזחה — Indentation
+
+נסתכל על הקוד הבא:
+
+```java
+if (speed > 0) {
+System.out.println("Moving");
+if (speed > 0.8) {
+System.out.println("Fast");
+}
+}
+```
+
+הקוד אולי עובד, אבל קשה מאוד להבין את המבנה שלו.
+
+עדיף:
+
+```java
+if (speed > 0) {
+    System.out.println("Moving");
+
+    if (speed > 0.8) {
+        System.out.println("Fast");
+    }
+}
+```
+
+כל פעם שאנחנו נכנסים לתוך:
+
+```java
+{
+    ...
+}
+```
+
+מזיחים את הקוד פנימה.
+
+## `Tab`
+
+ברוב עורכי הקוד אפשר ללחוץ:
+
+```text
+Tab
+```
+
+כדי להזיח קוד פנימה.
+
+ו:
+
+```text
+Shift + Tab
+```
+
+כדי להחזיר אותו החוצה.
+
+:::note
+בקוד Java נהוג להשתמש בהזחה של **4 רווחים**.
+
+ברוב עורכי הקוד, לחיצה על `Tab` תעשה את זה בשבילכם.
+:::
+
+לדוגמה:
+
+```java
+if (sensorActive) {
+    if (speed > 0) {
+        System.out.println("Stop");
+    }
+}
+```
+
+אפשר לראות מיד איזה קוד נמצא בתוך איזה תנאי.
+
+---
+
+## סוגריים מסולסלים
+
+גם כאשר יש רק שורה אחת בתוך `if`, כדאי להשתמש ב-`{ }`.
+
+אפשר לכתוב:
+
+```java
+if (sensorActive)
+    speed = 0;
+```
+
+אבל עדיף:
+
+```java
+if (sensorActive) {
+    speed = 0;
+}
+```
+
+למה?
+
+כי אם בעתיד נוסיף עוד שורה:
+
+```java
+if (sensorActive) {
+    speed = 0;
+    System.out.println("Stopped");
+}
+```
+
+המבנה נשאר ברור.
+
+---
+
+## רווחים
+
+רווחים נכונים הופכים קוד לקריא יותר.
+
+פחות טוב:
+
+```java
+int result=a+b*2;
+```
+
+עדיף:
+
+```java
+int result = a + b * 2;
+```
+
+פחות טוב:
+
+```java
+if(speed>0.5&&sensorActive){
+```
+
+עדיף:
+
+```java
+if (speed > 0.5 && sensorActive) {
+```
+
+המחשב לא באמת צריך את רוב הרווחים האלה.
+
+**אנחנו צריכים אותם.**
+
+---
+
+## שמות ברורים
+
+שם של משתנה צריך להסביר מה הוא שומר.
+
+פחות טוב:
+
+```java
+double x = 0.7;
+```
+
+עדיף:
+
+```java
+double motorSpeed = 0.7;
+```
+
+פחות טוב:
+
+```java
+boolean b = true;
+```
+
+עדיף:
+
+```java
+boolean sensorActive = true;
+```
+
+פחות טוב:
+
+```java
+int n = 3;
+```
+
+עדיף:
+
+```java
+int gamePieceCount = 3;
+```
+
+:::tip
+אם צריך לקרוא את כל הקוד כדי להבין מה משתנה עושה, כנראה שהשם שלו לא מספיק טוב.
+:::
+
+---
+
+## שמות של משתנים ומתודות — `camelCase`
+
+ב-Java משתנים ומתודות נכתבים בדרך כלל ב-`camelCase`.
+
+לדוגמה:
+
+```java
+motorSpeed
+```
+
+```java
+sensorActive
+```
+
+```java
+targetPosition
+```
+
+```java
+setMotorSpeed()
+```
+
+```java
+hasGamePiece()
+```
+
+המילה הראשונה מתחילה באות קטנה.
+
+כל מילה נוספת מתחילה באות גדולה.
+
+לא:
+
+```java
+MotorSpeed
+```
+
+ולא:
+
+```java
+motor_speed
+```
+
+אלא:
+
+```java
+motorSpeed
+```
+
+---
+
+## שמות של מחלקות — `PascalCase`
+
+בפרק הבא נתחיל ליצור מחלקות.
+
+שמות של מחלקות נכתבים בצורה קצת שונה.
+
+לדוגמה:
+
+```java
+Motor
+```
+
+```java
+Drivetrain
+```
+
+```java
+Intake
+```
+
+```java
+VisionSystem
+```
+
+כאן **גם המילה הראשונה מתחילה באות גדולה**.
+
+זה נקרא:
+
+```text
+PascalCase
+```
+
+לכן:
+
+```java
+motorSpeed
+```
+
+יכול להיות משתנה.
+
+אבל:
+
+```java
+Motor
+```
+
+יכול להיות שם של מחלקה.
+
+---
+
+## שמות צריכים לתאר פעולה
+
+מתודה מבצעת פעולה, ולכן בדרך כלל השם שלה צריך לתאר את הפעולה.
+
+עדיף:
+
+```java
+setSpeed()
+```
+
+```java
+stopMotor()
+```
+
+```java
+calculateDistance()
+```
+
+```java
+hasGamePiece()
+```
+
+ולא:
+
+```java
+doThing()
+```
+
+```java
+stuff()
+```
+
+```java
+function1()
+```
+
+---
+
+## שמות `boolean`
+
+במשתנים שמכילים `true` או `false`, כדאי לבחור שם שנשמע כמו שאלה.
+
+לדוגמה:
+
+```java
+boolean sensorActive;
+```
+
+```java
+boolean hasGamePiece;
+```
+
+```java
+boolean atTarget;
+```
+
+```java
+boolean isMoving;
+```
+
+אז תנאי כזה:
+
+```java
+if (hasGamePiece) {
+```
+
+נקרא כמעט כמו משפט:
+
+> אם יש Game Piece...
+
+---
+
+## לא לחזור על קוד
+
+אם אתם רואים את אותו קוד שוב ושוב:
+
+```java
+System.out.println("Starting");
+System.out.println("Starting");
+System.out.println("Starting");
+```
+
+כנראה כדאי לשאול האם אפשר להפוך אותו למתודה:
+
+```java
+void printStarting() {
+    System.out.println("Starting");
+}
+```
+
+ואז:
+
+```java
+printStarting();
+```
+
+אחת המטרות של קוד מסודר היא שלא נצטרך לתקן את אותו הדבר בחמישה מקומות שונים.
+
+---
+
+## שורה ריקה יכולה לעזור
+
+אין צורך לדחוס הכול יחד:
+
+```java
+double speed = 0.5;
+boolean sensorActive = true;
+if (sensorActive) {
+    speed = 0;
+}
+System.out.println(speed);
+```
+
+לפעמים יותר נוח:
+
+```java
+double speed = 0.5;
+boolean sensorActive = true;
+
+if (sensorActive) {
+    speed = 0;
+}
+
+System.out.println(speed);
+```
+
+השורות הריקות מפרידות בין חלקים שונים של הקוד.
+
+אבל גם לא צריך להגזים:
+
+```java
+double speed = 0.5;
+
+
+
+boolean sensorActive = true;
+
+
+
+if (sensorActive) {
+
+
+
+    speed = 0;
+
+
+
+}
+```
+
+---
+
+## הערות — Comments
+
+אפשר להוסיף הערות עם:
+
+```java
+//
+```
+
+לדוגמה:
+
+```java
+// Stop the motor if the sensor detects something
+if (sensorActive) {
+    speed = 0;
+}
+```
+
+אבל לא צריך להסביר דברים שהקוד כבר אומר.
+
+מיותר:
+
+```java
+// Set speed to zero
+speed = 0;
+```
+
+עדיף להשתמש בהערות כדי להסביר **למה** משהו קורה, ולא רק **מה** הקוד עושה.
+
+---
+
+## אל תשמרו קוד מת בתוך הערות
+
+פחות טוב:
+
+```java
+speed = 0.5;
+
+// speed = 0.6;
+// speed = 0.7;
+// oldSpeed = speed;
+// System.out.println("test");
+```
+
+אם קוד כבר לא צריך להיות שם, מחקו אותו.
+
+בפרויקטים אמיתיים משתמשים ב-Git כדי לשמור גרסאות קוד ישנות.
+
+---
+
+## פונקציה צריכה לעשות דבר ברור
+
+פחות טוב:
+
+```java
+void doEverything() {
+    System.out.println("Starting");
+    // lots of unrelated code...
+}
+```
+
+עדיף לחלק פעולות שונות למתודות עם שמות ברורים:
+
+```java
+void startMotor() {
+    System.out.println("Motor started");
+}
+
+void checkSensor() {
+    System.out.println("Sensor checked");
+}
+```
+
+ככל שהתוכנית גדלה, זה הופך להיות חשוב יותר ויותר.
+
+---
+
+## אל תשתמשו במספרים בלי משמעות ברורה
+
+נסתכל על:
+
+```java
+if (speed > 0.82) {
+```
+
+למה דווקא `0.82`?
+
+לפעמים אין דרך לדעת בלי לחפש בכל הקוד.
+
+בהמשך נראה דרכים טובות יותר לשמור ערכים כאלה במקום מסודר.
+
+כרגע לפחות כדאי לבחור שמות ומשתנים שעוזרים להבין:
+
+```java
+double maxSpeed = 0.82;
+
+if (speed > maxSpeed) {
+```
+
+עכשיו ברור יותר מה המספר מייצג.
+
+---
+
+## עיצוב אוטומטי
+
+לא צריך לסדר כל רווח ו-Tab ביד.
+
+ב-VS Code אפשר להשתמש ב:
+
+```text
+Format Document
+```
+
+ב-Windows הקיצור הוא בדרך כלל:
+
+```text
+Shift + Alt + F
+```
+
+לדוגמה, קוד כזה:
+
+```java
+if(speed>0){System.out.println("Moving");}
+```
+
+יהפוך ל:
+
+```java
+if (speed > 0) {
+    System.out.println("Moving");
+}
+```
+
+:::tip
+אם הקוד פתאום נראה מוזר או ההזחות יצאו משליטה, נסו קודם לעשות **Format Document**.
+:::
+
+---
+
+## קוד הוא בשביל אנשים
+
+המחשב יכול להבין:
+
+```java
+double x=.5;if(x>0){System.out.println(x);}
+```
+
+אבל הרבה יותר קל לנו להבין:
+
+```java
+double motorSpeed = 0.5;
+
+if (motorSpeed > 0) {
+    System.out.println(motorSpeed);
+}
+```
+
+שני הקטעים עושים אותו דבר.
+
+אבל רק אחד מהם הוא קוד שנרצה לעבוד איתו בפרויקט גדול.
+
+---
+
+# תרגול
+
+## תרגיל 1 — סדרו את הקוד
+
+הקוד הבא עובד, אבל כתוב בצורה גרועה:
+
+```java
+double s=0.7;
+boolean x=true;
+if(x){
+if(s>0.5){
+System.out.println("fast");
+}
+}
+```
+
+סדרו אותו כך שיהיה:
+
+- עם הזחה נכונה
+- עם רווחים נכונים
+- עם שמות ברורים
+
+<details>
+<summary>פתרון אפשרי</summary>
+
+```java
+double motorSpeed = 0.7;
+boolean sensorActive = true;
+
+if (sensorActive) {
+    if (motorSpeed > 0.5) {
+        System.out.println("Fast");
+    }
+}
+```
+
+</details>
+
+---
+
+## תרגיל 2 — תנו שמות טובים יותר
+
+שפרו את השמות בקוד:
+
+```java
+double a = 0.6;
+boolean b = false;
+int c = 2;
+```
+
+הערכים מייצגים:
+
+- מהירות מנוע
+- האם חיישן פעיל
+- מספר Game Pieces
+
+<details>
+<summary>פתרון</summary>
+
+```java
+double motorSpeed = 0.6;
+boolean sensorActive = false;
+int gamePieceCount = 2;
+```
+
+</details>
+
+---
+
+## תרגיל 3 — שם למתודה
+
+איזה שם עדיף?
+
+```java
+void thing()
+```
+
+או:
+
+```java
+void stopMotor()
+```
+
+למה?
+
+<details>
+<summary>פתרון</summary>
+
+```java
+stopMotor()
+```
+
+כי אפשר להבין מה המתודה עושה רק מהשם שלה.
+
+</details>
+
+---
+
+## תרגיל 4 — סדרו תוכנית שלמה
+
+סדרו את הקוד הבא:
+
+```java
+public class Main{
+public static void main(String[]args){
+double motorspeed=.5;
+boolean sensoractive=true;
+if(sensoractive){motorspeed=0;}
+System.out.println(motorspeed);
+}
+}
+```
+
+<details>
+<summary>פתרון</summary>
+
+```java
+public class Main {
+
+    public static void main(String[] args) {
+        double motorSpeed = 0.5;
+        boolean sensorActive = true;
+
+        if (sensorActive) {
+            motorSpeed = 0;
+        }
+
+        System.out.println(motorSpeed);
+    }
+}
+```
+
+</details>
+
+---
+
+## לפני שממשיכים
+
+מהפרק הבא נתחיל לפצל את הקוד שלנו לכמה קבצים ולכמה מחלקות.
+
+ככל שיש יותר קוד, ההרגלים שלמדנו כאן הופכים לחשובים יותר.
+
+לפני שממשיכים, ודאו שאתם יודעים:
+
+- להשתמש ב-`Tab` ו-`Shift + Tab`
+- לזהות הזחה לא נכונה
+- להשתמש ברווחים בצורה עקבית
+- לבחור שמות ברורים
+- להשתמש ב-`camelCase`
+- לזהות שם מחלקה ב-`PascalCase`
+- לתת למתודות שמות שמתארים פעולה
+- להשתמש ב-Format Document
+- להבין שקוד טוב צריך להיות ברור גם למישהו שלא כתב אותו

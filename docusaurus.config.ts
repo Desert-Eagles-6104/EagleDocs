@@ -78,6 +78,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           remarkPlugins: [remarkCodeImport, remarkMath],
           rehypePlugins: [rehypeKatex],

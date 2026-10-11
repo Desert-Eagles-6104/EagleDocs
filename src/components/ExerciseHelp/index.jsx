@@ -3,110 +3,184 @@ import CodeBlock from '@theme/CodeBlock';
 import styles from './styles.module.css';
 
 /**
- * hints: strings or React elements.
- * solution: optional string (code) or React element.
- * solutionLanguage: syntax highlighting language for string solutions.
+ * hints: Array of strings or React elements.
+ * solution: Optional string (code) or React element.
+ * solutionLanguage: Syntax highlighting language for string solutions.
+ * multipleSolutions: Boolean indicating if multiple solutions are possible.
  */
 export default function ExerciseHelp({
   hints = [],
   solution,
   solutionLanguage = 'java',
+  multipleSolutions = false,
 }) {
-  const [revealed, setRevealed] = useState(0);
+  const [revealedHints, setRevealedHints] = useState(0);
+  const [showSolution, setShowSolution] = useState(false);
+
   const hasSolution = solution !== undefined && solution !== null;
-  const total = hints.length + (hasSolution ? 1 : 0);
-  const solutionVisible = hasSolution && revealed > hints.length;
-  const finished = revealed >= total;
+  const hintCount = hints.length;
+  const hasMoreHints = revealedHints < hintCount;
 
-  if (!total) return null;
+  if (hintCount === 0 && !hasSolution) {
+    return null;
+  }
 
-  const nextLabel =
-    revealed === 0
-      ? 'קבלת רמז ראשון'
-      : revealed < hints.length
-        ? 'הרמז הבא'
-        : 'הצגת הפתרון';
+  const revealNextHint = () => {
+    setRevealedHints((current) => Math.min(hintCount, current + 1));
+  };
+
+  const reset = () => {
+    setRevealedHints(0);
+    setShowSolution(false);
+  };
+
+  const hasRevealedContent = revealedHints > 0 || showSolution;
 
   return (
-    <section className={styles.card} aria-label="עזרה בתרגיל" dir="rtl">
+    <section
+      className={styles.card}
+      aria-label="רמזים ופתרון התרגיל"
+      dir="rtl"
+    >
       <header className={styles.header}>
         <div className={styles.heading}>
-          <span className={styles.icon} aria-hidden="true">💡</span>
+          <span className={styles.icon} aria-hidden="true">
+            💡
+          </span>
+
           <div>
-            <strong>צריך עזרה?</strong>
-            <div className={styles.subheading}>נסו לבד לפני שתבקשו רמז.</div>
+            <strong>רמזים ופתרון</strong>
+            <div className={styles.subheading}>
+              אפשר להיעזר ברמזים או לבדוק את הפתרון שלכם.
+            </div>
           </div>
         </div>
+
         <span className={styles.tag}>
-          {hints.length} רמזים{hasSolution ? ' + פתרון' : ' · ללא פתרון'}
+          {hintCount > 0 && `${hintCount} רמזים`}
+          {hintCount > 0 && hasSolution && ' + '}
+          {hasSolution && 'פתרון'}
         </span>
       </header>
 
-      <div className={styles.progress} aria-label={`נחשפו ${revealed} מתוך ${total} שלבים`}>
-        {Array.from({length: total}, (_, index) => (
-          <span
-            key={index}
-            className={`${styles.segment} ${index < revealed ? styles.active : ''}`}
-          />
-        ))}
-      </div>
+      {hintCount > 0 && (
+        <div
+          className={styles.progress}
+          role="progressbar"
+          aria-label="התקדמות בחשיפת הרמזים"
+          aria-valuemin={0}
+          aria-valuemax={hintCount}
+          aria-valuenow={revealedHints}
+        >
+          {hints.map((_, index) => (
+            <span
+              key={index}
+              className={`${styles.segment} ${
+                index < revealedHints ? styles.active : ''
+              }`}
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+      )}
 
-      <div className={styles.content} aria-live="polite" aria-atomic="false">
-        {revealed === 0 && (
+      <div className={styles.content}>
+        {!hasRevealedContent && (
           <p className={styles.intro}>
-            לא חייבים להצליח בניסיון הראשון. אפשר להיעזר ברמזים בלי לחשוף מיד את התשובה.
+            מומלץ לנסות לפתור בעצמכם לפני שמסתכלים על הפתרון.
           </p>
         )}
-        {hints.slice(0, Math.min(revealed, hints.length)).map((hint, index) => (
+
+        {hints.slice(0, revealedHints).map((hint, index) => (
           <div className={styles.hint} key={index}>
-            <strong className={styles.hintTitle}>רמז {index + 1}</strong>
-            <div className={styles.hintBody}>{hint}</div>
+            <strong className={styles.hintTitle}>
+              רמז {index + 1}
+            </strong>
+
+            <div className={styles.hintBody}>
+              {hint}
+            </div>
           </div>
         ))}
-        {solutionVisible && (
+
+        {showSolution && (
           <div className={styles.solution}>
-            <strong className={styles.solutionTitle}>✓ פתרון מלא</strong>
+            <strong className={styles.solutionTitle}>
+              {multipleSolutions ? 'פתרון אפשרי' : 'פתרון'}
+            </strong>
+
             {typeof solution === 'string' ? (
-              <CodeBlock language={solutionLanguage}>{solution}</CodeBlock>
+              <CodeBlock language={solutionLanguage}>
+                {solution}
+              </CodeBlock>
             ) : (
-              <div className={styles.solutionBody}>{solution}</div>
+              <div className={styles.solutionBody}>
+                {solution}
+              </div>
             )}
+
             <p className={styles.reflection}>
-              לפני שממשיכים: ודאו שאתם מסוגלים להסביר למה הפתרון עובד.
+              {multipleSolutions ? (
+                <>
+                  הפתרון שלכם יכול להיות שונה ועדיין להיות נכון.
+                  השוו את הדרך שלכם וודאו שאתם מבינים איך ולמה הפתרון עובד.
+                </>
+              ) : (
+                <>
+                  <strong>בדקו את עצמכם:</strong> האם הגעתם לתשובה הנכונה?
+                  ודאו שאתם מבינים איך ולמה מגיעים אליה.
+                </>
+              )}
             </p>
           </div>
         )}
-        {finished && !hasSolution && (
-          <p className={styles.endMessage}>
-            הגעתם לרמז האחרון. עכשיו נסו לחבר את כל הרמזים לפתרון משלכם.
-          </p>
-        )}
+
+        {hintCount > 0 &&
+          revealedHints === hintCount &&
+          !hasSolution && (
+            <p className={styles.endMessage}>
+              הגעתם לרמז האחרון. נסו לשלב את הרמזים
+              ולמצוא פתרון משלכם.
+            </p>
+          )}
       </div>
 
       <footer className={styles.actions}>
-        <button
-          type="button"
-          className={styles.secondaryButton}
-          onClick={() => setRevealed((value) => Math.max(0, value - 1))}
-          disabled={revealed === 0}
-        >
-          הקודם
-        </button>
-        {!finished ? (
+        <div className={styles.mainActions}>
+          {hasMoreHints && (
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={revealNextHint}
+            >
+              {revealedHints === 0
+                ? 'הצגת רמז ראשון'
+                : 'הרמז הבא'}
+              {' ←'}
+            </button>
+          )}
+
+          {hasSolution && (
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              onClick={() => setShowSolution((current) => !current)}
+              aria-expanded={showSolution}
+            >
+              {showSolution
+                ? 'הסתרת הפתרון'
+                : 'הצגת הפתרון'}
+            </button>
+          )}
+        </div>
+
+        {hasRevealedContent && (
           <button
             type="button"
-            className={styles.primaryButton}
-            onClick={() => setRevealed((value) => Math.min(total, value + 1))}
+            className={styles.resetButton}
+            onClick={reset}
           >
-            {nextLabel} ←
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={() => setRevealed(0)}
-          >
-            התחלה מחדש ↺
+            איפוס ↺
           </button>
         )}
       </footer>

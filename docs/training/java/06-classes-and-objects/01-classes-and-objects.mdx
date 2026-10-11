@@ -1,0 +1,758 @@
+---
+title: מחלקות ואובייקטים
+---
+
+עד עכשיו כל הקוד שלנו היה יחסית קטן.
+
+כתבנו משתנים, תנאים ופונקציות, אבל בתוכניות אמיתיות אנחנו לא רוצים לשים את כל הקוד בתוך קובץ אחד.
+
+ב-Java אנחנו מחלקים את התוכנית ל**מחלקות**.
+
+## מהי מחלקה?
+
+מחלקה (**Class**) היא תבנית שמתארת דבר מסוים בתוכנית.
+
+לדוגמה, אם אנחנו רוצים לייצג מנוע, אפשר ליצור מחלקה בשם:
+
+```java
+Motor
+```
+
+המחלקה יכולה לשמור מידע על המנוע ולכלול פעולות שאפשר לבצע עליו.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    double speed;
+
+    void setSpeed(double newSpeed) {
+        speed = newSpeed;
+    }
+}
+```
+
+כאן המחלקה `Motor` מתארת מנוע שיש לו:
+
+- מהירות בשם `speed`.
+- פעולה בשם `setSpeed`.
+
+אבל חשוב:
+
+**מחלקה היא רק התבנית.**
+
+עדיין לא יצרנו מנוע אמיתי בתוכנית.
+
+## יצירת קובץ חדש למחלקה
+
+ב-Java בדרך כלל כל מחלקה נמצאת בקובץ משלה.
+
+אם אנחנו רוצים ליצור מחלקה בשם:
+
+```java
+Motor
+```
+
+ניצור קובץ חדש בשם:
+
+```text
+Motor.java
+```
+
+:::warning
+שם הקובץ ושם המחלקה צריכים להיות זהים.
+
+אם המחלקה נקראת:
+
+```java
+public class Motor
+```
+
+שם הקובץ צריך להיות:
+
+```text
+Motor.java
+```
+:::
+
+לדוגמה, הפרויקט שלנו יכול להיראות כך:
+
+```text
+src/
+└─ main/
+   └─ java/
+      ├─ Main.java
+      └─ Motor.java
+```
+
+בקובץ `Motor.java` נכתוב:
+
+```java
+public class Motor {
+
+}
+```
+
+ובקובץ `Main.java` יישאר הקוד שממנו אנחנו מריצים את התוכנית:
+
+```java
+public class Main {
+
+    public static void main(String[] args) {
+
+    }
+}
+```
+
+עכשיו יש לנו שתי מחלקות שונות בשני קבצים שונים.
+
+## שדות
+
+מחלקה יכולה לשמור מידע.
+
+המשתנים שנמצאים בתוך מחלקה, אבל מחוץ למתודות, נקראים **שדות** (`Fields`).
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    double speed;
+
+}
+```
+
+`speed` הוא שדה של המחלקה `Motor`.
+
+כל אובייקט מסוג `Motor` שניצור יקבל `speed` משלו.
+
+![מבנה של מחלקה](./assets/class-example.png) 
+
+## מתודות בתוך מחלקה
+
+מחלקה יכולה גם להכיל מתודות.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    double speed;
+
+    void setSpeed(double newSpeed) {
+        speed = newSpeed;
+    }
+
+    void printSpeed() {
+        System.out.println(speed);
+    }
+}
+```
+
+עכשיו `Motor` יודע:
+
+- לשמור מהירות.
+- לשנות את המהירות.
+- להדפיס את המהירות.
+
+שימו לב שעכשיו הקוד הזה:
+
+```java
+speed = newSpeed;
+```
+
+כן הגיוני.
+
+`speed` הוא שדה ששייך ל-`Motor`.
+
+## מהו אובייקט?
+
+המחלקה היא רק התיאור.
+
+כדי להשתמש בה, צריך ליצור **אובייקט**.
+
+לדוגמה:
+
+```java
+Motor motor = new Motor();
+```
+
+השורה הזו יוצרת אובייקט חדש מסוג `Motor`.
+
+אפשר לחשוב על זה כך:
+
+```text
+Motor
+```
+
+היא התבנית.
+
+ו:
+
+```text
+motor
+```
+
+הוא מנוע מסוים שיצרנו מהתבנית.
+
+![מחלקה ואובייקט](./assets/class-object.png)
+
+## שימוש באובייקט
+
+אחרי שיצרנו אובייקט:
+
+```java
+Motor motor = new Motor();
+```
+
+אפשר להשתמש בדברים ששייכים אליו בעזרת נקודה:
+
+```java
+motor.setSpeed(0.5);
+```
+
+הנקודה:
+
+```java
+.
+```
+
+אומרת:
+
+> השתמש במשהו ששייך לאובייקט הזה.
+
+לדוגמה:
+
+```java
+motor.printSpeed();
+```
+
+מריץ את המתודה `printSpeed` של `motor`.
+
+## דוגמה מלאה
+
+### `Motor.java`
+
+```java
+public class Motor {
+
+    double speed;
+
+    void setSpeed(double newSpeed) {
+        speed = newSpeed;
+    }
+
+    void printSpeed() {
+        System.out.println(speed);
+    }
+}
+```
+
+### `Main.java`
+
+```java
+public class Main {
+
+    public static void main(String[] args) {
+        Motor motor = new Motor();
+
+        motor.setSpeed(0.5);
+        motor.printSpeed();
+    }
+}
+```
+
+התוצאה:
+
+```text
+0.5
+```
+
+עכשיו אפשר לראות למה אנחנו לא צריכים `static` במתודות של `Motor`.
+
+אנחנו לא קוראים:
+
+```java
+setSpeed(0.5);
+```
+
+אלא:
+
+```java
+motor.setSpeed(0.5);
+```
+
+המתודה שייכת לאובייקט `motor`.
+
+## כמה אובייקטים מאותה מחלקה
+
+אפשר ליצור יותר מאובייקט אחד מאותה מחלקה.
+
+```java
+Motor leftMotor = new Motor();
+Motor rightMotor = new Motor();
+```
+
+עכשיו יש לנו שני אובייקטים שונים.
+
+אפשר לעשות:
+
+```java
+leftMotor.setSpeed(0.5);
+rightMotor.setSpeed(0.8);
+```
+
+לכל אחד יש `speed` משלו.
+
+לכן:
+
+```java
+leftMotor.printSpeed();
+rightMotor.printSpeed();
+```
+
+ידפיס:
+
+```text
+0.5
+0.8
+```
+
+שינוי של אובייקט אחד לא משנה את השני.
+
+## Constructor
+
+לפעמים אנחנו רוצים לתת לאובייקט מידע כבר ברגע שיוצרים אותו.
+
+בשביל זה משתמשים ב-**Constructor**.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    double speed;
+
+    public Motor(double startingSpeed) {
+        speed = startingSpeed;
+    }
+}
+```
+
+שימו לב:
+
+```java
+public Motor(...)
+```
+
+נראה קצת כמו מתודה, אבל אין לו סוג החזרה.
+
+אין:
+
+```java
+void
+```
+
+או:
+
+```java
+int
+```
+
+השם שלו תמיד זהה לשם המחלקה:
+
+```text
+Motor
+```
+
+## שימוש ב-Constructor
+
+אם המחלקה שלנו היא:
+
+```java
+public class Motor {
+
+    double speed;
+
+    public Motor(double startingSpeed) {
+        speed = startingSpeed;
+    }
+}
+```
+
+ניצור אותה כך:
+
+```java
+Motor motor = new Motor(0.5);
+```
+
+הערך:
+
+```java
+0.5
+```
+
+נכנס לפרמטר:
+
+```java
+startingSpeed
+```
+
+ואז:
+
+```java
+speed = startingSpeed;
+```
+
+לכן האובייקט מתחיל עם:
+
+```text
+speed = 0.5
+```
+
+![מבנה של Constructor](./assets/constructor-example.png)
+
+## Constructor עם כמה פרמטרים
+
+אפשר להעביר יותר מערך אחד.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    String name;
+    double speed;
+
+    public Motor(String motorName, double startingSpeed) {
+        name = motorName;
+        speed = startingSpeed;
+    }
+}
+```
+
+עכשיו אפשר ליצור:
+
+```java
+Motor motor = new Motor("Left Motor", 0.5);
+```
+
+ואז:
+
+```text
+name = "Left Motor"
+speed = 0.5
+```
+
+## `this`
+
+לפעמים לפרמטר ולשדה אנחנו רוצים לתת את אותו השם.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    double speed;
+
+    public Motor(double speed) {
+        this.speed = speed;
+    }
+}
+```
+
+יש כאן שני דברים בשם `speed`.
+
+```java
+this.speed
+```
+
+אומר:
+
+> השדה `speed` ששייך לאובייקט הזה.
+
+וה-`speed` בצד ימין הוא הפרמטר שקיבלנו.
+
+כלומר:
+
+```java
+this.speed = speed;
+```
+
+אומר:
+
+> שמור את הפרמטר `speed` בתוך השדה `speed` של האובייקט.
+
+נראה את `this` הרבה בקוד Java.
+
+## `public` ו-`private`
+
+עכשיו אפשר להבין טוב יותר למה למדנו `public` ו-`private`.
+
+לדוגמה:
+
+```java
+public class Motor {
+
+    private double speed;
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+}
+```
+
+השדה:
+
+```java
+private double speed;
+```
+
+הוא `private`.
+
+זה אומר שקוד מחוץ למחלקה לא אמור לגשת אליו ישירות.
+
+במקום:
+
+```java
+motor.speed = 0.5;
+```
+
+נשתמש ב:
+
+```java
+motor.setSpeed(0.5);
+```
+
+וכדי לקבל את המהירות:
+
+```java
+double speed = motor.getSpeed();
+```
+
+זו דרך נפוצה מאוד לכתוב מחלקות.
+
+## למה להשתמש ב-`private`?
+
+נניח שכל אחד יכול לשנות את השדה ישירות:
+
+```java
+motor.speed = 500;
+```
+
+יכול להיות שזה בכלל ערך לא חוקי.
+
+אם השדה `private`, אפשר לשלוט בדרך שבה משנים אותו:
+
+```java
+public void setSpeed(double speed) {
+    if (speed <= 1 && speed >= -1) {
+        this.speed = speed;
+    }
+}
+```
+
+עכשיו המחלקה עצמה אחראית לשמור על הערכים שלה.
+
+## שדות ומתודות יחד
+
+מחלקה פשוטה יכולה להיראות כך:
+
+```java
+public class Motor {
+
+    private String name;
+    private double speed;
+
+    public Motor(String name) {
+        this.name = name;
+        speed = 0;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void printInfo() {
+        System.out.println(name);
+        System.out.println(speed);
+    }
+}
+```
+
+ואז מתוך `Main.java`:
+
+```java
+public class Main {
+
+    public static void main(String[] args) {
+        Motor motor = new Motor("Motor 1");
+
+        motor.setSpeed(0.7);
+
+        motor.printInfo();
+    }
+}
+```
+
+## למה מחלקות חשובות ברובוט?
+
+ברובוט יש הרבה חלקים שונים.
+
+לדוגמה:
+
+```text
+Drivetrain
+Elevator
+Arm
+Intake
+Vision
+```
+
+במקום שכל הקוד יהיה בתוך קובץ אחד ענקי, אפשר ליצור מחלקה לכל מערכת.
+
+לדוגמה:
+
+```text
+src/
+└─ main/
+   └─ java/
+      ├─ Main.java
+      ├─ Drivetrain.java
+      ├─ Elevator.java
+      ├─ Arm.java
+      └─ Intake.java
+```
+
+כל מחלקה אחראית על המידע והפעולות שקשורים אליה.
+
+לדוגמה, `Elevator` יכול לשמור:
+
+```java
+private double position;
+```
+
+ולהכיל מתודות כמו:
+
+```java
+public void setPosition(double position)
+```
+
+```java
+public double getPosition()
+```
+
+בהמשך נראה איך הרעיון הזה מתחבר למבנה של פרויקט FRC אמיתי.
+
+## מחלקה לעומת אובייקט
+
+חשוב להבדיל בין שני המושגים.
+
+**מחלקה** היא התבנית:
+
+```java
+Motor
+```
+
+**אובייקט** הוא משהו שיצרנו מהתבנית:
+
+```java
+Motor leftMotor = new Motor();
+Motor rightMotor = new Motor();
+```
+
+יש מחלקה אחת:
+
+```text
+Motor
+```
+
+אבל יצרנו ממנה שני אובייקטים שונים:
+
+```text
+leftMotor
+rightMotor
+```
+
+## `static` לעומת אובייקט
+
+עכשיו אפשר גם להבין יותר טוב את `static`.
+
+מתודה רגילה:
+
+```java
+public void printSpeed() {
+    System.out.println(speed);
+}
+```
+
+שייכת לאובייקט.
+
+לכן צריך:
+
+```java
+motor.printSpeed();
+```
+
+לעומת זאת, מתודה שהיא:
+
+```java
+public static void sayHello() {
+    System.out.println("Hello");
+}
+```
+
+שייכת למחלקה עצמה.
+
+ולכן אפשר לקרוא לה דרך שם המחלקה:
+
+```java
+Example.sayHello();
+```
+
+ברוב הקוד שנכתוב עבור מנגנונים ברובוט נרצה לעבוד עם **אובייקטים**, ולא להפוך הכול ל-`static`.
+
+## לפני שממשיכים, בדקו את עצמכם
+
+לפני שממשיכים לתרגול, ודאו שאתם יכולים להסביר בעצמכם:
+
+- מה ההבדל בין מחלקה לאובייקט?
+- מה עושה `new`?
+- למה `Motor motor` לא יוצר עדיין אובייקט?
+- מה עושה Constructor?
+- למה Constructor לא מקבל `void`?
+- מה ההבדל בין שדה לפרמטר?
+- מה עושה `this.speed = speed`?
+- למה משתמשים ב-`private`?
+- איך קוראים למתודה של אובייקט?
+- איך יכולים להיות שני אובייקטים מאותה מחלקה עם ערכים שונים?
+- איך מחלקה אחת יכולה להחזיק אובייקט ממחלקה אחרת?
+- מה קורה כש-`Robot` מחזיק `Drive`, ו-`Drive` מחזיק `Motor`?
+- למה מחלקות שונות נמצאות בדרך כלל בקבצים שונים?
+
+## סיכום
+
+בשיעור הזה למדנו:
+
+- מהי מחלקה.
+- איך יוצרים קובץ `.java` חדש למחלקה.
+- למה שם הקובץ צריך להתאים לשם המחלקה.
+- מהו שדה.
+- מהו אובייקט.
+- איך יוצרים אובייקט בעזרת `new`.
+- איך משתמשים ב-`.` כדי לגשת למתודות.
+- איך יוצרים כמה אובייקטים מאותה מחלקה.
+- מהו Constructor.
+- איך משתמשים ב-`this`.
+- למה משתמשים ב-`public` ו-`private`.
+- מה ההבדל בין מחלקה לאובייקט.
+- מה ההבדל הבסיסי בין מתודה רגילה ל-`static`.

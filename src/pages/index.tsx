@@ -46,11 +46,11 @@ export default function Home(): ReactNode {
 
           <div className={styles.grid}>
             <FeatureCard
-              title="הכשרות Java"
-              description="לומדים Java מהבסיס, מתרגלים תכנות ומתקדמים בהדרגה לעבודה עם קוד הרובוט."
-              href="/docs/docs/java-training/"
-              cta="להתחלת הלמידה ←"
-            />
+            title="לימוד Java"
+            description="מתחילים כאן: מכינים את סביבת העבודה, יוצרים תוכנית ראשונה ולומדים Java דרך תרגילים מעולם הרובוטיקה."
+            href="/docs/training/java"
+            cta="מתחילים כאן ←"
+          />
 
             <FeatureCard
               title="תיעוד הקוד (Javadoc)"

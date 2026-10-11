@@ -1,7 +1,8 @@
 ---
-sidebar_position: 4
 title: פונקציות
 ---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
 עד עכשיו למדנו לעבוד עם משתנים, לבצע חישובים ולכתוב תנאים.
 
@@ -750,6 +751,7 @@ Hello
 7
 ```
 
+
 ## תרגול
 
 ### תרגיל 1 - קריאה לפונקציה
@@ -764,14 +766,13 @@ void sayHello() {
 
 איך קוראים לה?
 
-<details>
-<summary>פתרון</summary>
-
-```java
-sayHello();
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "כדי להפעיל פונקציה, משתמשים בשם שלה ואחריו סוגריים עגולים.",
+    "הפונקציה sayHello לא מקבלת פרמטרים, ולכן הסוגריים בקריאה אליה צריכים להישאר ריקים."
+  ]}
+  solution={`sayHello();`}
+/>
 
 ---
 
@@ -791,14 +792,13 @@ void printNumber(int number) {
 15
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```java
-printNumber(15);
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "כאשר פונקציה מקבלת פרמטר, צריך להעביר לה ערך מתאים בתוך הסוגריים בזמן הקריאה.",
+    "הפונקציה printNumber מקבלת מספר מסוג int. השתמשו בשם הפונקציה והעבירו לה את המספר 15 בתוך הסוגריים."
+  ]}
+  solution={`printNumber(15);`}
+/>
 
 ---
 
@@ -812,14 +812,13 @@ void printValue(double value) {
 printValue(0.75);
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```text
-0.75
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "בדקו איזה ערך מועבר לפונקציה printValue בזמן הקריאה אליה.",
+    "הפרמטר value מקבל את הערך שנשלח לפונקציה. לאחר מכן System.out.println מדפיס את אותו ערך."
+  ]}
+  solution={`0.75`}
+/>
 
 ---
 
@@ -839,14 +838,13 @@ int result = add(5, 4);
 result
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```text
-9
-```
-
-</details>
+<ExerciseHelp
+  hints={[
+    "הפונקציה add מקבלת שני מספרים ומחזירה ערך באמצעות return. חשבו מה הערכים של a ו-b בקריאה הנתונה.",
+    "הקריאה add(5, 4) מציבה את 5 בתוך a ואת 4 בתוך b. הביטוי שמוחזר מהפונקציה נשמר במשתנה result."
+  ]}
+  solution={`9`}
+/>
 
 ---
 
@@ -864,16 +862,16 @@ printReady
 Ready
 ```
 
-<details>
-<summary>פתרון</summary>
-
-```java
-void printReady() {
+<ExerciseHelp
+  hints={[
+    "חשבו מה צריך להיות טיפוס הערך המוחזר של פונקציה שרק מדפיסה הודעה ולא מחזירה ערך.",
+    "השתמשו ב-void, כתבו את שם הפונקציה ואחריו סוגריים ריקים. בתוך גוף הפונקציה השתמשו ב-System.out.println כדי להדפיס את ההודעה.",
+    "מבנה הפונקציה צריך לכלול void, את השם printReady, סוגריים ריקים וגוף בתוך סוגריים מסולסלים. זכרו שההודעה Ready היא טקסט ולכן צריכה להופיע במרכאות."
+  ]}
+  solution={`void printReady() {
     System.out.println("Ready");
-}
-```
-
-</details>
+}`}
+/>
 
 ---
 
@@ -893,16 +891,16 @@ double speed
 
 ומדפיסה אותו.
 
-<details>
-<summary>פתרון</summary>
-
-```java
-void printSpeed(double speed) {
+<ExerciseHelp
+  hints={[
+    "הפונקציה צריכה לקבל ערך מבחוץ ולהדפיס אותו. האם היא צריכה להחזיר ערך כלשהו?",
+    "מכיוון שהפונקציה רק מדפיסה, השתמשו ב-void. בתוך הסוגריים של הגדרת הפונקציה צריך להופיע פרמטר מסוג double.",
+    "הגדירו פונקציה בשם printSpeed עם הפרמטר double speed. בתוך גוף הפונקציה השתמשו ב-System.out.println כדי להדפיס את המשתנה speed ללא מרכאות."
+  ]}
+  solution={`void printSpeed(double speed) {
     System.out.println(speed);
-}
-```
-
-</details>
+}`}
+/>
 
 ---
 
@@ -916,16 +914,17 @@ multiply
 
 שמקבלת שני מספרים מסוג `int` ומחזירה את המכפלה שלהם.
 
-<details>
-<summary>פתרון</summary>
-
-```java
-int multiply(int a, int b) {
+<ExerciseHelp
+  hints={[
+    "הפונקציה צריכה להחזיר תוצאה, ולא רק להדפיס אותה. חשבו איזה טיפוס נתונים מתאים לערך המוחזר.",
+    "השתמשו ב-int בתור טיפוס הערך המוחזר. בתוך הסוגריים הגדירו שני פרמטרים מסוג int עם שמות שונים.",
+    "בתוך גוף הפונקציה השתמשו ב-return כדי להחזיר את המכפלה של שני הפרמטרים. זכרו שהאופרטור לכפל ב-Java הוא *."
+  ]}
+  solution={`int multiply(int a, int b) {
     return a * b;
-}
-```
-
-</details>
+}`}
+multipleSolutions={true}
+/>
 
 ---
 
@@ -943,18 +942,19 @@ isGreaterThanTen
 true
 ```
 
-אם המספר גדול מ-`10`.
+אם המספר גדול מ-`10`, ו-`false` אחרת.
 
-<details>
-<summary>פתרון</summary>
-
-```java
-boolean isGreaterThanTen(int number) {
+<ExerciseHelp
+  hints={[
+    "הפונקציה צריכה להחזיר תשובה לשאלה שהתוצאה שלה יכולה להיות רק true או false. איזה טיפוס נתונים מתאים לכך?",
+    "השתמשו ב-boolean כטיפוס הערך המוחזר. הפונקציה צריכה לקבל פרמטר מסוג int ולבדוק אם הוא גדול מ-10.",
+    "ביטוי השוואה כמו number > 10 כבר מחזיר ערך מסוג boolean. אפשר להחזיר את התוצאה שלו ישירות באמצעות return, בלי להשתמש ב-if ו-else."
+  ]}
+  solution={`boolean isGreaterThanTen(int number) {
     return number > 10;
-}
-```
-
-</details>
+}`}
+multipleSolutions={true}
+/>
 
 ---
 
@@ -968,11 +968,15 @@ boolean isGreaterThanTen(int number) {
 
 לאחר מכן השתמשו בהן מתוך `main`.
 
-<details>
-<summary>פתרון</summary>
+**שימו לב:** בתרגיל הזה, מכיוון שאנחנו קוראים לפונקציות ישירות מתוך `main` שהיא פונקציה `static`, נגדיר גם אותן בתור `static`.
 
-```java
-public class Main {
+<ExerciseHelp
+  hints={[
+    "התחילו ביצירת המחלקה Main והפונקציה main. לאחר מכן חשבו מה התפקיד של כל אחת משלוש הפונקציות ואילו פרמטרים היא צריכה לקבל.",
+    "שתי הפונקציות שמדפיסות צריכות להיות מסוג void, ואילו הפונקציה add צריכה להחזיר int. זכרו להוסיף static לשלוש הפונקציות כדי שתוכלו לקרוא להן ישירות מתוך main.",
+    "בתוך main קראו ל-printHello ללא פרמטרים, ל-printNumber עם מספר לבחירתכם, ול-add עם שני מספרים. את התוצאה של add שמרו במשתנה מסוג int והדפיסו אותו. לאחר מכן ודאו שמימשתם את שלוש הפונקציות מחוץ ל-main אבל בתוך המחלקה Main."
+  ]}
+  solution={`public class Main {
 
     public static void main(String[] args) {
         printHello();
@@ -994,10 +998,9 @@ public class Main {
     static int add(int a, int b) {
         return a + b;
     }
-}
-```
-
-</details>
+}`}
+multipleSolutions={true}
+/>
 
 ## סיכום
 

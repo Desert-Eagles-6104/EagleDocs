@@ -1,5 +1,8 @@
 {
-  "label": "Java Basics",
+  "label": "לימוד Java",
   "position": 2,
-  "collapsed": false
+  "link": {
+    "type": "doc",
+    "id": "training/java/index"
+  }
 }
