@@ -38,7 +38,7 @@ unlisted: true
 3. ייפתח כונן חדש עם תוכן הקובץ. פתחו בתוכו את `WPILibInstaller.exe`.
 4. אם Windows מציג הודעת הגנה, ודאו שהקובץ הוא זה שהורדתם מהמקור הרשמי. במחשב של הקבוצה פנו למנטור אם נדרש אישור להפעלה.
 
-![צילום מתיעוד WPILib: בחירת Mount לקובץ שהורד](./assets/setup/extract-windows-10.png)
+![צילום מתיעוד WPILib: בחירת Mount לקובץ שהורד](./assets/extract-windows-10.png)
 
 *צילום מהתיעוד הרשמי. תפריט Windows שלכם עשוי להיראות אחרת.*
 
@@ -47,14 +47,14 @@ unlisted: true
 ### בוחרים התקנה מלאה
 
 1. במסך הראשון לחצו **Start**.
-2. במסך האפשרויות בחרו **Everything** — ההתקנה המלאה.
+2. במסך האפשרויות בחרו **Everything** - ההתקנה המלאה.
 3. במחשב אישי בחרו **Install for this User**. במחשב של הקבוצה המנטור יחליט אם להתקין לכל המשתמשים.
 4. במסך הורדת VS Code בחרו **Download for this computer only**.
 5. בסיום ההורדה לחצו **Next**, המתינו לסיום ההתקנה ולחצו **Finish**.
 
-![צילום מתיעוד WPILib: אפשרויות ההתקנה המלאה](./assets/setup/installer-options.png)
+![צילום מתיעוד WPILib: אפשרויות ההתקנה המלאה](./assets/installer-options.png)
 
-![צילום מתיעוד WPILib: בחירת הורדת VS Code למחשב הזה](./assets/setup/installer-vscode-download.png)
+![צילום מתיעוד WPILib: בחירת הורדת VS Code למחשב הזה](./assets/installer-vscode-download.png)
 
 *בחרו התקנה מלאה והורדה למחשב הזה. המסכים עשויים להשתנות מעט בין גרסאות.*
 
@@ -109,7 +109,7 @@ java --version
 javac --version
 ```
 
-![המחשה: בחירת JDK ו־MSI והאפשרויות החשובות בהתקנה](./assets/setup/java-install.svg)
+![המחשה: בחירת JDK ו־MSI והאפשרויות החשובות בהתקנה](./assets/java-install.svg)
 
 *המחשה של הבחירות; זו אינה תמונת מסך של המתקין.*
 
@@ -123,7 +123,7 @@ javac --version
 
 השלב הזה נחוץ רק אם איתרתם JDK אבל VS Code לא מציג אותו לבחירה. בצעו אותו אחרי [יצירת פרויקט התרגול](./first-project.md#creating-project), לפני ההרצה הראשונה.
 
-1. בסייר הקבצים פתחו את תיקיית `jdk` שמצאתם — **לא** את `bin` שבתוכה. לחצו בשורת הכתובת העליונה והעתיקו את הנתיב עם `Ctrl + C`.
+1. בסייר הקבצים פתחו את תיקיית `jdk` שמצאתם - **לא** את `bin` שבתוכה. לחצו בשורת הכתובת העליונה והעתיקו את הנתיב עם `Ctrl + C`.
 2. ב־VS Code, כשפרויקט `JavaTraining` פתוח, לחצו `Ctrl + Shift + E` כדי לראות את קבצי הפרויקט.
 3. לחצו עם הכפתור הימני באזור רשימת הקבצים ובחרו **New Folder**. קראו לה `.vscode`. אם היא כבר קיימת, השתמשו בה.
 4. לחצו עם הכפתור הימני על `.vscode`, בחרו **New File** וקראו לקובץ `settings.json`.
@@ -160,7 +160,7 @@ javac --version
 9. סגרו את כל חלונות VS Code ופתחו מחדש **WPILib VS Code 2026**.
 10. פתחו **Terminal → New Terminal**, הקלידו `git --version` ולחצו Enter. אמורה להופיע שורת גרסה.
 
-![המחשה: בחירת PATH שמאפשרת להשתמש ב־Git מתוך VS Code](./assets/setup/git-install.svg)
+![המחשה: בחירת PATH שמאפשרת להשתמש ב־Git מתוך VS Code](./assets/git-install.svg)
 
 *המחשה של האפשרות שצריך לבחור; זו אינה תמונת מסך של המתקין.*
 
@@ -182,7 +182,7 @@ git config --global user.name "Your Name"
 git config --global user.email "your-email@example.com"
 ```
 
-כשהפקודות מצליחות, בדרך כלל לא מופיעה הודעת הצלחה — פשוט חוזרים לשורה שבה אפשר להקליד.
+כשהפקודות מצליחות, בדרך כלל לא מופיעה הודעת הצלחה - פשוט חוזרים לשורה שבה אפשר להקליד.
 
 עכשיו נוודא שהפרטים נשמרו:
 
