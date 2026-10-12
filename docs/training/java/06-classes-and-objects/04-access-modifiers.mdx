@@ -164,8 +164,6 @@ public void setSpeed(double speed) {
 }
 ```
 
-בדקו מה יקרה עבור `speed = 500` ועבור `speed = -500`. תקנו את התנאי כך שיקבל רק ערכים בטווח.
-
 <ExerciseHelp
   hints={["האם צריכים להתקיים שני הגבולות יחד, או מספיק אחד?", "עבור 500 התנאי הראשון מתקיים, ועבור ‎-500 התנאי השני מתקיים."]}
   solution={`public void setSpeed(double speed) {
@@ -187,8 +185,6 @@ public Robot(String name, double speed) {
 }
 ```
 
-האם `new Robot("Eagle", 500)` ייצור מצב תקין? תקנו לפי הכלל שלנו: מהירות התחלתית לא תקינה תגרום לרובוט להתחיל בעצירה.
-
 <ExerciseHelp
   hints={["private מונע גישה מבחוץ, אבל האם הוא מגביל קוד בתוך המחלקה?", "הבנאי צריך להשתמש באותה בדיקה שבה משתמשים אחרי היצירה."]}
   solution={`public Robot(String name, double speed) {
@@ -207,8 +203,6 @@ public void accelerate(double amount) {
     speed = speed + amount;
 }
 ```
-
-השדה פרטי, ו־`setSpeed` תקין. למה עדיין אפשר לחרוג מהטווח? תקנו את המתודה בלי להעתיק אליה את תנאי הבדיקה.
 
 <ExerciseHelp
   hints={["המתודה הזאת נמצאת בתוך Robot, ולכן מותר לה לכתוב ישירות לשדה.", "חשבו איך להעביר את המהירות החדשה לפעולה שכבר אחראית על בדיקתה."]}
@@ -300,7 +294,7 @@ public class Main {
   multipleSolutions={true}
 />
 
-### אתגר רשות: פעולה פנימית
+### אתגר: פעולה פנימית
 
 הוסיפו ל־`Robot` מתודה פרטית `boolean isValidSpeed(double value)` שמחזירה אם הערך בטווח. השתמשו בה בתוך `setSpeed`.
 
