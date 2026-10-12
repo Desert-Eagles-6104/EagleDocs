@@ -1,0 +1,338 @@
+---
+title: "מתודות של אובייקטים"
+sidebar_position: 2
+description: "מוסיפים לאובייקט פעולות שקוראות ומשנות את השדות שלו."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+בחלק הקודם יצרנו אובייקטים ושינינו את השדות שלהם מתוך `Main`. עכשיו ניתן לאובייקט לבצע פעולות על המידע שלו.
+
+**בסוף החלק תוכלו לכתוב מתודה שמאיצה רובוט, מתודה שעוצרת אותו ומתודה שמחזירה מידע עליו.**
+
+## 1. מתחילים ממה שכבר מכירים
+
+השאירו ב־`Robot.java` את השדות:
+
+```java
+public class Robot {
+    public String name;
+    public double speed;
+}
+```
+
+עד עכשיו האצנו את הרובוט כך, בתוך `main`:
+
+```java
+Robot robot = new Robot();
+robot.speed = 0.25;
+robot.speed = robot.speed + 0.25;
+```
+
+אם נרצה להאיץ כמה פעמים או כמה רובוטים, נחזור על הפעולה. במקום לכתוב את הפעולה בכל מקום, אפשר להגדיר אותה בתוך `Robot`.
+
+## 2. מתודה שמשתמשת בשדה
+
+הוסיפו **בתוך המחלקה `Robot`**, מתחת לשדות:
+
+```java
+public void accelerate(double amount) {
+    speed = speed + amount;
+}
+```
+
+את הפרמטרים ואת `void` כבר פגשנו במתודות. מה שחדש כאן הוא שהמתודה משתמשת בשדה `speed` של האובייקט שעליו מפעילים אותה.
+
+כך משתמשים בה, בתוך `main`:
+
+```java
+Robot robot = new Robot();
+robot.speed = 0.25;
+robot.accelerate(0.25);
+System.out.println(robot.speed);
+```
+
+הפלט יהיה `0.5`: המתודה הוסיפה `0.25` למהירות שהייתה `0.25`.
+
+:::note ומה עם static?
+השאירו את `public static void main(String[] args)` כפי שהוא. למתודות שאנחנו מוסיפים ל־`Robot` כתבו `public` ללא `static`, כמו בדוגמאות: נרצה להפעיל אותן על אובייקט מסוים. נלמד את ההבדל לעומק בנפרד.
+:::
+
+## 3. על איזה רובוט המתודה פועלת?
+
+```java
+Robot first = new Robot();
+Robot second = new Robot();
+first.speed = 0.25;
+second.speed = 0.5;
+
+first.accelerate(0.25);
+```
+
+הקריאה היא `first.accelerate(...)`, לכן המתודה משנה את המהירות של האובייקט שאליו `first` מפנה. המהירות של השני נשארת `0.5`.
+
+**אותה הגדרת מתודה משמשת את כל האובייקטים, אבל כל קריאה פועלת על השדות של האובייקט שנבחר.**
+
+### תרגיל 1: מה יודפס?
+
+השתמשו ב־`Robot` עם המתודה `accelerate`:
+
+```java
+Robot first = new Robot();
+Robot second = new Robot();
+first.speed = 0.25;
+second.speed = 0.75;
+first.accelerate(0.25);
+second.accelerate(-0.25);
+
+System.out.println(first.speed);
+System.out.println(second.speed);
+```
+
+<ExerciseHelp
+  hints={["עקבו אחרי כל אובייקט בנפרד, כמו בחלק הקודם.", "amount יכול להיות שלילי; עדיין מבצעים speed + amount."]}
+  solution={`0.5
+0.5`}
+  solutionLanguage="text"
+/>
+
+## 4. מתודה בלי פרמטרים
+
+נוסיף פעולה שעוצרת את הרובוט:
+
+```java
+public void stop() {
+    speed = 0;
+}
+```
+
+ובתוך `main`:
+
+```java
+robot.stop();
+```
+
+גם כשאין פרמטרים, צריך סוגריים. `robot.speed` ניגש לשדה; `robot.stop()` מפעיל מתודה.
+
+אפשר גם להדפיס מידע מתוך מתודה:
+
+```java
+public void printStatus() {
+    System.out.println(name);
+    System.out.println(speed);
+}
+```
+
+### תרגיל 2: למה הרובוט לא נעצר?
+
+ב־`Robot` נכתבה המתודה הזאת:
+
+```java
+public void stop() {
+    double speed = 0;
+}
+```
+
+הקוד מתקמפל, אבל אחרי `robot.stop()` השדה `robot.speed` לא משתנה. הסבירו למה ותקנו את המתודה.
+
+<ExerciseHelp
+  hints={["מה עושה הוספת double לפני שם משתנה?", "בתוך המתודה נוצר משתנה מקומי חדש שמסתיר את השדה. האם צריך ליצור משתנה חדש כדי לעדכן שדה קיים?"]}
+  solution={`public void stop() {
+    speed = 0;
+}
+// בלי double: מעדכנים את השדה הקיים.`}
+  solutionLanguage="java"
+/>
+
+### תרגיל 3: מה לא נכון בקריאה?
+
+בתוך `main` כתוב:
+
+```java
+Robot robot = new Robot();
+robot.speed = 0.75;
+stop();
+```
+
+<ExerciseHelp
+  hints={["איפה מוגדרת הפעולה, ואיך יודעים על איזה אובייקט להפעיל אותה?", "מחוץ ל־Robot, השתמשו במשתנה של האובייקט ובנקודה."]}
+  solution={`robot.stop();`}
+  solutionLanguage="java"
+/>
+
+## 5. מתודה שמחזירה מידע
+
+לא כל מתודה משנה את האובייקט. אפשר להחזיר את המהירות:
+
+```java
+public double getSpeed() {
+    return speed;
+}
+```
+
+ואפשר להחזיר תשובה לשאלה:
+
+```java
+public boolean isMoving() {
+    return speed != 0;
+}
+```
+
+כאן נגדיר ״בתנועה״ בתוכנית הלימודית שלנו כ־`speed` שאינו אפס. זו אינה מדידה של רובוט פיזי.
+
+בתוך `main`:
+
+```java
+double currentSpeed = robot.getSpeed();
+boolean moving = robot.isMoving();
+System.out.println(currentSpeed);
+System.out.println(moving);
+```
+
+| המתודה | מה היא עושה? | מה היא מחזירה? |
+| --- | --- | --- |
+| `accelerate(amount)` | משנה את המהירות | כלום (`void`) |
+| `stop()` | משנה את המהירות לאפס | כלום (`void`) |
+| `printStatus()` | מדפיסה שם ומהירות | כלום (`void`) |
+| `getSpeed()` | קוראת את המהירות | `double` |
+| `isMoving()` | בודקת אם המהירות שונה מאפס | `boolean` |
+
+### תרגיל 4: הדפסה או החזרת ערך?
+
+מישהו כתב:
+
+```java
+public double getSpeed() {
+    System.out.println(speed);
+}
+```
+
+למה זו שגיאת קומפילציה? תקנו את המתודה כך שקריאה כמו `double value = robot.getSpeed();` תעבוד.
+
+<ExerciseHelp
+  hints={["מה מבטיח טיפוס ההחזרה double?", "הדפסה למסך לא מספקת ערך לקוד שקרא למתודה."]}
+  solution={`public double getSpeed() {
+    return speed;
+}`}
+  solutionLanguage="java"
+/>
+
+### תרגיל 5: משלימים את הפעולות
+
+השלימו בתוך `Robot` את המתודות הבאות:
+
+```java
+public void stop() {
+    // השלימו
+}
+
+public boolean isMoving() {
+    // השלימו
+}
+```
+
+בדקו ב־`main`: הגדירו מהירות `0.5`, הדפיסו את `isMoving()`, עצרו והדפיסו שוב. הפלט הרצוי הוא `true` ואז `false`.
+
+<ExerciseHelp
+  hints={["מתודה אחת משנה מידע, והשנייה מחזירה תשובה.", "stop צריכה לשנות את השדה. isMoving צריכה להחזיר תוצאה של תנאי."]}
+  solution={`// בתוך Robot
+public void stop() {
+    speed = 0;
+}
+
+public boolean isMoving() {
+    return speed != 0;
+}
+
+// בתוך main
+Robot robot = new Robot();
+robot.speed = 0.5;
+System.out.println(robot.isMoving()); // true
+robot.stop();
+System.out.println(robot.isMoving()); // false`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
+
+### תרגיל 6: בונים לבד
+
+הרחיבו את `Robot.java` מהחלק הקודם. ודאו שיש בו `accelerate(double amount)`, `stop()`, `printStatus()`, `getSpeed()` ו־`isMoving()`.
+
+ב־`Main` צרו שני רובוטים חדשים עם שמות שונים. תנו לראשון מהירות `0.25` ולשני `0.75`. האיצו את הראשון ב־`0.25`, עצרו את השני והדפיסו את המצב של שניהם באמצעות `printStatus()`.
+
+לפני ההרצה, כתבו על דף את המהירות הצפויה של כל אחד.
+
+<ExerciseHelp
+  hints={["כל מתודה צריכה להיות בתוך Robot, אבל מחוץ למתודות האחרות.", "ב־Main, שימו לב למשתנה שלפני הנקודה בכל קריאה.", "שתי הקריאות האחרונות צריכות להיות first.printStatus() ו־second.printStatus()."]}
+  solution={`// Robot.java
+public class Robot {
+    public String name;
+    public double speed;
+
+    public void accelerate(double amount) {
+        speed = speed + amount;
+    }
+
+    public void stop() {
+        speed = 0;
+    }
+
+    public void printStatus() {
+        System.out.println(name);
+        System.out.println(speed);
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public boolean isMoving() {
+        return speed != 0;
+    }
+}
+
+// Main.java - קובץ נפרד
+public class Main {
+    public static void main(String[] args) {
+        Robot first = new Robot();
+        Robot second = new Robot();
+        first.name = "Eagle";
+        first.speed = 0.25;
+        second.name = "Falcon";
+        second.speed = 0.75;
+        first.accelerate(0.25);
+        second.stop();
+        first.printStatus();  // Eagle ואז 0.5
+        second.printStatus(); // Falcon ואז 0.0
+    }
+}`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
+
+### אתגר רשות: שינוי שם
+
+הוסיפו `rename(String newName)` שמשנה את שם הרובוט. בדקו שהשינוי מופיע בקריאה הבאה ל־`printStatus()`, וששמו של הרובוט השני לא משתנה.
+
+<ExerciseHelp
+  hints={["איזה שדה צריך להשתנות, ואיזה מידע צריך להגיע מבחוץ?", "שמרו את הפרמטר newName בשדה name."]}
+  solution={`// בתוך Robot
+public void rename(String newName) {
+    name = newName;
+}
+
+// בתוך main, אחרי יצירת first ו־second
+first.rename("Desert Eagle");
+first.printStatus();
+second.printStatus();`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
+
+## לפני שממשיכים: בדיקה בלי רמזים
+
+הוסיפו ל־`Robot` מתודה `doubleSpeed()` שמכפילה את מהירותו פי שניים. צרו שני אובייקטים, הפעילו אותה רק על אחד ובדקו את שניהם.
+
+הסבירו: איך המתודה יודעת באיזה שדה `speed` להשתמש? מה ההבדל בין שינוי השדה, הדפסתו והחזרתו באמצעות `return`?
+
+**שמרו את המחלקה.** בחלק הבא נשנה את הדרך שבה יוצרים אובייקט ומגדירים את המצב ההתחלתי שלו.

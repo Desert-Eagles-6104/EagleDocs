@@ -3,8 +3,6 @@ import React, {useEffect, useState} from 'react';
 const setupChecklistItems = [
   {id: 'wpilib', label: 'פתחתי את WPILib VS Code 2026.'},
   {id: 'java', label: 'בדקתי ש־Java זמינה, או השלמתי את ההגדרה לפי ההוראות.'},
-  {id: 'git', label: 'הפקודה git --version הצליחה.'},
-  {id: 'git-identity', label: 'הגדרתי את פרטי Git במחשב האישי, או שאגדיר אותם לפרויקט במחשב משותף.'},
 ];
 
 export default function SetupChecklist({children}) {

@@ -1,0 +1,333 @@
+---
+title: "הרשאות וכימוס"
+sidebar_position: 4
+description: "שומרים על מצב תקין באמצעות שדות פרטיים ופעולות ציבוריות שבודקות קלט."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+עד עכשיו השדות של `Robot` היו ציבוריים. זה הקל על הלמידה, אבל אפשר גם לשנות אותם בדרכים שלא מתאימות לכללים שלנו.
+
+**בסוף החלק תוכלו להגן על שדה ולרכז בתוך המחלקה את הכללים לשינויו.**
+
+## 1. קודם מגדירים את הכלל
+
+במודל הלימודי שלנו, נגדיר ערך מהירות מותר בין `-1` ל־`1`, כולל הקצוות:
+
+- `0` הוא עצירה.
+- ערך חיובי מייצג תנועה בכיוון אחד.
+- ערך שלילי מייצג תנועה בכיוון השני.
+
+הערך אינו מהירות במטרים לשנייה. זו דרך לימודית לייצג פקודת תנועה; אנחנו עדיין לא מפעילים חומרה.
+
+כשהשדה ציבורי, הקוד הזה מתקמפל:
+
+```java
+Robot robot = new Robot("Eagle", 0.5);
+robot.speed = 500;
+```
+
+Java יודעת ש־`500` מתאים ל־`double`, אבל לא מכירה את הכלל שהמצאנו. כל מי שמשתמש במחלקה צריך לזכור בעצמו לא להכניס ערך לא מתאים.
+
+## 2. private מגביל גישה ישירה
+
+נשנה את השדות בתוך `Robot`:
+
+```java
+private String name;
+private double speed;
+```
+
+קוד בתוך `Robot` עדיין יכול להשתמש בהם. לעומת זאת, גישה ישירה מתוך המחלקה הנפרדת `Main` תגרום לשגיאת קומפילציה:
+
+```java
+// דוגמה שגויה בתוך main
+robot.speed = 0.5;
+System.out.println(robot.speed);
+```
+
+`private` לא בודק אם המספר חוקי. הוא חוסם את הגישה הישירה מבחוץ, כדי שנוכל לבחור איך לאפשר קריאה ושינוי דרך פעולות מוגדרות.
+
+### תרגיל 1: מה עדיין מותר?
+
+ב־`Robot` השדה `speed` פרטי, והמתודות `getSpeed()` ו־`stop()` ציבוריות. בדקו כל שורה בנפרד, בתוך `main`, אחרי יצירת אובייקט:
+
+```java
+robot.speed = 0;
+robot.stop();
+System.out.println(robot.speed);
+System.out.println(robot.getSpeed());
+```
+
+אילו שורות מתקמפלות? הסבירו את ההבדל.
+
+<ExerciseHelp
+  hints={["הבחינו בין גישה לשדה לבין קריאה למתודה.", "public על מתודה מאפשר לקרוא לה מבחוץ גם כשהיא משתמשת בשדה private בתוכה."]}
+  solution={`// robot.speed = 0;                  // אסור מ־Main
+robot.stop();                       // מותר
+// System.out.println(robot.speed); // אסור מ־Main
+System.out.println(robot.getSpeed()); // מותר`}
+  solutionLanguage="java"
+/>
+
+## 3. public חושף דרך להשתמש באובייקט
+
+נאפשר לקבל את המהירות בעזרת המתודה שכבר כתבנו:
+
+```java
+public double getSpeed() {
+    return speed;
+}
+```
+
+נוסיף דרך לשנות אותה, עם בדיקה:
+
+```java
+public void setSpeed(double speed) {
+    if (speed >= -1 && speed <= 1) {
+        this.speed = speed;
+    }
+}
+```
+
+במודל הזה **בקשה עם ערך לא תקין נדחית, והמהירות הקודמת נשארת**. זה כלל שבחרנו לתרגיל; Java לא מחליטה עליו עבורנו.
+
+בתוך `main`:
+
+```java
+Robot robot = new Robot("Eagle", 0.5);
+robot.setSpeed(0.75);
+robot.setSpeed(500);
+System.out.println(robot.getSpeed()); // 0.75
+```
+
+למתודות כאלה קוראים לעיתים Getter ו־Setter. לא צריך ליצור אוטומטית Getter ו־Setter לכל שדה. נחשוף רק את הפעולות הדרושות: למשל, אם לא רוצים לשנות שם אחרי היצירה, לא נוסיף `setName`.
+
+## 4. כימוס: המחלקה אחראית על המידע שלה
+
+**כימוס (Encapsulation)** הוא ארגון המידע והפעולות יחד, והגדרת הדרך שבה שאר התוכנית משתמשת בהם. כאן `Robot` אחראית לכלל של טווח המהירות.
+
+אבל אין די בבדיקת `setSpeed`. אם מתודה אחרת או בנאי יעקפו אותה, הם עדיין יכולים לשמור ערך לא תקין.
+
+נעדכן גם את הבנאי:
+
+```java
+public Robot(String name, double speed) {
+    this.name = name;
+    this.speed = 0;
+    setSpeed(speed);
+}
+```
+
+מתוך `Robot` אפשר לקרוא ל־`setSpeed(speed)` בלי לכתוב לפניו משתנה ונקודה: זו פעולה על האובייקט הנוכחי. אם המהירות ההתחלתית לא תקינה, היא תישאר אפס.
+
+ונעדכן את `accelerate`:
+
+```java
+public void accelerate(double amount) {
+    setSpeed(speed + amount);
+}
+```
+
+עכשיו גם האצה עוברת דרך אותה בדיקה. אם הסכום חורג מהטווח, כל בקשת ההאצה נדחית; לא מגבילים את התוצאה אוטומטית לערך הקצה.
+
+### תרגיל 2: מה יודפס?
+
+השתמשו בגרסה המעודכנת עם השדות הפרטיים, הבנאי והבדיקות:
+
+```java
+Robot robot = new Robot("Eagle", 0.5);
+robot.setSpeed(0.75);
+robot.setSpeed(2);
+System.out.println(robot.getSpeed());
+robot.accelerate(0.5);
+System.out.println(robot.getSpeed());
+robot.stop();
+System.out.println(robot.getSpeed());
+```
+
+<ExerciseHelp
+  hints={["בכל פעולה בדקו אם הערך המבוקש נמצא בטווח.", "בקשה שנדחית משאירה את המהירות הקודמת, ולא משנה אותה ל־1."]}
+  solution={`0.75
+0.75
+0.0`}
+  solutionLanguage="text"
+/>
+
+### תרגיל 3: מה לא נכון בתנאי?
+
+```java
+public void setSpeed(double speed) {
+    if (speed >= -1 || speed <= 1) {
+        this.speed = speed;
+    }
+}
+```
+
+בדקו מה יקרה עבור `speed = 500` ועבור `speed = -500`. תקנו את התנאי כך שיקבל רק ערכים בטווח.
+
+<ExerciseHelp
+  hints={["האם צריכים להתקיים שני הגבולות יחד, או מספיק אחד?", "עבור 500 התנאי הראשון מתקיים, ועבור ‎-500 התנאי השני מתקיים."]}
+  solution={`public void setSpeed(double speed) {
+    if (speed >= -1 && speed <= 1) {
+        this.speed = speed;
+    }
+}`}
+  solutionLanguage="java"
+/>
+
+### תרגיל 4: מה לא נכון בבנאי?
+
+במחלקה עם שדה `speed` פרטי ו־`setSpeed` שבודק את הטווח כתבו:
+
+```java
+public Robot(String name, double speed) {
+    this.name = name;
+    this.speed = speed;
+}
+```
+
+האם `new Robot("Eagle", 500)` ייצור מצב תקין? תקנו לפי הכלל שלנו: מהירות התחלתית לא תקינה תגרום לרובוט להתחיל בעצירה.
+
+<ExerciseHelp
+  hints={["private מונע גישה מבחוץ, אבל האם הוא מגביל קוד בתוך המחלקה?", "הבנאי צריך להשתמש באותה בדיקה שבה משתמשים אחרי היצירה."]}
+  solution={`public Robot(String name, double speed) {
+    this.name = name;
+    this.speed = 0;
+    setSpeed(speed);
+}
+// עם speed = 500 הבקשה נדחית והמהירות נשארת 0.0.`}
+  solutionLanguage="java"
+/>
+
+### תרגיל 5: מה לא נכון בהאצה?
+
+```java
+public void accelerate(double amount) {
+    speed = speed + amount;
+}
+```
+
+השדה פרטי, ו־`setSpeed` תקין. למה עדיין אפשר לחרוג מהטווח? תקנו את המתודה בלי להעתיק אליה את תנאי הבדיקה.
+
+<ExerciseHelp
+  hints={["המתודה הזאת נמצאת בתוך Robot, ולכן מותר לה לכתוב ישירות לשדה.", "חשבו איך להעביר את המהירות החדשה לפעולה שכבר אחראית על בדיקתה."]}
+  solution={`public void accelerate(double amount) {
+    setSpeed(speed + amount);
+}`}
+  solutionLanguage="java"
+/>
+
+## 5. מחלקה מלאה, אחרי התיקון
+
+עדכנו את `Robot.java` שלכם. שמרו רק גרסה אחת של המחלקה בפרויקט:
+
+```java
+public class Robot {
+    private String name;
+    private double speed;
+
+    public Robot(String name, double speed) {
+        this.name = name;
+        this.speed = 0;
+        setSpeed(speed);
+    }
+
+    public void setSpeed(double speed) {
+        if (speed >= -1 && speed <= 1) {
+            this.speed = speed;
+        }
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void accelerate(double amount) {
+        setSpeed(speed + amount);
+    }
+
+    public void stop() {
+        setSpeed(0);
+    }
+
+    public boolean isMoving() {
+        return speed != 0;
+    }
+
+    public void printStatus() {
+        System.out.println(name);
+        System.out.println(speed);
+    }
+}
+```
+
+אם כתבתם בחלק הקודם בנאים נוספים, עדכנו גם אותם כך שלא ישמרו מהירות לא תקינה. בדוגמה הזאת השארנו רק את הבנאי שמקבל שם ומהירות.
+
+### תרגיל 6: בודקים לבד
+
+כתבו `Main` שמדגים את הכללים:
+
+1. צרו רובוט במהירות `0.25`.
+2. בקשו מהירות `1` והדפיסו את המהירות.
+3. בקשו מהירות `-1` והדפיסו.
+4. בקשו מהירות `-2` והדפיסו.
+5. עצרו והדפיסו.
+6. צרו רובוט נוסף עם מהירות התחלתית `10` והדפיסו.
+
+לפני ההרצה כתבו את הפלט הצפוי. בדקו שכל קריאה ושינוי מתוך `Main` משתמשים במתודות ציבוריות.
+
+<ExerciseHelp
+  hints={["בדקו גם ערכי קצה וגם ערכים מחוץ לטווח.", "ערך לא תקין אחרי היצירה משאיר את הקודם; ערך התחלתי לא תקין משאיר אפס.", "כדי לבדוק בלי לגשת לשדה הפרטי, השתמשו ב־getSpeed()."]}
+  solution={`// Main.java, לצד Robot.java המעודכן
+public class Main {
+    public static void main(String[] args) {
+        Robot first = new Robot("Eagle", 0.25);
+        first.setSpeed(1);
+        System.out.println(first.getSpeed()); // 1.0
+        first.setSpeed(-1);
+        System.out.println(first.getSpeed()); // -1.0
+        first.setSpeed(-2);
+        System.out.println(first.getSpeed()); // -1.0
+        first.stop();
+        System.out.println(first.getSpeed()); // 0.0
+
+        Robot second = new Robot("Falcon", 10);
+        System.out.println(second.getSpeed()); // 0.0
+    }
+}`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
+
+### אתגר רשות: פעולה פנימית
+
+הוסיפו ל־`Robot` מתודה פרטית `boolean isValidSpeed(double value)` שמחזירה אם הערך בטווח. השתמשו בה בתוך `setSpeed`.
+
+למה אין צורך שקוד ב־`Main` יוכל לקרוא לה? מה יקרה אם ינסה?
+
+<ExerciseHelp
+  hints={["אפשר לתת private גם למתודה, לא רק לשדה.", "המתודה הפרטית יכולה להחזיר את תוצאת התנאי שכבר כתבתם."]}
+  solution={`// בתוך Robot
+private boolean isValidSpeed(double value) {
+    return value >= -1 && value <= 1;
+}
+
+public void setSpeed(double speed) {
+    if (isValidSpeed(speed)) {
+        this.speed = speed;
+    }
+}
+// קריאה ל־robot.isValidSpeed(...) מתוך Main לא תתקמפל.
+// זהו חלק פנימי של המימוש, לא פעולה ש־Main צריך להשתמש בה.`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
+
+## לפני שממשיכים: בדיקה בלי רמזים
+
+צרו `Battery` עם שדה פרטי `int percent`. הבנאי יקבל אחוז טעינה התחלתי. הוסיפו `getPercent()` ו־`setPercent(int percent)`.
+
+הכללים: רק ערכים בין `0` ל־`100` מתקבלים. ערך התחלתי לא תקין משאיר `0`; שינוי לא תקין משאיר את הערך הקודם. בדקו ב־`Main` את הקצוות ואת `150`.
+
+הסבירו: למה `private` לבדו לא מספיק? באילו מקומות במחלקה צריך לשמור על הכלל?
