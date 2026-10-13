@@ -131,7 +131,7 @@ const config: Config = {
           items: [
             {
               label: 'מדריכים',
-              to: '/docs/intro',
+              to: '/docs/training/getting-started/',
             },
           ],
         },

@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import CodeBlock from '@theme/CodeBlock';
 import styles from './styles.module.css';
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 
 /**
  * hints: Array of strings or React elements.
@@ -110,9 +112,17 @@ export default function ExerciseHelp({
             </strong>
 
             {typeof solution === 'string' ? (
-              <CodeBlock language={solutionLanguage}>
-                {solution}
-              </CodeBlock>
+              solutionLanguage === 'text' ? (
+                <div className={styles.solutionBody}>
+                  <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                    {solution}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                <CodeBlock language={solutionLanguage}>
+                  {solution}
+                </CodeBlock>
+              )
             ) : (
               <div className={styles.solutionBody}>
                 {solution}
