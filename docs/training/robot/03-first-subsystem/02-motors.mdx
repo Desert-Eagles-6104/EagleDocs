@@ -4,8 +4,11 @@ sidebar_position: 2
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
+import InterfaceScreenshot1 from "../assets/interfaces/advantagescope-graph.png";
 
 בשיעורי Java יכולתם לשמור `speed = 0.2` ולקרוא את אותו שדה. כאן זו רק בקשה לבקר. המנגנון מאיץ לאורך זמן, והאנקודר מודד את התנועה. **נפריד בין מה שביקשנו למה שנמדד.**
+
+**בקר מנוע** הוא רכיב שמקבל בקשה מהתוכנית ומחליט איזה מתח לשלוח למנוע. **אנקודר** הוא חיישן שמאפשר למדוד סיבוב. בסימולציה שני אלה מדומים במחשב. **RPS** פירושו סיבובים לשנייה: למשל 2 RPS הם שני סיבובים בכל שנייה. **Coast** הוא מצב שבו לאחר ביטול הפלט הגלגל יכול להמשיך להתגלגל, בדומה לאופניים שלא מדוושים בהם.
 
 ## 1. שלוש פעולות שכבר קיימות
 
@@ -31,6 +34,30 @@ this.trainingFlywheel.ifPresent(flywheel ->
 הפעילו מחדש ב־Disabled, התחילו Teleop ובדקו את המדידה ב־`Subsystems/TrainingFlywheel/Inputs` בלוג או ב־AdvantageScope. חפשו `MechanismVelocityRotPerSec` ו־`AppliedVoltage`; שמות Logger מקודדים עם אות ראשונה גדולה. לאחר Disable צפו לפלט אפס ולדעיכת מהירות.
 
 הגדילו בסימולציה בלבד ל־`0.25`, חזרו על הניסוי באותו משך, והשוו. הסירו את הקריאה הזמנית לפני שיעור השלט. אל תשתמשו ב־`getVelocitySetpoint()` כדי להסיק מה ביקשנו בניסוי אחוזים: השדה הזה מתעדכן ב־`setVelocity`, לא ב־`setPercentOutput`.
+
+### רואים את המספר משתנה בגרף
+
+1. התחברו ב־AdvantageScope באמצעות **File → Connect to Simulator → NetworkTables (AdvantageKit)**, כשהסימולציה עדיין רצה.
+2. לחצו על `+` ליד הלשוניות ובחרו **Line Graph** — גרף של ערך לאורך זמן.
+3. בחיפוש הנתונים הקלידו `TrainingFlywheel`. הרחיבו את ענף `Inputs` וחפשו `MechanismVelocityRotPerSec`.
+4. גררו את המדידה לאזור **Left Axis** שמתחת לגרף. אתם אמורים לראות את שם הנתון ברשימת הצבעים וקו שנוסף לגרף.
+5. חזרו לחלון הסימולציה ועברו Teleoperated כדי לבצע את ניסוי ה־0.15. לאחר מכן חזרו Disabled.
+
+אפשר ללחוץ על צילום המסך כדי לפתוח אותו בגודל מלא בלשונית חדשה. זה שימושי במיוחד כשקוראים בטלפון.
+
+<a href={InterfaceScreenshot1} target="_blank" rel="noopener noreferrer">
+  <img
+    src={InterfaceScreenshot1}
+    alt={
+      "ממשק Line Graph מתוך התיעוד הרשמי של AdvantageScope: גררו נתון מהרשימה השמאלית ל־Left Axis שמתחת לגרף"
+    }
+    width={2424}
+    height={1524}
+    loading="lazy"
+  />
+</a>
+
+הצילום מציג מנגנון אחר; המספרים שלו אינם התוצאה הצפויה אצלכם. צפו כאן לקו מהירות שמתחיל קרוב לאפס, עולה לאחר הפעלה ויורד לאחר ביטול הפלט. אין מספר סופי אחד שחייבים לקבל. **אין קו?** ודאו שהשם מופיע ב־Left Axis ושיש חיבור; **יש קו שטוח באפס?** בדקו קודם מצב Robot State ובקשת הפלט.
 
 ### מה לא נכון פה?
 

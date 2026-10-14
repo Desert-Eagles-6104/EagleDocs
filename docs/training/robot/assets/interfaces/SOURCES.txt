@@ -1,0 +1,11 @@
+# מקורות צילומי הממשק
+
+אלה צילומי ממשק אמיתיים שפורסמו בתיעוד הרשמי, ללא עריכת התוכן. הם מדגימים מיקום של כלים ופעולות, ואינם תוצאות הרצה של robot-template. במחשב התלמיד שמות שדות, נתונים, עיצוב ורשימת הרחבות יכולים להיות שונים. בכל שיעור מצוין מה מחפשים אצלנו.
+
+- `github-use-template.png`: [GitHub Docs — Use this template](https://github.com/github/docs/blob/main/assets/images/help/repository/use-this-template-button.png). רישיון CC BY 4.0; הטקסט נשמר ב־`LICENSE.GitHub-docs.txt`.
+- `vscode-run-simulation.png`, `vscode-pick-extension.png`, `sim-gui-with-labels.png`, `sim-gui-dragging-joysticks.png`: [WPILib frc-docs — Simulation GUI](https://github.com/wpilibsuite/frc-docs/tree/main/source/docs/software/wpilib-tools/robot-simulation/images).
+- `glass-connected.png`, `glass-chooser.png`: [WPILib frc-docs — Glass](https://github.com/wpilibsuite/frc-docs/tree/main/source/docs/software/dashboards/glass/images). צילומי WPILib נלקחו מהתיעוד המתוחזק על ידי WPILib/FIRST, ברישיון CC BY 4.0; הטקסט נשמר ב־`LICENSE.frc-docs.txt`.
+- `advantagescope-field.png`: [Littleton Robotics / AdvantageScope — 2D Field](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/docs/tab-reference/img/2d-field-1.png).
+- `advantagescope-graph.png`: [Littleton Robotics / AdvantageScope — Line Graph](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/docs/tab-reference/line-graph/img/line-graph-1.png). הודעת זכויות היוצרים ותנאי ההפצה נשמרו ב־`LICENSE.AdvantageScope.txt`.
+
+צילומי הטרמינל בדף הכלים מפנים לקבצים הקיימים בהכשרת Java, ללא העתקה או שינוי שלהם.
