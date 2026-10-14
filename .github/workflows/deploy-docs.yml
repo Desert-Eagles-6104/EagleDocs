@@ -32,7 +32,9 @@ jobs:
             IdentityFile ~/.ssh/robot2026_actions
             IdentitiesOnly yes
           EOF
-
+      - name: Fetch Javadoc
+        run: npm run prefetch-javadoc
+        
       - name: Build
         run: npm run build
 
