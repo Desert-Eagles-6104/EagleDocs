@@ -1,0 +1,8 @@
+{
+  "label": "מנגנון ראשון: גלגל מסתובב",
+  "position": 3,
+  "link": {
+    "type": "doc",
+    "id": "robot/first-subsystem/index"
+  }
+}

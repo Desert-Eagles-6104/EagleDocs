@@ -1,0 +1,49 @@
+---
+title: "Git ו־GitHub: שומרים עבודה שאפשר להבין"
+sidebar_position: 1
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+מה קורה כששני תלמידים משנים את אותו קוד? שליחת תיקיות בשם ״סופי2״ לא מספרת מה השתנה. **Git שומר היסטוריה של שינויים במחשב; GitHub מארח מאגרים ומאפשר שיתוף ובדיקה.** אפשר לבצע commit ללא אינטרנט; push שולח commits למאגר המרוחק.
+
+## 1. מכינים את המחשב
+
+1. התקינו [Git for Windows](https://git-scm.com/downloads/win). השאירו את Git Credential Manager מופעל ואת האפשרות להשתמש ב־Git מתוך תוכנות אחרות. הפעילו מחדש VS Code לאחר ההתקנה.
+2. צרו חשבון ב־[GitHub](https://github.com/signup), אמתו כתובת דוא״ל ושמרו את פרטי הכניסה בצורה בטוחה.
+3. פתחו Terminal בתוך WPILib VS Code ובדקו:
+
+```bash
+git --version
+git config --global user.name "Your Name"
+git config --global user.email "your-address@example.com"
+```
+
+החליפו את השם והכתובת בפרטים שלכם. אפשר להשתמש בכתובת הפרטית `noreply` שמופיעה בהגדרות הדוא״ל ב־GitHub. זהות commit **אינה התחברות**. בשכפול או ב־push דרך HTTPS, השלימו את ההתחברות בדפדפן כש־Credential Manager מבקש. אין להכניס סיסמה, token או מפתח לקובץ קוד.
+
+## 2. שינוי מקומי אינו שמירה ב־GitHub
+
+```text
+Edit → Save → Stage → Commit → Push
+```
+
+Save שומר קובץ. Stage בוחר אילו שינויים ייכנסו ל־commit. Commit שומר נקודה בהיסטוריה המקומית. Push משתף אותה. ב־VS Code נשתמש בחלון Source Control: פותחים diff לפני שלוחצים על `+`, כותבים הודעה שמתארת שינוי ומבצעים Commit.
+
+### תרגיל: מה לא נכון פה?
+
+תלמיד לחץ Save, סגר את המחשב ואמר ״כולם כבר רואים את השינוי ב־GitHub״. איזה מידע חסר? מה תבדקו?
+
+<ExerciseHelp
+  hints={[
+    "בדקו אילו פעולות באמת בוצעו אחרי Save.",
+    "היסטוריה מקומית ומאגר מרוחק הם שני מקומות שונים.",
+  ]}
+  solution={
+    "נבדוק Source Control ו־git status, האם נוצר commit והאם בוצע push. שמירה לבדה אינה יוצרת commit ואינה שולחת שינוי. לא עושים push עיוור לפני קריאת ה־diff."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הסבירו לחבר איך ניתן לעבוד ללא אינטרנט ומה צריך לעשות כדי שישתף את השינוי אחר כך. בשיעור הבא ניצור את המאגר שבו נשמור את כל הניסויים.

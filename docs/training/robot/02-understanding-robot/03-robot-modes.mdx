@@ -1,0 +1,58 @@
+---
+title: "מצבי הרובוט: מה משתנה כשמפעילים?"
+sidebar_position: 3
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+Disabled אינו אומר שהתוכנית נסגרה. אנחנו עדיין צריכים לקבל נתונים ולבחור פעולה אוטונומית, אבל לא להפעיל מנועים. **מצב ומותרות תנועה הם שני דברים שנבדוק יחד.**
+
+## 1. כניסה חד־פעמית ועבודה חוזרת
+
+| מצב        | בכניסה             | בכל מחזור במצב         | מה עושה התבנית?                                              |
+| ---------- | ------------------ | ---------------------- | ------------------------------------------------------------ |
+| Disabled   | `disabledInit()`   | `disabledPeriodic()`   | מבטלת פקודות, מנקה bindings ועוצרת swerve; מעדכנת בחירת auto |
+| Autonomous | `autonomousInit()` | `autonomousPeriodic()` | בוחרת ומתזמנת פקודה; periodic ריקה                           |
+| Teleop     | `teleopInit()`     | `teleopPeriodic()`     | מתקינה פקודת נהיגה ו־bindings; periodic ריקה                 |
+| Test       | `testInit()`       | `testPeriodic()`       | משתמשת בבחירת TestModeBindings                               |
+
+`robotPeriodic()` ממשיכה בכל המצבים. `...Init()` מופעלת במעבר למצב; היא אינה רצה 50 פעמים בשנייה. קיימות גם מתודות `...Exit()` בעת יציאה. מעבר Disabled → Teleop אינו `robotInit()` נוסף.
+
+## 2. ניסוי עם Driver Station
+
+הוסיפו הודעה אחת לסוף `disabledInit`, `autonomousInit` ו־`teleopInit`, בלי להסיר את הקוד הקיים. בכל שלב כתבו תחזית, ואז בצעו:
+
+1. התחילו סימולציה ב־Disabled.
+2. בחרו Teleop והפעילו Enable.
+3. חזרו ל־Disabled.
+4. בחרו Autonomous והפעילו Enable; ברירת המחדל היא `Stay in place` שמדפיסה הודעה, לא מסלול נסיעה.
+5. חזרו ל־Disabled ואז ל־Teleop.
+6. הפעילו מחדש את הסימולציה.
+
+רשמו רצף הודעות, לא מספר שתלוי במשך הזמן שבו נשארתם במצב. `teleopInit()` מבטלת פקודות קודמות ומנקה את לולאת הכפתורים לפני התקנת bindings מחדש.
+
+### מה לא נכון פה?
+
+```java
+@Override
+public void teleopPeriodic() {
+    RobotContainer.getInstance().configureTeleopBindings();
+}
+```
+
+למה לא מעבירים לכאן את הקוד מ־`teleopInit()`?
+
+<ExerciseHelp
+  hints={[
+    "כמה פעמים נוצרת פקודת ברירת מחדל?",
+    "Bindings אמורים להירשם בכניסה למצב, לא בכל מחזור.",
+  ]}
+  solution={
+    "המתודה יוצרת פקודות ורושמת טריגרים שוב ושוב. נשאיר configureTeleopBindings ב־teleopInit כפי שקיים בתבנית. periodic מיועדת לעבודה קצרה שחוזרת, ולא לאתחול חוזר של מיפוי כפתורים."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הסבירו מדוע עדיין רואים טלמטריה ב־Disabled ומדוע auto אינו דורש לכתוב תנועה בתוך `autonomousPeriodic()`. שמרו טבלת תצפיות ב־commit.

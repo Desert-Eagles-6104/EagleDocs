@@ -1,0 +1,58 @@
+---
+title: "מדידות וטלמטריה: מה הרובוט יודע?"
+sidebar_position: 1
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+מהירות היעד יכולה להיות 20, ובפועל הגלגל עדיין ב־8. אם מציגים רק את היעד, נראה שהכול עובד. **טלמטריה מועילה מציגה בקשה, מדידה והקשר.**
+
+## 1. מיקום אינו מהירות
+
+אנקודר מאפשר למדוד סיבוב. מיקום הוא כמה סיבובים עברנו ביחס לנקודת הייחוס. מהירות היא כמה סיבובים עוברים בכל שנייה. בגלגל שמסתובב ברציפות המיקום יכול להמשיך לגדול גם כשהמהירות קבועה.
+
+בפרויקט שלנו `unitsPerMechRot = 1.0` ויחס sensor-to-mechanism הוא 1:1. לכן `getPosition()` מחזירה סיבובים ו־`getVelocity()` מחזירה RPS. כדי להמיר ל־RPM מכפילים ב־60. במערכות עם יחידות או יחסי העברה אחרים אין להניח שהמספרים נשארים זהים; קוראים את ההגדרה ואת ה־IO.
+
+## 2. מוסיפים נתונים במיקום הקיים
+
+כבר חיברנו `trainingFlywheel.logTelemetry()` ל־`RobotContainer.logTelemetry()`. בתוך אותה מתודה, אחרי הקריאה הקיימת, הוסיפו:
+
+```java
+this.trainingFlywheel.ifPresent(flywheel -> {
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "Training/Flywheel/MeasuredRPS", flywheel.getVelocity());
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "Training/Flywheel/TargetRPS", flywheel.getVelocitySetpoint());
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "Training/Flywheel/ErrorRPS", flywheel.getVelocityError());
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "Training/Flywheel/PositionRotations", flywheel.getPosition());
+});
+```
+
+אלה נתונים מסוכמים לתרגיל, בנוסף ל־`Subsystems/TrainingFlywheel/Inputs` ולשם הפקודה. בשלב אחוזי הפלט `TargetRPS` אינו הבקשה שלכם: הוא מתעדכן רק כאשר משתמשים ב־`setVelocity`. גם `disableMotors()` אינה מאפסת את יעד המהירות השמור. לכן מציגים גם פקודה פעילה ומתח, ולא מסיקים מיעד ישן שהמנוע עדיין מופעל.
+
+## 3. בונים גרף
+
+ב־AdvantageScope התחברו ל־NetworkTables של הסימולציה. בחרו Line Graph וגררו אליו `MeasuredRPS`, ובהמשך גם `TargetRPS`. אם הנתונים תחת `/AdvantageKit`, הרחיבו את הענף המתאים. שמרו צילום גרף אמיתי או את קובץ הלוג עם שם ניסוי; אל תיצרו ״צילום״ שמנחש את הממשק.
+
+בתבנית `Robot` מפרסמת NT4 ושומרת WPILOG; מיקום תיקיית הלוג נקבע ב־`LoggerUtil.getDefaultLogDirectory()`. `logTelemetry` נקראת כל ארבעה מחזורים — בדרך כלל כ־80 ms. קצב תיעוד אינו קצב המתזמן ואינו קצב חישוב הפיזיקה.
+
+### מה לא נכון פה?
+
+תלמיד מציג `TargetRPS` וכותב ״מדדתי שהגלגל הגיע ל־20 RPS״. מה חסר?
+
+<ExerciseHelp
+  hints={[
+    "יעד יכול להשתנות לפני שהתנועה השתנתה.",
+    "איזה getter קורא את נתוני ה־IO?",
+  ]}
+  solution={
+    "צריך להציג getVelocity או MeasuredRPS, זמן, מתח ופקודה פעילה. TargetRPS הוא בקשה שמורה, לא מדידה. בדיקת הגעה דורשת להשוות בין המדידה ליעד ולבחור סבילות, רצוי לאורך מספר מחזורים."
+  }
+  solutionLanguage="text"
+/>
+
+## תרגול עצמאי
+
+הריצו, שחררו ו־Disable. מצאו בגרף מתי בקשת הפלט בוטלה ומתי המהירות ירדה. הסבירו את ההפרש ביניהם. אם מוסיפים [חיישן דיגיטלי](../Digital%20input%20and%20output.md) בהמשך, בודקים את משמעות true/false לפי החיישן; אין חיישן כזה מחובר לגלגל הלימודי כרגע.

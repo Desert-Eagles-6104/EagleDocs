@@ -1,0 +1,8 @@
+{
+  "label": "תכנות רובוט",
+  "position": 3,
+  "link": {
+    "type": "doc",
+    "id": "robot/index"
+  }
+}

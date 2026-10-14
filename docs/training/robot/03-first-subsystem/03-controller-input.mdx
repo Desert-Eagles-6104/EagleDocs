@@ -1,0 +1,50 @@
+---
+title: "מהשלט אל המנגנון"
+sidebar_position: 3
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+כעת נחליף הפעלה אוטומטית בהפעלה לפי לחיצה. השלט הקיים הוא `driverController`; לא יוצרים שלט שני באותה יציאה.
+
+## 1. קוראים כפתור בשפה של התבנית
+
+`northButton()`, `southButton()`, `westButton()` ו־`eastButton()` מתארות מיקום, ולא את הכיתוב של יצרן אחד. `getLeftY()` קוראת ציר מספרי; כפתור מחזיר תנאי לחיצה. מיפוי Xbox ו־PS5 נמצא ב־`ControllerMappings`.
+
+ב־`RobotContainer.configureTeleopBindings()` הסירו את ניסוי האחוזים הזמני, והשאירו את נהיגת ה־swerve. הוסיפו:
+
+```java
+this.trainingFlywheel.ifPresent(flywheel -> {
+    this.driverController.northButton().onTrue(
+        new InstantCommand(() -> flywheel.setPercentOutput(0.15, false), flywheel));
+    this.driverController.northButton().onFalse(
+        new InstantCommand(flywheel::disableMotors, flywheel));
+});
+```
+
+`InstantCommand` כבר מיובאת בתבנית. כרגע מספיק לדעת שהפעולה שלה מתבצעת פעם אחת כשמתזמנים אותה. הפרמטר `flywheel` מצהיר איזה מנגנון הפעולה משתמשת בו; נרחיב על כך בשיעורי הפקודות.
+
+`onTrue` מגיבה למעבר מלא לחיצה; `onFalse` לשחרור. בקשת הפלט נשארת בבקר אחרי שהפעולה החד־פעמית מסתיימת, ולכן שחרור ועצירת מצב חייבים לבטל אותה. בהמשך נחליף את הזוג בפקודה שמטפלת בעצירה גם כשמישהו אחר מבטל אותה.
+
+## 2. ניסוי הדרגתי
+
+לפני Enable בדקו שהכפתור הנכון משנה נתון ב־Driver Station. עברו Teleop, לחצו, החזיקו ושחררו. השוו למדידה ולא רק לצליל. חזרו על Disable כשהכפתור לחוץ, ואז Enable כשהוא משוחרר. ודאו שה־bindings נרשמים שוב ושלא נוצרה הפעלה בלי לחיצה חדשה.
+
+### מה לא נכון פה?
+
+תלמיד מוסיף רק `onTrue` ומצפה שהגלגל יעצור בשחרור. למה הציפייה שגויה?
+
+<ExerciseHelp
+  hints={[
+    "InstantCommand מסתיימת מיד, אבל מה קורה לבקשה שבבקר?",
+    "שחרור כפתור אינו קורא אוטומטית למתודת עצירה של המנגנון.",
+  ]}
+  solution={
+    "הבקר יכול להמשיך בבקשת הפלט האחרונה. בדוגמה הזאת נדרשת onFalse שמבטלת את הפלט וגם עצירה במעברי מצב. בהמשך MotorSubsystemSetPercentage תבטל את המנוע ב־end כאשר whileTrue מבטלת אותה."
+  }
+  solutionLanguage="text"
+/>
+
+## תרגול עצמאי
+
+בחרו כפתור אחר שאינו Options, כי Options כבר מאפסת כיוון נהיגה. החליפו את שתי ההפניות לכפתור, תעדו את הבחירה ובדקו לחיצה, שחרור ו־Disable. אל תוסיפו עדיין כפתור אחוזים שני לאותו מנגנון; בשיעור הדרישות נבין איך לתאם אותם.

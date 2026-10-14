@@ -1,0 +1,117 @@
+---
+title: "מנגנון ראשון: אחריות, הגדרה ואובייקט אחד"
+sidebar_position: 1
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+עד עכשיו שינינו נהיגה קיימת. עכשיו נוסיף גלגל לימודי שמסתובב סביב ציר. **תת־מערכת מחזיקה את הרכיבים ואת המדידות ומציעה פעולות; פקודה תחליט מתי לבצע אותן.** זה אותו רעיון של הכמסה שלמדנו ב־Java, בתוך רובוט שנשאר פעיל.
+
+:::info זו תוספת שלכם
+בתבנית אין כרגע flywheel שנוצר ב־RobotContainer. `FlywheelShotDropSim` רק מחשבת ירידת מהירות ואינה מנגנון מחובר. ניצור `TrainingFlywheel` במאגר האישי באמצעות `MotorSubsystemTalon` ו־`DCMotorMechanismSim` שכבר קיימים. לא נכתוב מנוע פיזיקלי או סביבת סימולציה חדשה. כל התוספת כאן מוגבלת לסימולציה.
+:::
+
+## 1. מגדירים את המנגנון
+
+צרו `src/main/java/frc/robot/subsystems/training/TrainingFlywheel.java`. אפשר <a href={useBaseUrl('/training/robot/TrainingFlywheel.java')} download>להוריד את הקובץ הלימודי</a>. זה הקוד המלא:
+
+```java
+package frc.robot.subsystems.training;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.DELib26.motors.MasterMotorConstants;
+import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemConfiguration;
+import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemTalon;
+import frc.DELib26.subsystems.motorSubsystems.motorBase.mechanismSim.DCMotorMechanismSim.DCMotorMechanismSimConfig;
+import frc.DELib26.util.RunMode;
+
+public final class TrainingFlywheel extends MotorSubsystemTalon {
+    public TrainingFlywheel() {
+        super(createConfiguration());
+    }
+
+    private static MotorSubsystemConfiguration createConfiguration() {
+        if (!RunMode.isSim()) {
+            throw new IllegalStateException("TrainingFlywheel is simulation-only");
+        }
+        TalonFXConfiguration motor = new TalonFXConfiguration();
+        motor.Feedback.SensorToMechanismRatio = 1.0;
+        motor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        motor.Slot0.kP = 0.1;
+        motor.Slot0.kV = 0.12;
+
+        return new MotorSubsystemConfiguration()
+            .withName("TrainingFlywheel")
+            .withMaster(new MasterMotorConstants(50, "rio", true, motor))
+            .withRotationsPerPositionUnit(1.0)
+            .withConventionalPerSubsystemUnit(1.0)
+            .withMechanismType(MotorSubsystemConfiguration.MechanismType.ANGULAR)
+            .withAllowableError(2.0)
+            .withMechanismSimConfig(new DCMotorMechanismSimConfig(0.002, 0.1));
+    }
+}
+
+```
+
+אל תדלגו על `RunMode.isSim()`: ההגדרות אינן מיועדות לחומרה. `50` הוא מזהה לתרגיל סימולציה בלבד; לפני הרצה המנטור יוודא שאין התקן אחר עם אותו ID ובאותו bus. `"rio"` הוא שם bus, לא כתובת USB.
+
+`MasterMotorConstants` מגדירה כאן גם מודל Kraken X60 ברירת מחדל. בחרנו יחס 1:1 ויחידה אחת לסיבוב, כך שהמדידה והיעד יהיו בסיבובים ובסיבובים לשנייה. `0.002` היא אינרציה ב־kg·m² ו־`0.1` הוא מתח חיכוך במודל; אלו ערכי ניסוי, לא מדידות של מנגנון הקבוצה. ערכי `kP` ו־`kV` משמשים בהמשך לבקרה, ואינם כיול לחומרה.
+
+## 2. מוסיפים ל־RobotContainer
+
+הוסיפו import למחלקה החדשה. `Optional` ו־`RunMode` כבר קיימות. ליד שדות המערכות הוסיפו:
+
+```java
+public final Optional<TrainingFlywheel> trainingFlywheel;
+```
+
+בבנאי ה־container, אחרי יצירת `visionSubsystem`, הוסיפו:
+
+```java
+this.trainingFlywheel = isSim
+    ? Optional.of(new TrainingFlywheel())
+    : Optional.empty();
+```
+
+נוצר אובייקט אחד בעת אתחול. `MotorSubsystemTalon` יורשת מ־`SubsystemBase`, ולכן המתזמן מכיר אותה ומפעיל `periodic()` לעדכון מדידות. אין לקרוא ל־`periodic()` שלה ידנית.
+
+## 3. מחברים עצירה ותיעוד
+
+בסוף `RobotContainer.disableAll()` הוסיפו:
+
+```java
+this.trainingFlywheel.ifPresent(TrainingFlywheel::disableMotors);
+```
+
+בסוף `logTelemetry()` הוסיפו:
+
+```java
+this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
+```
+
+אל תשנו או תסירו את עצירת ה־swerve. בדקו בנייה, הפעלה ו־Disable לפני הוספת תנועה.
+
+### מה לא נכון פה?
+
+```java
+@Override
+public void robotPeriodic() {
+    new TrainingFlywheel();
+}
+```
+
+למה new אינו מתאים כאן?
+
+<ExerciseHelp
+  hints={["מה הבנאי יוצר ורושם מעבר לשדות Java?", "כמה מופעים ייווצרו בשנייה?"]}
+  solution={
+    "הקוד יוצר שוב ושוב תת־מערכת, בקר ומודל סימולציה שנרשמים לתשתית. נוצרת התנגשות משאבים ועבודה מצטברת. ניצור פעם אחת בבנאי RobotContainer ונשמור שדה. לא מחליפים את robotPeriodic המקורית."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הסבירו למה `Optional.empty()` בחומרה עדיפה על יצירת המנגנון הלימודי שם. שמרו commit נפרד של ההגדרה והחיבור, בלי bindings עדיין.

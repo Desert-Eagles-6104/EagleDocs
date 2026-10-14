@@ -1,0 +1,61 @@
+---
+title: "ראייה בסימולציה: רואים מדידה ומגבלותיה"
+sidebar_position: 4
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+הרובוט יכול לקבל מידע גם ממצלמה. בשיעור הזה נצפה בנתון ראייה ונשתמש בו לאירוע קטן; לא נלמד עדיין מיזוג מיקום או ניווט מלא.
+
+## 1. מה כבר מחובר?
+
+`RobotContainer` יוצרת `Vision2026`, היורשת מ־`VisionSubsystem`. במצב SIM היא משתמשת ב־`VisionIOSimPhoton`: מפת AprilTags של 2026, מודל מצלמה ו־PhotonCameraSim. ההגדרה הקיימת נקראת `limelight-shooter`. הנתונים נכתבים ל־NetworkTables כדי שעיבוד הראייה הקיים יוכל לקרוא אותם.
+
+ב־`Robot.robotPeriodic()` המתזמן רץ תחילה; אחריו `VirtualSubsystem.runAllPeriodic()` מעבדת גם ראייה, ואז מדידות מתקבלות מועברות ל־swerve. מצלמה אינה מייצרת מדידה חדשה בכל מחזור, והסימולציה כוללת השהיה ושגיאה.
+
+## 2. ניסוי תצפית
+
+אחרי שה־swerve מוכן, התחברו ל־AdvantageScope וחפשו:
+
+- `Subsystems/Vision/Camera limelight-shooter/seesTarget`.
+- `Subsystems/Vision/VisibleTargets`.
+- `Subsystems/Vision/numProcessedEstimates`.
+- `Subsystems/Vision/lastEstimateTimestamp`.
+
+סובבו את הרובוט או שנו את תנוחתו דרך הכלים הקיימים. השוו מצב שבו תג בתוך שדה הראייה למצב שבו הוא מחוץ לו. רשמו גם זמן: מדידה מתקבלת אינה בהכרח מדידה מהמחזור הנוכחי. `seesTarget` ו־״אומדן התקבל״ אינם אותו תנאי; העיבוד יכול לפסול נתון.
+
+## 3. אירוע קטן שתלוי בראייה
+
+לתרגיל בלבד, בתוך `configureTeleopBindings()`, הוסיפו trigger שמדפיס הודעה בעלייה של הנתון המדומה:
+
+```java
+new edu.wpi.first.wpilibj2.command.button.Trigger(() ->
+    edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+        .getTable("limelight-shooter")
+        .getEntry("tv").getInteger(0) == 1
+).onTrue(new edu.wpi.first.wpilibj2.command.PrintCommand(
+    "Training: simulated camera sees a target"));
+```
+
+זה מבוסס על `tv` שנכתב כ־integer ב־`VisionIOSimPhoton`. זו בדיקת נראות גולמית בסימולציה, לא החלטה לירות או לנווט. ייתכנו מספר הודעות בגלל קצב פריימים ותנודות בנתון; הן אינן מוכיחות כמה תגים זוהו. הסירו את התרגיל לאחר תיעוד.
+
+### מה לא נכון פה?
+
+תלמיד רואה `tv = 1` פעם אחת ומפעיל מנגנון אוטומטי בכל המחזורים הבאים. איזה מידע חסר?
+
+<ExerciseHelp
+  hints={[
+    "מדידה ישנה אינה אישור קבוע לנראות.",
+    "נראות לבדה אינה מוכיחה מרחק, מיקום נכון או בטיחות של פעולה.",
+  ]}
+  solution={
+    "צריך לבדוק נתון מעודכן, תוקף, זמן, מצב רובוט והיתכנות הפעולה. באימון הזה משתמשים בהודעה בלבד. פעולה עם תנועה דורשת תנאי ביטול, timeout ובדיקה עם מנטור; אין להסתמך על פריים יחיד."
+  }
+  solutionLanguage="text"
+/>
+
+## 4. ומה לגבי זיהוי אובייקטים?
+
+המאגר כולל `ObjectDetectionSubsystem` ו־`ObjectDetectionIOSimPhoton`, המדמה חלקי משחק מהזירה ומפרסמת `rawdetections`, `tv`, `tx` ו־`ty`. **אין ב־RobotContainer מופע של המערכת הזאת או תצורה מחוברת עבורה.** לכן לא נבקש ״להפעיל קליטה לפי זיהוי כדור״ כאילו היא כבר מוכנה.
+
+תרגיל מתקדם עם המנטור: קראו `ObjectDetectionSubsystemConfiguration` וזהו את השדות הדרושים — `cameraConfiguration`, `simTargetModel` ו־`gamePieceName`. כתבו תכנון לחיבור, תוקף נתון וטיפול ב־`Optional.empty()` של `getDetectedObjects()`. החיבור עצמו הוא שינוי נפרד לתבנית, לא חלק נדרש מהתרגיל. נתחיל מהראייה שכבר נוצרה בפועל.

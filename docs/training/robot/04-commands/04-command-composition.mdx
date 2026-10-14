@@ -1,0 +1,76 @@
+---
+title: "מרכיבים פעולות ורושמים אוטונומי"
+sidebar_position: 4
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+נרצה להפעיל גלגל לזמן קצר, להמתין ולעשות זאת שוב. אין צורך ב־sleep או בלולאה חוסמת: נרכיב פקודות שמחזירות שליטה למתזמן בכל מחזור.
+
+## 1. רצף עם פקודות קיימות
+
+ב־`RobotContainer` הוסיפו import:
+
+```java
+import edu.wpi.first.wpilibj2.command.Commands;
+```
+
+בתוך `configureTeleopBindings()`, באותה `trainingFlywheel.ifPresent`, הוסיפו:
+
+```java
+this.driverController.eastButton().onTrue(Commands.sequence(
+    new MotorSubsystemSetPercentage<>(flywheel, () -> 0.15).withTimeout(1.0),
+    Commands.waitSeconds(0.5),
+    new MotorSubsystemSetPercentage<>(flywheel, () -> 0.20).withTimeout(1.0)
+));
+```
+
+`withTimeout` מסיימת את המקטע אחרי הזמן. `end` של פקודת המנוע מבטלת את הפלט, לכן ההמתנה אינה משאירה בקשת הפעלה. הגלגל עדיין עשוי לדעוך בזמן ההמתנה.
+
+`sequence` עוברת לפקודה הבאה רק אחרי שהקודמת הסתיימה. הקבוצה מחזיקה את איחוד הדרישות של ילדיה, גם בזמן ההמתנה. `parallel` מתחילה פעולות יחד ומסתיימת אחרי שכולן הסתיימו. אי אפשר לשים במקביל שתי פקודות שדורשות את אותו flywheel. גם `race` או `deadline` אינן דרך לעקוף קונפליקט דרישות.
+
+אל תצרפו את אותו מופע פקודה לשתי קבוצות. צרו מופעים חדשים או factory שמחזירה פקודה חדשה, כפי שהתבנית עושה עבור אוטונומי.
+
+## 2. מצרפים למסלול האוטונומי הקיים
+
+`AutoProfiles` מחזירה `Map<String, AutoProfile>`. ה־`AutoProfile` מחזיק `Supplier<Command>` ותנוחת התחלה. בתוך `createAutosMap()`, לפני `return map`, הוסיפו תוספת **בסימולציה בלבד**:
+
+```java
+if (frc.DELib26.util.RunMode.isSim()) {
+    map.put("Training flywheel", new AutoProfile(
+        () -> {
+            var flywheel = frc.robot.RobotContainer.getInstance()
+                .trainingFlywheel.orElseThrow();
+            return edu.wpi.first.wpilibj2.command.Commands.sequence(
+                new frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage<>(
+                    flywheel, () -> 0.15).withTimeout(1.0),
+                edu.wpi.first.wpilibj2.command.Commands.waitSeconds(0.5),
+                new frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage<>(
+                    flywheel, () -> 0.20).withTimeout(1.0)
+            );
+        },
+        () -> new Pose2d()
+    ));
+}
+```
+
+השמות המלאים כאן מאפשרים להוסיף בלי לנחש imports; אפשר לקצר עם imports ב־VS Code. אין צורך לשנות `Robot.autonomousInit()`: היא כבר מבקשת את הפקודה ומתזמנת אותה. ב־Disabled בחרו `Training flywheel` מתוך `Auto/Auto` בדשבורד, ואז עברו Autonomous ו־Enable. ברירת המחדל `Stay in place` נשארת כפי שהיא.
+
+### מה לא נכון פה?
+
+שתי פקודות אחוזים לאותו flywheel הוכנסו ל־`Commands.parallel`. למה זה אינו פתרון להפעלת שתי מהירויות?
+
+<ExerciseHelp
+  hints={[
+    "לשתי הפקודות אותה דרישה.",
+    "תת־מערכת אחת אינה יכולה לקבל שני בעלי שליטה באותה קבוצה מקבילית.",
+  ]}
+  solution={
+    "ההרכבה אינה תקינה בגלל דרישות חופפות. משתמשים ב־sequence לשתי פעולות עוקבות, או במקביל רק לפעולות על מערכות שונות. לא מסירים addRequirements כדי לגרום לקוד לרוץ."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+ציירו ציר זמן של 2.5 שניות וסמנו בקשת פלט ומדידה בנפרד. בטלו באמצעות Disable באמצע כל מקטע, כולל בזמן ההמתנה, וודאו שאין פלט שנותר. שמרו commit של ההתנהגות האוטונומית עם תוצאות הניסוי.

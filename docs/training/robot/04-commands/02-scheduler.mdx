@@ -1,0 +1,51 @@
+---
+title: "המתזמן ודרישות: מי שולט במנגנון?"
+sidebar_position: 2
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+אם שתי פעולות מבקשות מהירויות שונות מאותו גלגל, מי מנצחת? בלי תיאום נקבל פלט שתלוי בסדר קריאות. **דרישה מצהירה אילו תתי־מערכות הפקודה צריכה באופן בלעדי.**
+
+## 1. התיאום שכבר קיים
+
+`MotorDoubleSupplierCommand` קוראת `addRequirements(motorSubsystem)`. לכן שתי פקודות המנוע אינן יכולות להחזיק את אותו flywheel באותו זמן. בדרך כלל תזמון פקודה חדשה יבטל פקודה קודמת בעלת דרישה חופפת; יש מדיניות interruption שאפשר לשנות, אבל כאן משתמשים בברירת המחדל.
+
+הדרישה אינה עוצרת גישה ישירה למתודות מבחינת Java. אם תכתבו `setPercentOutput` ב־periodic בלי פקודה, אפשר לעקוף את התיאום. לכן משאירים בתת־מערכת עדכון ומדידה ומרכזים את החלטות ההפעלה בפקודות.
+
+## 2. ניסוי התנגשות
+
+אחרי binding הכפתור הצפוני הוסיפו binding נוסף באותה `ifPresent`:
+
+```java
+this.driverController.southButton().whileTrue(
+    new MotorSubsystemSetPercentage<>(flywheel, () -> 0.25));
+```
+
+נבאו: לחצו North והחזיקו; לחצו South בזמן ש־North עדיין מוחזק; שחררו South. בדקו את `Command` ואת המתח בכל שלב. פקודת North מתבטלת כאשר South מקבלת את אותה דרישה. `whileTrue` אינה מתזמנת מחדש אוטומטית פקודה שנקטעה בזמן שהכפתור נשאר לחוץ. כדי להפעיל North שוב, שחררו ולחצו מחדש.
+
+### מה לא נכון פה?
+
+```java
+this.driverController.southButton().onTrue(
+    new InstantCommand(() -> flywheel.setPercentOutput(0.25, false)));
+```
+
+הקוד מתקמפל. למה הוא יכול להפריע לפקודה האחרת בלי שהמתזמן יזהה קונפליקט?
+
+<ExerciseHelp
+  hints={[
+    "השוו לבנאי InstantCommand בשיעור השלט.",
+    "המתזמן לא מנחש דרישות מתוך גוף lambda.",
+  ]}
+  solution={
+    "חסרה הדרישה flywheel. אם חייבים פעולה חד־פעמית, כותבים new InstantCommand(() -> flywheel.setPercentOutput(0.25, false), flywheel). לשליטה מתמשכת נעדיף את פקודת המנוע שמצהירה על דרישה ומבטלת פלט ב־end."
+  }
+  solutionLanguage="text"
+/>
+
+## 3. תרגול עצמאי
+
+בדקו מעבר Teleop → Disabled → Teleop אחרי התנגשות. הסבירו למה `cancelAll()` עוזרת במעבר מצב, אבל אינה מחליפה דרישות במהלך teleop. כתבו בטבלה איזה command צפוי להיות פעיל ומתי אמורה להתבצע עצירה.
+
+בדקו history ב־VS Code או `git log --oneline -5`. הצביעו על commit שבו שיניתם את מדיניות השליטה, והסבירו איך לחזור לבדוק גרסה קודמת בעזרת המנטור בלי למחוק עבודה.

@@ -1,0 +1,57 @@
+---
+title: "מפת הפרויקט: מוצאים מי אחראי למה"
+sidebar_position: 1
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+כשמשהו לא עובד, לא מתחילים בשינוי קובץ אקראי. מחפשים את המקום שאחראי על הפעולה. **בסוף השיעור תוכלו לעקוב מהשלט אל פקודת הנהיגה ולזהות היכן נוצרים האובייקטים.**
+
+![מהשלט דרך התוכנית ובקר המנוע אל המנגנון, וחזרה עם משוב](../assets/robot-architecture.png)
+
+## 1. פותחים את הקבצים החשובים
+
+| נתיב משורש הפרויקט                            | מה מחפשים בו?                   |
+| --------------------------------------------- | ------------------------------- |
+| `src/main/java/frc/robot/Main.java`           | הכניסה לתוכנית                  |
+| `frc/robot/Robot.java` תחת תיקיית Java        | אתחול logger, callbacks והמתזמן |
+| `frc/robot/RobotContainer.java`               | יצירת מערכות, שלט ו־bindings    |
+| `frc/robot/constants/Robot2026Constants.java` | בחירת הגדרות לרובוט             |
+| `frc/robot/sim/`                              | קישור סימולציה ותצוגת חלקי משחק |
+| `frc/robot/autos/`                            | בחירת פקודה אוטונומית           |
+| `frc/DELib26/subsystems/`                     | מימושי מערכות, IO ופקודות       |
+| `vendordeps/`                                 | גרסאות הספריות של רכיבי הרובוט  |
+| `src/main/deploy/`                            | קבצים הנשלחים לרובוט בעת פריסה  |
+
+הנתיבים שמתחילים ב־`frc/` בטבלה נמצאים בתוך `src/main/java/`. `build/` מכילה פלט שנוצר; אין לערוך בה את `BuildInfo` או מחלקות `AutoLogged`. בפעם הבאה שתבנו, הן ייווצרו מחדש.
+
+## 2. עוקבים אחרי קריאה
+
+ב־`RobotContainer.configureTeleopBindings()` חפשו:
+
+```java
+this.swerveSubsystem.setDefaultCommand(new TeleopDrive(this.swerveSubsystem));
+```
+
+פתחו את `TeleopDrive` באמצעות Go to Definition. הבנאי שומר את אותה תת־מערכת ומצהיר על דרישה אליה. `execute()` קוראת `swerve.teleopDrive()`. שם מחושבות מהירויות מצירי השלט. אין כאן אובייקט swerve חדש בכל לחיצה.
+
+### תרגיל: מסלול הנתונים
+
+כתבו ארבעה שמות מחלקות לפי הסדר שבו ציר מהשלט מגיע לנהיגה. הוסיפו מי קורא ל־`execute()` ומי יצר את השלט.
+
+<ExerciseHelp
+  hints={[
+    "התחילו בשדה driverController ב־RobotContainer.",
+    "עקבו מ־TeleopDrive.execute אל SwerveSubsystem.teleopDrive.",
+  ]}
+  solution={
+    "RobotContainer יוצר GenericController ביציאה 0 ומוסר אותו ל־SwerveSubsystem. CommandScheduler מפעיל TeleopDrive.execute; היא קוראת SwerveSubsystem.teleopDrive, שקוראת את GenericController ומעבירה בקשת מהירויות ל־IO. הקריאה לשלט מתבצעת מתוך תת־המערכת, לא מתוך Main."
+  }
+  solutionLanguage="text"
+/>
+
+## 3. שינוי או הגדרה?
+
+רוצים להפחית מהירות לימודית? השתמשו במתודת המקדם שכבר קיימת במקום לשנות יחסי העברה. רוצים לשנות מיקום מצלמה? חפשו את ההגדרה המתאימה. רוצים להוסיף התנהגות? חפשו פקודה ו־binding. כך שינוי קטן נשאר במקום שאפשר למצוא ולבדוק.
+
+שמרו ביומן מפת קריאות קצרה. בשיעור הבא נברר מי מפעיל את כל התהליך.

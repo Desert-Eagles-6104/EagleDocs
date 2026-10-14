@@ -1,0 +1,56 @@
+---
+title: "מנוע: בקשת פלט אינה מדידת מהירות"
+sidebar_position: 2
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+בשיעורי Java יכולתם לשמור `speed = 0.2` ולקרוא את אותו שדה. כאן זו רק בקשה לבקר. המנגנון מאיץ לאורך זמן, והאנקודר מודד את התנועה. **נפריד בין מה שביקשנו למה שנמדד.**
+
+## 1. שלוש פעולות שכבר קיימות
+
+| פעולה על TrainingFlywheel       | משמעות                                  |
+| ------------------------------- | --------------------------------------- |
+| `setPercentOutput(0.15, false)` | בקשת 15% פלט, בלי לעקוף software limits |
+| `getVelocity()`                 | מדידה מעודכנת בסיבובי מנגנון לשנייה     |
+| `disableMotors()`               | ביטול הפלט לבקר                         |
+
+`0.15` אינה 15 RPM ואינה 15 RPS. הטווח של אחוז הפלט הוא `-1` עד `1`. גם אחרי ביטול הפלט, גלגל במצב Coast יכול להמשיך להסתובב ולדעוך. זה אינו בהכרח כשל בעצירה.
+
+## 2. ניסוי קצר בלי שלט
+
+רק בסימולציה, בסוף `RobotContainer.configureTeleopBindings()`, הוסיפו זמנית:
+
+```java
+this.trainingFlywheel.ifPresent(flywheel ->
+    flywheel.setPercentOutput(0.15, false));
+```
+
+ב־`Robot.teleopExit()` הוסיפו גם `RobotContainer.getInstance().disableAll();` בלי להסיר את הביטול וניקוי הכפתורים הקיימים. כך גם יציאה מ־teleop עוצרת את הבקשה. הכניסה ל־Disabled כבר קוראת `disableAll()`.
+
+הפעילו מחדש ב־Disabled, התחילו Teleop ובדקו את המדידה ב־`Subsystems/TrainingFlywheel/Inputs` בלוג או ב־AdvantageScope. חפשו `MechanismVelocityRotPerSec` ו־`AppliedVoltage`; שמות Logger מקודדים עם אות ראשונה גדולה. לאחר Disable צפו לפלט אפס ולדעיכת מהירות.
+
+הגדילו בסימולציה בלבד ל־`0.25`, חזרו על הניסוי באותו משך, והשוו. הסירו את הקריאה הזמנית לפני שיעור השלט. אל תשתמשו ב־`getVelocitySetpoint()` כדי להסיק מה ביקשנו בניסוי אחוזים: השדה הזה מתעדכן ב־`setVelocity`, לא ב־`setPercentOutput`.
+
+### מה לא נכון פה?
+
+```java
+flywheel.setPercentOutput(20.0, false);
+```
+
+התלמיד התכוון ל־20%. תקנו והסבירו איזה נתון צריך לקרוא כדי לדעת את התוצאה.
+
+<ExerciseHelp
+  hints={[
+    "מה מייצג 1.0 במתודה הזאת?",
+    "בקשת פלט ומדידת מהירות משתמשות ביחידות שונות.",
+  ]}
+  solution={
+    "נכתוב flywheel.setPercentOutput(0.20, false). קוראים getVelocity או את טלמטריית המנגנון כדי לראות מהירות בפועל. אין להסתמך על חיתוך אוטומטי של ערך לא תקין."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הציגו טבלה: אחוז פלט, מתח, מהירות אחרי זמן קבוע, ומהירות אחרי Disable. הסבירו למה שתי העמודות הראשונות אינן תחליף למדידת מהירות.

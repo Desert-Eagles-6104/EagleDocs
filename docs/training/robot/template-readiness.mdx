@@ -1,0 +1,50 @@
+---
+title: "מוכנות התבנית: מידע למנטור לפני ההכשרה"
+sidebar_position: 99
+---
+
+דף זה מפריד בין קוד שנמצא במאגר לבין יכולת שנבדקה בהרצה. הוא מיועד להכנת מפגש, ולא מחליף את שיעורי התלמידים.
+
+## גרסה שנבדקה
+
+המקור הוא [robot-template בענף main](https://github.com/Desert-Eagles-6104/robot-template/tree/main), commit `04c29b65b5e36466bd540bb2ddb36fe724ee4d7a`. המקור המקומי תאם ל־main בעת הבדיקה. אין בדפי ההכשרה דרישה להתקין DELib בנפרד: היא חלק מקוד המקור.
+
+| רכיב               | גרסה בתבנית |
+| ------------------ | ----------- |
+| GradleRIO / WPILib | 2026.2.1    |
+| Java source/target | 17          |
+| Gradle wrapper     | 8.11        |
+| Phoenix 6          | 26.1.1      |
+| AdvantageKit       | 26.0.1      |
+| PhotonVision       | v2026.2.2   |
+| PathPlanner        | 2026.1.2    |
+| maple-sim          | 0.4.0-beta  |
+
+## חסר שחוסם נהיגה ראשונה
+
+`Robot2026Constants.Robot2026SwerveConstants` מכילה בנאי ריק. במחלקת הבסיס `SwerveConstants` שדות כמו `MAX_LINEAR_SPEED`, `MODULE_HARDWARE_CONSTANTS`, `SWERVE_MODULE_CONSTANTS` ו־`SWERVE_DRIVETRAIN_CONSTANTS` אינם מקבלים ערכי ברירת מחדל. `RobotContainer` יוצרת `SwerveIOSim` עם ההגדרות האלה; `SwerveIOHardware` והמערכת מצפות לתצורה מלאה.
+
+לכן אין להציג את התבנית הנוכחית כ״שכפלו ולחצו Enable״. נדרש תיקון **נפרד במאגר התבנית** בידי מתחזק: הגדרות מכניקה ומנועים, גאומטריה, יחידות, מקדמי בקרה, מודולים ו־drivetrain, והתאמה לערכי סימולציה. אין להשתמש באוסף ערכים אקראי או לשנות CAN IDs על חומרה.
+
+אחרי התיקון על המנטור לבדוק: בנייה, startup ללא חריגה, בחירת Alliance, שלט ביציאה 0, נהיגה ו־rotation, מדידת Pose, Disable וחזרה ל־Teleop. יש להשאיר את התשתית והפקודה הקיימות; אין צורך להחליף אותן ברובוט גנרי.
+
+## יכולות קיימות לעומת תוספות
+
+- קיימים `SwerveIOSim`, `MapleSimSwerveDrivetrain`, `TeleopDrive`, driver station ו־GUI במשימות Gradle.
+- קיימת ראיית AprilTags: `Vision2026` נוצרת ב־container וב־SIM משתמשת ב־`VisionIOSimPhoton`.
+- קיימים `MotorSubsystemTalon`, פקודות מנוע ומודלי `DCMotorMechanismSim`, זרוע ומעלית. אין מנגנון flywheel מחובר בתבנית. ההכשרה מוסיפה אחד **במאגר האישי בלבד**.
+- `FlywheelShotDropSim` אינה מחוברת למנגנון; אין כאן סימולציית ירי מוכנה. `SimCoordinator.simulationPeriodic()` ריקה.
+- `ObjectDetectionIOSimPhoton` קיימת, אבל אין מופע `ObjectDetectionSubsystem` או תצורה מחוברת ב־container. חיבור כזה הוא הרחבה נפרדת.
+- ברירת המחדל האוטונומית `Stay in place` רק מדפיסה. תרגיל הרצף מוסיף אפשרות לימודית ב־SIM.
+
+## מגבלות האימות בענן
+
+קריאת המקור וה־imports המקומיים אומתו. ניסיון בניית הרובוט נעצר בהורדת JARs שמופנים מ־`frcmaven.wpi.edu` אל `storage.googleapis.com`, בגלל HTTP 403 מה־proxy. לכן לא נטען שהדוגמאות עברו קומפילציה מלאה או שהסימולציה הושקה בענן. קוד הדוגמאות נבדק מול חתימות המקור; יש להריץ את בניית הרובוט ואת הניסויים לאחר השלמת הגישה ותיקון תצורת ה־swerve.
+
+זו מגבלת אימות נוספת, נפרדת מהחסר בהגדרות. אין להסיק ש־build מוצלחת תפתור ערכי null בזמן אתחול. אין בדיקת חומרה במסגרת כתיבת הדפים.
+
+## בדיקת המנגנון הלימודי לפני מפגש
+
+המנטור מוסיף את `TrainingFlywheel` לפי ההוראות במאגר ניסוי אישי, מוודא שה־ID הלימודי פנוי בסימולציה, ובודק מדידה, Coast, ביטול פקודה, דרישות, bindings, timeout ובקרה. אין להסיר את הגנת SIM או לפרוס את הקובץ הלימודי לחומרה. שינוי חומרה מקבל תצורה ובדיקות נפרדות.
+
+כל החוסרים כאן מדווחים במפורש; לא בוצעו שינויי מקור במאגר robot-template כחלק מכתיבת EagleDocs.

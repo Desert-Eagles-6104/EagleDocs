@@ -1,0 +1,75 @@
+---
+title: "הסימולציה הראשונה: מצבים, שלט ונהיגה"
+sidebar_position: 3
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+**המטרה היא לשלוט ברובוט הקיים, לא לבנות סימולטור חדש.** התקינו את [WPILib VS Code 2026](../../getting-started/installation/installation.md) אם עדיין לא עשיתם זאת. התבנית משתמשת ב־GradleRIO `2026.2.1`, וקוד Java מכוון לגרסה 17.
+
+:::warning תנאי להרצה
+[מוכנות התבנית](../template-readiness.mdx) היא תנאי לניסוי: בגרסה שנבדקה הגדרות swerve אינן מאותחלות. אם ההרצה נכשלת בבנאי, עצרו והציגו למנטור את השגיאה. לא מתקנים באמצעות CAN IDs אקראיים, ולא מתחילים שיעור נהיגה לפני שהבסיס נבדק.
+:::
+
+## 1. בונים ומפעילים
+
+בחלון הפקודות בחרו **WPILib: Build Robot Code**. לאחר הצלחה בחרו **WPILib: Simulate Robot Code**, ובחרו את אפשרויות GUI ו־Driver Station אם מופיעה בחירה. ב־`build.gradle` שתיהן כבר מופעלות כברירת מחדל:
+
+```groovy
+wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addDriverstation().defaultEnabled = true
+```
+
+לא מפעילים את Main עם כפתור Run Java רגיל: המשימה של WPILib מכינה גם ספריות native. חלופה בטרמינל Windows בשורש המאגר:
+
+```bash
+./gradlew.bat simulateJava
+```
+
+ב־PowerShell אפשר להשתמש ב־`.\gradlew.bat simulateJava`. ב־Linux/macOS: `bash gradlew simulateJava`. בנייה יכולה להריץ `spotlessApply`; בדקו את ה־diff לפני commit.
+
+## 2. מפעילים את ה־Driver Station של הסימולציה
+
+בחלון הסימולציה הציגו את חלונית Driver Station אם היא מוסתרת. התחילו Disabled. בחרו **Blue alliance** ותחנת קבוצה; הקוד מחזיר מהירויות אפס כאשר `DriverStation.getAlliance()` ריק. בחרו Teleop ורק אז Enable. שמות ומיקום החלוניות עשויים להשתנות; [מדריך GUI הרשמי](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html) מציג את הממשק האמיתי.
+
+חברו שלט לפני Enable. בחלונית Joysticks שייכו אותו ליציאה **0**, ובדקו שהצירים משתנים. הקוד מתחיל עם מיפוי PS5 ומנסה לזהות Xbox או DualSense בעת כניסה ל־teleop. שלט לא מזוהה מצריך בדיקת המיפוי עם המנטור. אין בתבנית מיפוי מקלדת מוכן לנהיגה.
+
+### כלי בדיקת שלט שכבר קיים
+
+אם הכפתור אינו מזוהה, השאירו Disabled ובדשבורד בחרו `CONTROLLER_DIAGNOSTICS` מתוך `Test Mode`. עברו Test והפעילו Enable בסימולציה. `ControllerDiagnosticsBindings` מדפיסה `[ControllerTest]` ושם הקלט בכל לחיצה. בדקו North, South ו־Options, חזרו Disabled ואז Teleop. אין צורך לכתוב מערכת בדיקת כפתורים חדשה. בחרו רק את מצב האבחון הזה לתרגיל, ולא מצב כיול swerve.
+
+## 3. רואים תנועה
+
+פתחו AdvantageScope דרך כלי WPILib והתחברו ל־NetworkTables של הסימולציה במחשב המקומי. חפשו `Subsystems/Swerve` ובחרו את `Pose` בתצוגת שדה; נתוני Logger עשויים להופיע מתחת ל־`/AdvantageKit`. התאימו שדה 2026 או צפו בקואורדינטות גם בלי מודל שדה. `FieldSimulation/Fuel` מציג חלקי משחק, ולא את תנוחת הרובוט.
+
+הניעו בעדינות את הסטיק השמאלי לתרגום ואת הימני בציר X לסיבוב. החזירו למרכז ובדקו שהמהירות מתאפסת. לחצו Disable ובדקו שאי אפשר לנהוג. רשמו תנוחה לפני ואחרי ותעדו אם תזוזה בשלט אכן הגיעה לרובוט.
+
+## 4. שינוי קטן בקוד קיים
+
+ב־`RobotContainer.configureTeleopBindings()`, אחרי הגדרת פקודת ברירת המחדל, הוסיפו:
+
+```java
+this.swerveSubsystem.setTeleopVelocityCoefficient(0.35);
+this.swerveSubsystem.setRotationVelocityCoefficient(0.35);
+```
+
+בנו והפעילו מחדש. אותה הטיית סטיק אמורה להפיק מהירות קטנה יותר. קראו את ה־diff, בצעו commit ו־push למאגר האישי.
+
+### מה לא נכון פה?
+
+השלט מזוהה, Teleop מופעל, אבל Alliance לא נבחר. תלמיד מעלה את מקדם המהירות ל־10 כדי ״לתקן״. מה תבדקו קודם?
+
+<ExerciseHelp
+  hints={[
+    "קראו calculateSpeedsBasedOnJoystickInputs ב־SwerveSubsystem.",
+    "יש שם return מוקדם לפני קריאת הצירים.",
+  ]}
+  solution={
+    "נבחר Alliance ונבדוק port 0, צירים, מצב ופקודת ברירת מחדל. ללא Alliance הקוד מחזיר ChassisSpeeds של אפס. מקדם גדול אינו פותר קלט חסר ויכול לגרום לתנועה חדה כאשר הבעיה תיפתר."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הציגו נהיגה, עצירה ושינוי מהירות עם מדידה. אם תנאי ההרצה לא התקיים, רשמו ״ניסוי חסום״ ואת השגיאה; אל תסמנו הצלחה על סמך חלון פתוח בלבד.

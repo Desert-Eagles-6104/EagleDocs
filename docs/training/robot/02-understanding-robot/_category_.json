@@ -1,0 +1,8 @@
+{
+  "label": "מבינים איך הרובוט רץ",
+  "position": 2,
+  "link": {
+    "type": "doc",
+    "id": "robot/understanding-robot/index"
+  }
+}

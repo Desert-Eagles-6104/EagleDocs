@@ -1,0 +1,77 @@
+---
+title: "פקודה: פעולה שיש לה התחלה, המשך וסיום"
+sidebar_position: 1
+---
+
+import ExerciseHelp from "@site/src/components/ExerciseHelp";
+
+בזוג ה־InstantCommand היה קל לשכוח עצירה. נרצה פעולה שממשיכה כל עוד מחזיקים כפתור, ומנקה אחריה גם כשמבטלים אותה מסיבה אחרת. **פקודה מתארת פעולה לאורך זמן; תת־המערכת נשארת האובייקט שמבצע ומודד.**
+
+## 1. קוראים פקודה אמיתית מהמאגר
+
+פתחו `MotorSubsystemSetPercentage` ואת מחלקת האב `MotorDoubleSupplierCommand`. בקיצור, הקוד הקיים עושה:
+
+```java
+// MotorDoubleSupplierCommand constructor
+addRequirements(motorSubsystem);
+
+// MotorSubsystemSetPercentage.execute()
+this.motorSubsystem.setPercentOutput(this.valueSupplier.getAsDouble(), ignoreSoftLimits);
+
+// MotorDoubleSupplierCommand.end(boolean interrupted)
+this.motorSubsystem.disableMotors();
+```
+
+אלה קטעים מתוך מתודות שונות, לא מחלקה חדשה להדבקה. המחלקות משתמשות ב־`edu.wpi.first.wpilibj2.command.Command`.
+
+## 2. ארבע שאלות על מחזור החיים
+
+| מתודה              | מתי?                       | מה נבדוק?              |
+| ------------------ | -------------------------- | ---------------------- |
+| `initialize()`     | פעם בכל תזמון              | הכנה לפעולה            |
+| `execute()`        | במחזורים שבהם הפקודה פעילה | עבודה קצרה וקלט מעודכן |
+| `isFinished()`     | בדיקת סיום במהלך הריצה     | האם הפעולה הושלמה?     |
+| `end(interrupted)` | בסיום או ביטול             | ניקוי ועצירת פלט       |
+
+בפקודת האחוזים `isFinished()` מחזירה תמיד false. לכן נצטרך ביטול, למשל שחרור כפתור או timeout. פקודה יכולה להתוזמן שוב לאחר סיום; זה אינו יצירת המנגנון מחדש.
+
+## 3. מחליפים את השליטה הקודמת
+
+ב־`RobotContainer` הוסיפו:
+
+```java
+import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage;
+```
+
+ב־`configureTeleopBindings()` **החליפו** את זוג ה־bindings מהשיעור הקודם:
+
+```java
+this.trainingFlywheel.ifPresent(flywheel ->
+    this.driverController.northButton().whileTrue(
+        new MotorSubsystemSetPercentage<>(flywheel, () -> 0.15)));
+```
+
+`DoubleSupplier` הוא אובייקט שנותן מספר כאשר מבקשים אותו. הכתיבה `() -> 0.15` נותנת אותו מספר בכל קריאה. היא אינה מריצה מיד את המנוע. `execute()` מבקשת ערך חדש בכל מחזור.
+
+## 4. ניסוי וסיום
+
+לחצו, החזיקו ושחררו. לאחר מכן Disable בזמן לחיצה. פקודת המנוע צריכה להתבטל, `end` צריכה לבטל פלט, והגלגל יכול לדעוך בגלל Coast. השתמשו בנתון `Subsystems/TrainingFlywheel/Command` כדי לראות איזו פקודה פעילה.
+
+### מה לא נכון פה?
+
+תלמיד החליף `whileTrue` ב־`onTrue`, בלי timeout ובלי ביטול אחר. מה יקרה בשחרור?
+
+<ExerciseHelp
+  hints={[
+    "בדקו isFinished במחלקת האב.",
+    "onTrue מתזמנת בקצה העלייה; היא אינה מבטלת בקצה הירידה.",
+  ]}
+  solution={
+    "פקודת האחוזים לא מסתיימת בעצמה ולכן תמשיך לאחר השחרור. whileTrue מתזמנת בלחיצה ומבטלת בשחרור. Disable מבטל גם הוא פקודות רגילות, אך אינו תחליף להתנהגות שחרור נכונה."
+  }
+  solutionLanguage="text"
+/>
+
+## בדיקת סיום
+
+הסבירו מדוע לא צריך כאן `onFalse` נוסף, ובאילו שני מצבים `end(true)` צפויה להתבצע. שמרו commit שמחליף את המימוש הקודם, בלי להשאיר שתי גרסאות bindings פעילות.
