@@ -62,7 +62,7 @@ export default function Home(): ReactNode {
             <FeatureCard
               title="קוד הרובוט"
               description="היכרות עם מבנה הפרויקט, מערכות הרובוט והאופן שבו הקוד שלנו עובד."
-              href="/docs/category/robot"
+              href="/docs/training/robot"
               cta="להיכרות עם הרובוט ←"
             />
           </div>

@@ -6,8 +6,6 @@ import rehypeKatex from "rehype-katex";
 import remarkCodeImport from "remark-code-import";
 
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
   title: 'EagleDocs',
   tagline: 'אתר התיעוד הרשמי של Desert Eagles',
@@ -20,13 +18,15 @@ const config: Config = {
 
   // Set the production url of your site here
   url: 'https://deserteagles6104.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/docs/',
   trailingSlash: true,
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -64,11 +64,22 @@ const config: Config = {
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
-        docsRouteBasePath: '/docs',
-        blogRouteBasePath: '/blog',
+        docsRouteBasePath: ['training', 'lib'],
+        indexBlog: false,
         hashed: true,
         language: ['he', 'en'],
         indexPages: true,
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'lib',
+        path: 'docs/lib',
+        routeBasePath: 'lib',
+        sidebarPath: './sidebars/lib.ts',
+        remarkPlugins: [remarkCodeImport, remarkMath],
+        rehypePlugins: [rehypeKatex],
       },
     ],
   ],
@@ -78,11 +89,14 @@ const config: Config = {
       'classic',
       {
         docs: {
-          routeBasePath: '/',
-          sidebarPath: './sidebars.ts',
+          path: 'docs/training',
+          routeBasePath: 'training',
+          sidebarPath: './sidebars/training.ts',
           remarkPlugins: [remarkCodeImport, remarkMath],
           rehypePlugins: [rehypeKatex],
         },
+
+        blog: false,
 
         theme: {
           customCss: './src/css/custom.css',
@@ -104,17 +118,23 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          to: '/training/getting-started/',
           position: 'left',
-          label: 'מדריכים',
+          label: 'מדריכים והכשרות',
+          activeBaseRegex: '^/training/',
         },
         {
-          to: "/javadoc/",
-          label: "Javadoc",
-          position: "left",
-          target: "_blank",
-          rel: "noopener noreferrer",
+          to: '/lib/',
+          position: 'left',
+          label: 'ספריית DELib',
+          activeBaseRegex: '^/lib/',
+        },
+        {
+          to: '/javadoc/',
+          label: 'Javadoc',
+          position: 'left',
+          target: '_blank',
+          rel: 'noopener noreferrer',
         },
         {
           href: 'https://github.com/Desert-Eagles-6104/EagleDocs',

@@ -2,7 +2,7 @@
 id: installation
 title: מתקינים את סביבת העבודה
 sidebar_position: -2
-slug: /training/java/installation
+slug: /java/installation
 ---
 
 # מתקינים את סביבת העבודה
@@ -65,6 +65,6 @@ slug: /training/java/installation
 
 חזרו לבדיקה שבה נעצרתם, כדי לוודא שהמחשב מוכן ולהמשיך משם.
 
-### [חוזרים לבדיקת המחשב ←](./check-setup/check-setup.mdx)
+### [חוזרים לבדיקת המחשב ←](../check-setup/check-setup.mdx)
 
 [מדריך ההתקנה הרשמי של WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html)

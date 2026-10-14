@@ -2,7 +2,7 @@
 id: first-project
 title: יוצרים ומריצים פרויקט ראשון
 sidebar_position: -1
-slug: /training/java/first-project
+slug: /java/first-project
 ---
 
 # יוצרים ומריצים פרויקט ראשון
@@ -25,7 +25,7 @@ slug: /training/java/first-project
 1. פתחו **WPILib VS Code 2026**.
 2. בחרו **View → Command Palette**, או לחצו `Ctrl + Shift + P`.
 3. בחלונית למעלה הקלידו `Java: Create Java Project`.
-4. לחצו על הפקודה המתאימה. אם חסרה, חזרו ל־[התקנת התמיכה ב־Java](../../getting-started/installation/installation.md#java-support).
+4. לחצו על הפקודה המתאימה. אם חסרה, חזרו ל־[התקנת התמיכה ב־Java](../../getting-started/installation/installation.md).
 5. ברשימת סוגי הפרויקטים בחרו **No build tools**.
 6. בחלון בחירת התיקייה, מצאו את `FRC-Training`, בחרו אותה ואשרו. זו התיקייה שבתוכה ייווצר הפרויקט.
 7. כשמתבקשים להקליד שם לפרויקט, כתבו את השם שלכם באנגלית ואחריו `JavaTraining`, בלי רווחים. למשל, משה יכתוב `MosheJavaTraining`. לחצו Enter. אם כבר קיימת תיקייה בשם הזה ששייכת לתלמיד אחר, הוסיפו גם את שם המשפחה שלכם באנגלית.
@@ -103,7 +103,7 @@ Hello, World!
 | --- | --- |
 | אין פקודה ליצירת פרויקט | בדקו ש־Project Manager for Java מותקן ומופעל |
 | אין Run מעל main | המתינו לטעינת Java, בדקו את התוספים וודאו שפתחתם את כל תיקיית הפרויקט דרך File → Open Folder |
-| מופיעה בקשה ל־JDK | עברו ל־[הוראות בחירת Java לפרויקט](../../getting-started/installation/installation.md#java-project-path) |
+| מופיעה בקשה ל־JDK | עברו ל־[הוראות בחירת Java לפרויקט](../../getting-started/installation/installation.md) |
 | השם Main מסומן כשגיאה | ודאו ששם הקובץ הוא Main.java וששם המחלקה הוא Main |
 | מופיעה שגיאה אחרת | השוו לקוד המלא: סוגריים, מרכאות ונקודה־פסיק חשובים. אם עדיין נתקעתם, הראו למנטור את ההודעה |
 
@@ -111,6 +111,4 @@ Hello, World!
 
 פתחו את WPILib VS Code 2026 ובחרו **File → Open Folder**. בחרו את תיקיית הפרויקט עם השם שלכם שבתוך `FRC-Training`, למשל `MosheJavaTraining`. במחשב משותף ודאו שבחרתם את הפרויקט שלכם. פתחו את `src`, ואז את `Main.java`.
 
-**שמרו את הפרויקט - נשתמש בו בהכשרה.** כשנוסיף מחלקות, ניצור קובצי Java נוספים בתוך `src` ונשמור את הקיימים.
-
-### [ממשיכים לשיעור הראשון: משתנים ←](../01-variables/index.mdx)
+**שמרו את הפרויקט - נשתמש בו בהכשרה.** כשנוסיף מחלקות, 

@@ -23,8 +23,6 @@ type Props = {
   since?: string;
   status?: Status;
 
-  // If omitted, will use tags from front matter (YAML) when available
-  tags?: string[];
 };
 
 function Badge({ children }: { children: React.ReactNode }) {
