@@ -1,6 +1,9 @@
 {
   "label": "מתחילים: מאגר וסימולציה",
   "position": 1,
+  "customProps": {
+    "devOnly": true
+  },
   "link": {
     "type": "doc",
     "id": "robot/getting-started/index"

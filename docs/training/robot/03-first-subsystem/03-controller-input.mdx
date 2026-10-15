@@ -22,7 +22,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 `northButton()`, `southButton()`, `westButton()` ו־`eastButton()` מתארות מיקום, ולא את הכיתוב של יצרן אחד. `getLeftY()` קוראת ציר מספרי; כפתור מחזיר תנאי לחיצה. מיפוי Xbox ו־PS5 נמצא ב־`ControllerMappings`.
 
-ב־`RobotContainer.configureTeleopBindings()` הסירו את ניסוי האחוזים הזמני, והשאירו את נהיגת ה־swerve. הוסיפו:
+ודאו שהסרתם מ־`TrainingFlywheel` את מתודת `periodic()` הלימודית מהשיעור הקודם. אחרת היא תפעיל שוב את המנוע גם אחרי שחרור הכפתור. ב־`RobotContainer.configureTeleopBindings()` השאירו את נהיגת ה־swerve והוסיפו:
 
 ```java
 this.trainingFlywheel.ifPresent(flywheel -> {
@@ -52,7 +52,7 @@ this.trainingFlywheel.ifPresent(flywheel -> {
 | שחרור North                | משוחרר           | הפלט מבוטל; המהירות יכולה לדעוך |
 | Disabled בזמן לחיצה        | יכול להישאר לחוץ | אין אישור להמשיך להפעיל         |
 
-חפשו `configureTeleopBindings` באמצעות Ctrl + F ב־RobotContainer. ודאו שהסרתם את ניסוי האחוזים הקודם, כך שאפשר להסביר איזה binding אחראי עכשיו לתנועה.
+חפשו `configureTeleopBindings` באמצעות Ctrl + F ב־RobotContainer. ודאו שהסרתם את מתודת `periodic()` הלימודית, כך שאפשר להסביר איזה binding אחראי עכשיו לתנועה.
 
 ### מה לא נכון פה?
 
