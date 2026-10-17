@@ -1,6 +1,7 @@
 {
   "label": "תכנות רובוט",
   "position": 3,
+  "className": "hidden",
   "link": {
     "type": "doc",
     "id": "robot/index"

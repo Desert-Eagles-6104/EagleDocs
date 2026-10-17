@@ -20,6 +20,7 @@ const config: Config = {
   url: 'https://deserteagles6104.com',
   baseUrl: '/docs/',
   trailingSlash: true,
+  noIndex: true,
 
   onBrokenLinks: 'warn',
   markdown: {
