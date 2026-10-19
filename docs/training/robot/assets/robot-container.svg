@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="550" viewBox="0 0 1000 550" role="img" aria-labelledby="title desc">
+  <title id="title">Robot ו־RobotContainer</title>
+  <desc id="desc">Robot קוראת ל־RobotContainer ליצירת מערכות פעם אחת, הגדרת שלט, פרסום מידע ועצירה. בנפרד המתזמן מעדכן את המערכות והפקודות בכל מחזור.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#536a84"/></marker></defs>
+  <rect width="1000" height="550" rx="24" fill="#f2f6fc"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
+    <text x="500" y="45" font-size="27" font-weight="700" direction="rtl">מתי עובדים, ואיפה מחברים את המערכות?</text>
+    <rect x="660" y="80" width="300" height="310" rx="18" fill="#dfe9f6" stroke="#819fc3" stroke-width="2"/>
+    <text x="810" y="117" font-size="25" font-weight="700">Robot</text>
+    <text x="810" y="148" font-size="19" direction="rtl">מנהלת את זמני הריצה</text>
+    <text x="810" y="200" font-size="19" direction="rtl">בתחילת התוכנית</text>
+    <text x="810" y="255" font-size="19" direction="rtl">בכניסה ל־Teleop</text>
+    <text x="810" y="310" font-size="19" direction="rtl">במהלך הריצה</text>
+    <text x="810" y="365" font-size="19" direction="rtl">כשנדרשת עצירה</text>
+    <rect x="40" y="80" width="480" height="310" rx="18" fill="#fff" stroke="#25866c" stroke-width="2"/>
+    <text x="280" y="117" font-size="25" font-weight="700">RobotContainer</text>
+    <text x="280" y="148" font-size="19" direction="rtl">מחזיקה מערכות ומחברת ביניהן</text>
+    <text x="280" y="190" font-size="18">getInstance() → constructor</text>
+    <text x="280" y="214" font-size="16" direction="rtl">יצירת מערכות ושמירתן בשדות - פעם אחת</text>
+    <text x="280" y="255" font-size="19">configureTeleopBindings()</text>
+    <text x="280" y="310" font-size="19">logTelemetry()</text>
+    <text x="280" y="365" font-size="19">disableAll()</text>
+    <g stroke="#536a84" stroke-width="2.5" marker-end="url(#arrow)"><path d="M650 194H530"/><path d="M650 249H530"/><path d="M650 304H530"/><path d="M650 359H530"/></g>
+    <text x="590" y="177" font-size="15" direction="rtl">קריאות בקוד</text>
+    <rect x="40" y="420" width="920" height="100" rx="16" fill="#d7f1e8"/>
+    <text x="500" y="448" font-size="18" font-weight="700" direction="rtl">בנוסף: מסלול העבודה המחזורית</text>
+    <text x="500" y="478" font-size="19" direction="ltr">Robot.robotPeriodic() → CommandScheduler.run() → subsystems / commands</text>
+    <text x="500" y="504" font-size="17" direction="rtl">המתזמן מעדכן מערכות ופקודות; לא יוצרים אותן מחדש בכל מחזור.</text>
+  </g>
+</svg>

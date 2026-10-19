@@ -73,8 +73,12 @@
 
 /* Math */
 .theme-doc-markdown .katex {
-  /*rtl:ignore*/
+  /*rtl:begin:ignore*/
   direction: ltr;
+  unicode-bidi: isolate;
+  /*rtl:end:ignore*/
+
+  display: inline-block;
 }
 
 

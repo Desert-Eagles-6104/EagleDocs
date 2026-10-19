@@ -3,6 +3,8 @@ import CodeBlock from '@theme/CodeBlock';
 import styles from './styles.module.css';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 /**
  * hints: Array of strings or React elements.
@@ -114,7 +116,10 @@ export default function ExerciseHelp({
             {typeof solution === 'string' ? (
               solutionLanguage === 'text' ? (
                 <div className={styles.solutionBody}>
-                  <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkBreaks, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                  >
                     {solution}
                   </ReactMarkdown>
                 </div>

@@ -33,13 +33,13 @@ slug: /java/installation
 2. בחרו **Everything** כדי להתקין את כל מה שנצטרך.
 3. במחשב אישי לחצו **Install for this User**. במחשב משותף בקשו מהמנטור לבחור את אפשרות ההתקנה המתאימה.
 
-![אפשרויות ההתקנה — בוחרים Everything](./assets/installer-options.png)
+![אפשרויות ההתקנה - בוחרים Everything](./assets/installer-options.png)
 
 4. במסך הבא לחצו **Download for this computer only**.
 5. כשההורדה מסתיימת, לחצו **Next**.
 6. המתינו לסיום ההתקנה ולחצו **Finish**.
 
-![הורדת VS Code — בוחרים Download for this computer only](./assets/installer-vscode-download.png)
+![הורדת VS Code - בוחרים Download for this computer only](./assets/installer-vscode-download.png)
 
 ## 4. פותחים את WPILib VS Code
 
