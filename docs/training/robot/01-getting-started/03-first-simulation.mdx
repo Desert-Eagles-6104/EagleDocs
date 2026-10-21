@@ -23,7 +23,7 @@ import InterfaceScreenshot4 from "../assets/interfaces/advantagescope-field.png"
 
 את הבנייה הראשונה כבר ביצענו בפרק יצירת המאגר. אם עדיין לא קיבלתם `BUILD SUCCESSFUL`, חזרו ל[בנייה הראשונה ופתרון תקלות](./02-template-repository.mdx#first-build) לפני ההרצה.
 
-## 2. מפעילים סימולציה
+## 2. מפעילים סימולציה {#run-simulation}
 
 1. לחצו **F5** ובחרו **WPILib Desktop Debug** אם מופיעה בחירת הרצה. זו הרצת סימולציה עם כלי Debug שמאפשרים לעדכן קוד בזמן הריצה.
 2. אפשר גם לפתוח את [חלון הפקודות](./00-working-in-vscode.mdx#command-palette).
@@ -137,7 +137,7 @@ import InterfaceScreenshot4 from "../assets/interfaces/advantagescope-field.png"
 
 נוסיף הודעה שמופיעה בפלט כשעוברים למצב שליטה בשלט. אין צורך להבין את מערכת הנהיגה: נשנה רק טקסט שרואים על המסך.
 
-1. חזרו ל־Disabled. לצורך עדכון קוד תוך כדי הריצה, ודאו שהסימולציה הופעלה באמצעות F5 ובתצורת **WPILib Desktop Debug**.
+1. חזרו ל־Disabled. לצורך עדכון קוד תוך כדי הריצה, הפעילו את הסימולציה במצב Debug לפי [הסבר ההפעלה](#run-simulation).
 2. [פתחו קובץ וחפשו בתוכו](./00-working-in-vscode.mdx#files): הקובץ הוא `src/main/java/frc/robot/Robot.java`, והטקסט לחיפוש הוא `public void teleopInit()`.
 3. המתודה הזאת היא קטע קוד שמופעל פעם אחת בכל כניסה למצב Teleop. מיד אחרי הסוגר הפותח `{` שלה הוסיפו את השורה הבאה. השאירו את יתר הקוד במקומו:
 
@@ -153,8 +153,8 @@ System.out.println("Hello from my robot!");
   solutionLanguage="text"
 />
 
-4. שמרו את הקובץ ולחצו על **אייקון הברק — Apply Code Changes** ב־VS Code. המתינו לסיום העדכון והשאירו את הסימולציה ב־Disabled. אם אין הרצת Debug פעילה, התחילו אותה עם F5. אם העדכון מדווח על שינוי שאינו נתמך, עצרו והפעילו מחדש עם F5.
-5. פתחו את [פלט ההרצה ב־VS Code](./00-working-in-vscode.mdx#output), עברו בסימולציה ל־Teleoperated וחפשו `Hello from my robot!`. **תוצאה צפויה:** ההודעה מופיעה פעם אחת בזמן המעבר. אם מצב Teleop נבחר אוטומטית בתחילת ההרצה, ייתכן שהודעה כבר מופיעה; חזרו ל־Disabled כדי לבדוק מעבר נוסף.
+4. שמרו את הקובץ ולחצו על **אייקון הברק — Apply Code Changes** ב־VS Code. המתינו לסיום העדכון והשאירו את הסימולציה ב־Disabled. אם אין הרצת Debug פעילה, הפעילו את הסימולציה. אם העדכון מדווח על שינוי שאינו נתמך, הפעילו מחדש את הסימולציה.
+5. עברו בסימולציה ל־Teleoperated ובטרמינל ההרצה חפשו `Hello from my robot!`. **תוצאה צפויה:** ההודעה מופיעה פעם אחת בזמן המעבר. אם מצב Teleop נבחר אוטומטית בתחילת ההרצה, ייתכן שהודעה כבר מופיעה; חזרו ל־Disabled כדי לבדוק מעבר נוסף.
 6. חזרו ל־Disabled ואז שוב ל־Teleoperated. ההודעה אמורה להופיע פעם נוספת. כך רואים שהשורה שכתבתם רצה בכל כניסה למצב הזה.
 7. פתחו Source Control ובדקו שהשינוי שלכם הוא שורת ההודעה ב־`Robot.java`. שמרו Commit ושלחו Push לפי [הצעדים שכבר ביצענו](./02-template-repository.mdx#6-יוצרים-קובץ-אחד-ושומרים-שינוי-ראשון), עם הודעה כמו `Add teleop greeting`.
 
