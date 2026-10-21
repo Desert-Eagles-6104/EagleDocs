@@ -1,10 +1,9 @@
 {
-  "label": "מנגנון ראשון: גלגל מסתובב",
+  "label": "מפעילים מערכת ראשונה",
   "position": 3,
   "customProps": {
     "devOnly": true
   },
-  "className": "hidden",
   "link": {
     "type": "doc",
     "id": "robot/first-subsystem/index"

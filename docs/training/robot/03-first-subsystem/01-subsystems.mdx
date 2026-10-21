@@ -1,108 +1,63 @@
 ---
-title: "מנגנון ראשון: אחריות, הגדרה ואובייקט אחד"
+title: "מוסיפים מערכת לרובוט"
 sidebar_position: 1
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
-import useBaseUrl from "@docusaurus/useBaseUrl";
 
-יש לנו מחזור ריצה ומתזמן שקוראים למתודות שוב ושוב. אבל איך הקוד הזה מדבר עם הרובוט? דרך תת־מערכת שמחזיקה את החיבור לרכיבים ומציעה פעולות. עכשיו נוסיף גלגל לימודי שמסתובב סביב ציר, ונפעיל אותו באחוז כוח פשוט מתוך periodic של תת־המערכת. **תת־מערכת מחזיקה את הרכיבים ואת המדידות ומציעה פעולות; פקודה תחליט מתי לבצע אותן.** זה אותו רעיון של הכמסה שלמדנו ב־Java, בתוך רובוט שנשאר פעיל.
+בשיעור הזה נחבר לרובוט תת־מערכת שכבר כתובה עבורנו: `TrainingFlywheel`, גלגל שמונע באמצעות מנוע אחד. לאחר החיבור נכתוב קוד שמפעיל אותה, נשנה את הפלט ונראה את התוצאה בסימולציה ובגרף.
 
-:::info זו תוספת שלכם
-בתבנית אין כרגע flywheel שנוצר ב־RobotContainer. `FlywheelShotDropSim` רק מחשבת ירידת מהירות ואינה מנגנון מחובר. ניצור `TrainingFlywheel` במאגר האישי באמצעות `MotorSubsystemTalon` ו־`DCMotorMechanismSim` שכבר קיימים. לא נכתוב מנוע פיזיקלי או סביבת סימולציה חדשה. כל התוספת כאן מוגבלת לסימולציה.
-:::
+**תת־מערכת (Subsystem)** היא מחלקה שאחראית על חלק מסוים ברובוט: הרכיבים שלו, המדידות שלו והפעולות שאפשר לבצע בו. למשל, תת־מערכת של גלגל מסתובב מחזיקה את החיבור למנוע ומאפשרת לבקש ממנו להסתובב או להפסיק להפעיל כוח.
 
-### מתחילים ממשהו שאפשר לראות
+{/* TODO למנטור: לכלול מראש בריפו ההכשרות את static/training/robot/TrainingFlywheel.java בנתיב src/main/java/frc/robot/subsystems/training/TrainingFlywheel.java, ולבדוק את הסימולציה והטלמטריה לפני המפגש. */}
 
-**מנגנון** הוא חלק שנע או מבצע פעולה ברובוט. כאן נבחר גלגל מסתובב, שנקרא גם flywheel. **תצורה (configuration)** היא אוסף ערכים שמספר לקוד איזה מנוע ומודל להשתמש בו. לא נלמד בבת אחת את כל שדות התצורה; קודם נכניס את הדוגמה המוכנה, נוודא שהיא נבנית ונזהה את השם שלה ברשימת הנתונים.
+## 1. מכירים את הקובץ הנתון
 
-1. ב־Explorer פתחו `src/main/java/frc/robot/subsystems`. אם אין תיקיית `subsystems`, לחצו לחיצה ימנית על `robot` ובחרו **New Folder**, בשם `subsystems`.
-2. בתוך `subsystems` צרו תיקיית `training` באותה דרך.
-3. הורידו את הקובץ דרך הקישור שבהמשך ושמרו אותו בתיקיית `training` בשם `TrainingFlywheel.java`. אפשר גם ליצור **New File** בשם הזה ולהעתיק אליו את הקוד המלא.
-4. פתחו את הקובץ מתוך Explorer. **תוצאה צפויה:** שם הלשונית הוא TrainingFlywheel.java, והשורה הראשונה מתחילה ב־`package frc.robot.subsystems.training;`.
-
-שלושה דברים לזהות עכשיו: `extends MotorSubsystemTalon` משתמשת במחלקת הבסיס שכבר כתובה; הבנאי מוסר לה תצורה באמצעות `super`; `withName("TrainingFlywheel")` קובעת את השם שנחפש בנתונים. משמעות יתר הערכים תתברר כשנצטרך לשנות אותם.
-
-## 1. מגדירים את המנגנון
-
-צרו `src/main/java/frc/robot/subsystems/training/TrainingFlywheel.java`. אפשר <a href={useBaseUrl('/training/robot/TrainingFlywheel.java')} download>להוריד את הקובץ הלימודי</a>. זה הקוד המלא:
-
-<details>
-<summary>הקוד המלא להעתקה - בשלב הזה מתמקדים בשלוש השורות שהוסברו</summary>
+פתחו `TrainingFlywheel.java` באמצעות Ctrl + P. בתוך המחלקה תראו בנאי ומתודה בשם `createConfiguration()`:
 
 ```java
-package frc.robot.subsystems.training;
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import frc.DELib26.motors.MasterMotorConstants;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemConfiguration;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemTalon;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.mechanismSim.DCMotorMechanismSim.DCMotorMechanismSimConfig;
-import frc.DELib26.util.RunMode;
-
 public final class TrainingFlywheel extends MotorSubsystemTalon {
     public TrainingFlywheel() {
-        super(createConfiguration());
+        super(TrainingFlywheel.createConfiguration());
     }
 
-    private static MotorSubsystemConfiguration createConfiguration() {
-        if (!RunMode.isSim()) {
-            throw new IllegalStateException("TrainingFlywheel is simulation-only");
-        }
-        TalonFXConfiguration motor = new TalonFXConfiguration();
-        motor.Feedback.SensorToMechanismRatio = 1.0;
-        motor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        motor.Slot0.kP = 0.1;
-        motor.Slot0.kV = 0.12;
-
-        return new MotorSubsystemConfiguration()
-            .withName("TrainingFlywheel")
-            .withMaster(new MasterMotorConstants(50, "rio", true, motor))
-            .withRotationsPerPositionUnit(1.0)
-            .withConventionalPerSubsystemUnit(1.0)
-            .withMechanismType(MotorSubsystemConfiguration.MechanismType.ANGULAR)
-            .withAllowableError(2.0)
-            .withMechanismSimConfig(new DCMotorMechanismSimConfig(0.002, 0.1));
-    }
+    // createConfiguration() מופיעה בהמשך הקובץ הנתון.
 }
-
 ```
 
-</details>
+זהו קטע לזיהוי המבנה, ולא קוד להחלפת הקובץ. כרגע מספיק להבין שלושה דברים:
 
-כרגע משאירים את ערכי המנוע כפי שהם, ומשתמשים בדוגמה רק בסימולציה. `RunMode.isSim()` בודקת אם זו סימולציה, וההגנה בקובץ מונעת יצירת המנגנון הלימודי על חומרה. כדי להשלים את השיעור צריך לזהות את המחלקה, השם שלה והחיבור, לא לכייל מנוע.
+- `TrainingFlywheel` היא תת־המערכת שנפעיל.
+- `extends MotorSubsystemTalon` נותנת לה יכולות שכבר נכתבו בספרייה: הפעלת מנוע, קריאת מדידות וסימולציה.
+- הבנאי מעביר למחלקת הבסיס הגדרות שמתקבלות מ־`createConfiguration()`.
 
-<details>
-<summary>למנטור ולהמשך: משמעות ערכי המנוע והמודל</summary>
+**Configuration**, או תצורה, היא אוסף הגדרות של המנוע והמנגנון. ההגדרות כבר מוכנות לתרגיל. קפלו את המתודה בעורך והשאירו את הערכים שלה כפי שהם; נחזור אליהם בהכשרה נפרדת.
 
-אל תדלגו על `RunMode.isSim()`: ההגדרות אינן מיועדות לחומרה. `50` הוא מזהה לתרגיל סימולציה בלבד; לפני הרצה המנטור יוודא שאין התקן אחר עם אותו ID ובאותו bus. `"rio"` הוא שם bus, לא כתובת USB.
+עדיין לא נוצר אובייקט של תת־המערכת. קיום הקובץ בפרויקט מגדיר סוג שאפשר ליצור, אבל אינו יוצר אותו בעצמו.
 
-`MasterMotorConstants` מגדירה כאן גם מודל Kraken X60 ברירת מחדל. בחרנו יחס 1:1 ויחידה אחת לסיבוב, כך שהמדידה והיעד יהיו בסיבובים ובסיבובים לשנייה. `0.002` היא אינרציה ב־kg·m² ו־`0.1` הוא מתח חיכוך במודל; אלו ערכי ניסוי, לא מדידות של מנגנון הקבוצה. ערכי `kP` ו־`kV` משמשים בהמשך לבקרה, ואינם כיול לחומרה.
+## 2. יוצרים מופע אחד ב־RobotContainer
 
-</details>
+איפה בפרויקט יוצרים את המערכות ושומרים אותן לאורך הריצה?
 
-### שתי כתיבות Java שנפגוש בחיבור
-
-`Optional<TrainingFlywheel>` היא תיבה שיכולה להכיל מנגנון או להיות ריקה. בסימולציה נכניס לתיבה את המנגנון; בחומרה נשאיר אותה ריקה. סימני `<...>` אומרים איזה סוג אובייקט התיבה יכולה להחזיק. `Optional.empty()` יוצרת תיבה ריקה.
-
-`ifPresent` אומרת: ״אם יש אובייקט בתיבה, בצעו עליו את הפעולה״. בכתיבה `flywheel -> ...`, השם `flywheel` הוא האובייקט שהתקבל מהתיבה, והחלק אחרי החץ הוא מה שנעשה איתו. זהו ניסוח קצר של פעולה, שנקרא lambda. אין כאן מנגנון שני.
-
-## 2. מוסיפים ל־RobotContainer
-
-פתחו `RobotContainer.java` עם Ctrl + P. **import** היא שורה בתחילת הקובץ שאומרת ל־Java היכן למצוא מחלקה ששמה מוזכר בהמשך. ליד שורות ה־import הקיימות, מחוץ לגוף המחלקה, הוסיפו:
+<ExerciseHelp
+  hints={["חפשו את המקום שבו נוצרה מערכת הנהיגה."]}
+  solution="ב־RobotContainer: השדות מחזיקים את המערכות, ובבנאי יוצרים את המופעים ושומרים אותם בשדות. בהמשך משתמשים באותם מופעים לאורך הריצה."
+  solutionLanguage="text"
+/>
+פתחו את `RobotContainer.java` ומצאו את השדות ואת הבנאי שכבר הכרנו. ליד שורות
+ה־import הוסיפו:
 
 ```java
 import frc.robot.subsystems.training.TrainingFlywheel;
 ```
 
-`Optional` ו־`RunMode` כבר מיובאות שם. באזור השדות - שבו מופיעות השורות של `swerveSubsystem` ו־`visionSubsystem` - הוסיפו:
+באזור השדות, ליד תתי־המערכות הקיימות, הוסיפו:
 
 ```java
 public final Optional<TrainingFlywheel> trainingFlywheel;
 ```
 
-חפשו `private RobotContainer()` בתוך הקובץ. זה הבנאי של האובייקט המרכזי. חפשו בתוכו את השורה שמתחילה ב־`this.visionSubsystem =`. בשורה חדשה אחריה, עדיין בתוך הבנאי, הוסיפו:
+בבנאי `private RobotContainer()`, אחרי יצירת `visionSubsystem`, הוסיפו:
 
 ```java
 this.trainingFlywheel = isSim
@@ -110,51 +65,58 @@ this.trainingFlywheel = isSim
     : Optional.empty();
 ```
 
-`isSim ? ... : ...` היא כתיבה קצרה של בחירה: אם `isSim` היא true משתמשים בחלק שאחרי `?`; אחרת משתמשים בחלק שאחרי `:`. כאן בוחרים תיבה עם מנגנון בסימולציה ותיבה ריקה בחומרה. נוצר אובייקט אחד בעת אתחול. `MotorSubsystemTalon` יורשת מ־`SubsystemBase`, ולכן המתזמן מכיר אותה ומפעיל `periodic()` לעדכון מדידות. אין לקרוא ל־`periodic()` שלה ידנית.
+לפי מה שלמדנו על `Optional` ועל התנאי `? :`, מה יישמר בשדה בסימולציה ומה יישמר בהרצה על חומרה? הסבירו למה רק אחד משני צדי התנאי מתבצע.
 
-## 3. מחברים עצירה ותיעוד
+<ExerciseHelp
+  hints={["בדקו מה הערך של isSim בכל סביבת הרצה ואיזה צד הוא בוחר."]}
+  solution="בסימולציה isSim היא true, ולכן נוצרת TrainingFlywheel ונשמרת בתוך Optional. בחומרה נבחרת Optional.empty(), ללא יצירת תת־המערכת. הביטוי בוחר ומחשב רק את הצד המתאים לתנאי."
+  solutionLanguage="text"
+/>
+`Optional` כבר מיובאת בתבנית.
 
-חפשו `public final void disableAll()` עם Ctrl + F. זו פעולת העצירה של כל המערכות. לפני הסוגר המסיים שלה הוסיפו:
+**נוצר מופע אחד, פעם אחת בעת האתחול.** לא יוצרים את המנוע או את תת־המערכת מחדש בכל מחזור.
 
-```java
-this.trainingFlywheel.ifPresent(TrainingFlywheel::disableMotors);
-```
+## 3. מחברים לוגים
 
-חפשו את הגדרת `logTelemetry()`. **טלמטריה** היא מידע שהתוכנית מפרסמת כדי שנוכל לראות מה קורה. לפני הסוגר המסיים של המתודה הוסיפו:
+בתוך `logTelemetry()`, לפני הסוגר שמסיים את המתודה, הוסיפו:
 
 ```java
 this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
 ```
 
-אל תשנו או תסירו את עצירת ה־swerve. בדקו בנייה, הפעלה ו־Disable לפני הוספת תנועה.
+`ifPresent` מבצעת פעולה אם התיבה מכילה אובייקט. הכתיבה `TrainingFlywheel::logTelemetry` מציינת איזו מתודה להפעיל עליו. השורה מפרסמת את המדידות כדי שנוכל לראות אותן. השאירו את החיבורים של שאר תתי־המערכות במקומם.
 
-### מזהים את המנגנון לפני שמפעילים אותו
+{/* TODO: להוסיף צילום של RobotContainer עם השדה, היצירה בבנאי וחיבור logTelemetry מסומנים. */}
 
-שמרו את שני הקבצים עם Ctrl + S, בנו וחפשו `BUILD SUCCESSFUL`. הפעילו סימולציה ב־Disabled. פתחו AdvantageScope והתחברו כפי שעשינו בשיעור הסימולציה. ברשימת הנתונים חפשו `TrainingFlywheel`.
+## 4. רואים את המערכת בלוגים
 
-**תוצאה צפויה:** מופיע ענף נתונים בשם `Subsystems/TrainingFlywheel`, כולל `Inputs` ו־`Command`. `Command` צפויה להציג `None`, כלומר אין פקודה ששולטת כרגע במנגנון. עוד לא ביקשנו ממנו להסתובב. אם הענף חסר, בדקו שחיברתם `logTelemetry()` ושאתם רואים נתונים מההרצה החדשה. אם יש שגיאת בנייה, בדקו את הנתיב, package ו־import לפני שינוי ערכי המנוע.
-
-ב־`TrainingFlywheel::disableMotors` שני סימני הנקודתיים נותנים ל־ifPresent את המתודה שיש להפעיל על המנגנון אם הוא קיים. זו אותה פעולת עצירה שכבר כתובה במחלקת הבסיס, לא קריאה לבנאי.
-
-### מה לא נכון פה?
-
-```java
-@Override
-public void robotPeriodic() {
-    new TrainingFlywheel();
-}
-```
-
-למה new אינו מתאים כאן?
+שמרו והפעילו סימולציה עם F5 במצב Disabled. איזו תצורת הרצה בחרנו כדי להריץ על המחשב?
 
 <ExerciseHelp
-  hints={["מה הבנאי יוצר ורושם מעבר לשדות Java?", "כמה מופעים ייווצרו בשנייה?"]}
-  solution={
-    "הקוד יוצר שוב ושוב תת־מערכת, בקר ומודל סימולציה שנרשמים לתשתית. נוצרת התנגשות משאבים ועבודה מצטברת. ניצור פעם אחת בבנאי RobotContainer ונשמור שדה. לא מחליפים את robotPeriodic המקורית."
-  }
+  hints={["חפשו בשם התצורה את המילה Desktop."]}
+  solution="בוחרים WPILib Desktop Debug. זו הרצה על המחשב עם כלי Debug, ולא תצורת roboRIO שמיועדת לרובוט."
+  solutionLanguage="text"
+/>
+התחברו עם AdvantageScope כפי שעשינו בשיעור הסימולציה וחפשו `TrainingFlywheel`
+ברשימת הנתונים.
+
+אמור להופיע הענף `Subsystems/TrainingFlywheel`, עם מדידות תחת `Inputs`. עדיין לא ביקשנו מהמנוע לנוע. הנתון `Command` אמור להציג `None`, כי עדיין אין פקודה שמשתמשת בתת־המערכת.
+
+אם הענף חסר, בדקו שהמופע נוצר בסימולציה, ששורת `logTelemetry()` נמצאת בתוך המתודה המתאימה ושאתם מחוברים להרצה הנוכחית.
+
+### עצרו והסבירו
+
+מה היה קורה אילו היינו כותבים `new TrainingFlywheel()` בתוך `robotPeriodic()` במקום בבנאי של `RobotContainer`?
+
+<ExerciseHelp
+  hints={[
+    "כמה פעמים robotPeriodic רצה?",
+    "האם אנחנו צריכים מנוע חדש בכל מחזור, או לשלוח הוראה לאותו מנוע?",
+  ]}
+  solution="היינו יוצרים שוב ושוב תתי־מערכות ובקרי מנוע במקום להשתמש במופע אחד. יוצרים פעם אחת בבנאי ושומרים שדה; בהמשך שולחים הוראות לאותו אובייקט."
   solutionLanguage="text"
 />
 
-## בדיקת סיום
+## לפני שממשיכים
 
-הסבירו למה `Optional.empty()` בחומרה עדיפה על יצירת המנגנון הלימודי שם. שמרו commit נפרד של ההגדרה והחיבור, בלי bindings עדיין.
+הראו למנטור היכן מוגדרת המחלקה, היכן נוצר המופע והיכן מחוברים הלוגים. שמרו commit של החיבור. בשיעור הבא נכתוב ב־`Robot.teleopPeriodic()` את ההוראה הראשונה למנוע.
