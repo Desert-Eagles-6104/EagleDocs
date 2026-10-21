@@ -6,7 +6,6 @@ sidebar_position: 2
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
 import TrainingFlywheelGraphScreenshot from "../assets/training-flywheel-advantagescope-graph-screenshot.png";
 
-
 תת־המערכת מחוברת, אבל עוד לא ביקשנו מהמנוע להסתובב. עכשיו נוסיף לה הוראה שחוזרת בכל מחזור, ונראה איך שינוי בקוד משפיע על התנועה ועל המדידות.
 
 ## 1. נותנים למנוע הוראה
@@ -25,8 +24,7 @@ public static final double TRAINING_OUTPUT = 0.15;
   solutionLanguage="text"
 />
 
-
-הקבוע נשאר פרטי בתת־המערכת. המתודה מאפשרת לשאר הקוד לקרוא את הערך שנבחר בלי להחזיק עותק נוסף שלו.
+הקבוע מוגדר כ־`public static final`, ולכן אפשר לקרוא אותו דרך שם המחלקה: `TrainingFlywheel.TRAINING_OUTPUT`.
 
 כעת פתחו `Robot.java` וחפשו את המתודה הקיימת `teleopPeriodic()` והוסיפו בתוכה את הקריאה למנוע, כך שתיראה כך. אל תיצרו מתודה נוספת באותו שם:
 
@@ -51,10 +49,10 @@ public void teleopPeriodic() {
 
 <ExerciseHelp
   hints={["מה מכילה Optional.empty()?"]}
-  solution="אם ה־Optional ריקה, הפעולה אינה מתבצעת: לא קוראים ל־getTrainingOutput ולא שולחים בקשת פלט למנוע. אם יש בה תת־מערכת, הפעולה מתבצעת עליה."
+  solution="אם ה־Optional ריקה, הפעולה אינה מתבצעת: לא שולחים בקשת פלט למנוע. אם יש בה תת־מערכת, הפעולה מתבצעת עליה."
   solutionLanguage="text"
 />
-בתוך הפעולה, `flywheel.getTrainingOutput()` קוראת את ערך הפלט מתת־המערכת,
+בתוך הפעולה, `TrainingFlywheel.TRAINING_OUTPUT` הוא ערך הפלט שהגדרנו בתת־המערכת,
 ו־`flywheel.setPercentOutput(...)` מעבירה אותו למנוע.
 
 הקריאה `flywheel.setPercentOutput(...)` מפעילה מתודה על אובייקט תת־המערכת. אנחנו משתמשים במנוע שכבר נוצר, ולא מגדירים או יוצרים אותו כאן. מכיוון שהקריאה נעשית מתוך `Robot`, משתמשים באובייקט `flywheel` כדי לגשת למתודה שלו.
@@ -77,7 +75,7 @@ public void teleopPeriodic() {
 
 הפלט משפיע על תנועת המנוע, אבל המהירות בפועל היא מדידה נפרדת. **אנקודר** הוא חיישן שמודד סיבוב; בסימולציה המדידה מחושבת באמצעות המודל המוכן.
 
-{/* TODO: להוסיף צילום של TrainingFlywheel עם הקבוע והמתודה getTrainingOutput, ולצדו Robot.teleopPeriodic עם הקריאה לתת־המערכת. */}
+{/* TODO: להוסיף צילום של TrainingFlywheel עם הקבוע TRAINING_OUTPUT, ולצדו Robot.teleopPeriodic עם הקריאה לתת־המערכת. */}
 
 ## 3. מפעילים ועוצרים
 
@@ -93,12 +91,16 @@ public void teleopPeriodic() {
 
 תחת `Subsystems/TrainingFlywheel/Inputs` מצאו:
 
-- `AppliedVoltage` — המתח שהופעל בפועל.
-- `MechanismVelocityRotPerSec` — מהירות המנגנון בסיבובים לשנייה, או RPS.
+- `AppliedVoltage` - המתח שהופעל בפועל.
+- `MechanismVelocityRotPerSec` - מהירות המנגנון בסיבובים לשנייה, או RPS.
 
 גררו את המהירות אל **Left Axis** ואת המתח אל **Right Axis**, כדי שלכל יחידה יהיה ציר משלה. הפעילו Teleop ואז Disabled ועקבו אחרי שני הקווים.
 
-<a href={TrainingFlywheelGraphScreenshot} target="_blank" rel="noopener noreferrer">
+<a
+  href={TrainingFlywheelGraphScreenshot}
+  target="_blank"
+  rel="noopener noreferrer"
+>
   <img
     src={TrainingFlywheelGraphScreenshot}
     alt="דוגמת ממשק Line Graph ב־AdvantageScope עם אזורי בחירת הנתונים והצירים"
@@ -106,14 +108,13 @@ public void teleopPeriodic() {
   />
 </a>
 
-
 הצילום מציג דוגמת ממשק של מנגנון אחר. אצלכם חפשו מתח שמופיע לאחר Enable ומהירות שעולה בעקבותיו. לאחר Disable פלט ההנעה מתבטל והמהירות דועכת. אם הקו נשאר באפס, בדקו את מצב הרובוט, החיבור ואת בחירת הנתון בגרף.
 
 ## 5. משנים ערך אחד ומשווים
 
-לפני כל שינוי נחשו מה יקרה. ב־`TrainingFlywheel.java` שנו רק את `TRAINING_OUTPUT` ושמרו. כשהסימולציה רצה במצב Debug, לחצו על **אייקון הברק — Apply Code Changes** כדי להחיל את השינוי, והמתינו לסיום העדכון. אין צורך לסגור ולפתוח את הסימולציה בכל שינוי ערך.
+לפני כל שינוי נחשו מה יקרה. ב־`TrainingFlywheel.java` שנו רק את `TRAINING_OUTPUT` ושמרו. כשהסימולציה רצה במצב Debug, לחצו על **אייקון הברק - Apply Code Changes** כדי להחיל את השינוי, והמתינו לסיום העדכון. אין צורך לסגור ולפתוח את הסימולציה בכל שינוי ערך.
 
-הערך נקרא דרך השדה הסטטי TRAINING_OUTPUT, ולכן הקוד המעודכן של השדה מספק אותו גם בהרצה הנוכחית. התחילו כל ניסוי כשהגלגל במנוחה והשוו אחרי אותו משך זמן ב־Enable. אם מתקבלת הודעה שלא ניתן להחיל שינוי מסוים, הפעילו מחדש את הסימולציה.
+לאחר החלת השינוי בדקו שהפלט השתנה בגרף. קבועי `static final` עשויים להשתלב בקוד שקורא אותם בזמן הקומפילציה; אם הערך נשאר כפי שהיה, הפעילו מחדש את הסימולציה. התחילו כל ניסוי כשהגלגל במנוחה והשוו אחרי אותו משך זמן ב־Enable. אם מתקבלת הודעה שלא ניתן להחיל שינוי מסוים, הפעילו מחדש את הסימולציה.
 
 ![](../assets/apply-code-changes-demo.png)
 

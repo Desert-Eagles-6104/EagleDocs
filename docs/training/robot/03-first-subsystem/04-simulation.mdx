@@ -45,9 +45,9 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 <ExerciseHelp
   hints={[
-    "עקבו אחרי TRAINING_OUTPUT, getTrainingOutput, whileTrue וסיום הפקודה.",
+    "עקבו אחרי TrainingFlywheel.TRAINING_OUTPUT, ה־lambda, whileTrue וסיום הפקודה.",
   ]}
-  solution="ערך הפלט נמצא ב־TrainingFlywheel והפקודה קוראת אותו באמצעות getTrainingOutput. whileTrue מבטלת את הפקודה בשחרור, ומימוש הסיום שלה מבטל את פלט המנוע. הוספנו חיבור ב־RobotContainer, לוגים, קבוע ומתודת קריאה, ניסוי ב־teleopPeriodic ולבסוף binding לפקודה. מחלקת הבסיס, הגדרות המנוע, הפקודה ומודל הסימולציה הגיעו מוכנים."
+  solution="ערך הפלט נמצא ב־TrainingFlywheel והפקודה קוראת אותו באמצעות ה־lambda שמחזירה את TrainingFlywheel.TRAINING_OUTPUT. whileTrue מבטלת את הפקודה בשחרור, ומימוש הסיום שלה מבטל את פלט המנוע. הוספנו חיבור ב־RobotContainer, לוגים, קבוע, ניסוי ב־teleopPeriodic ולבסוף binding לפקודה. מחלקת הבסיס, הגדרות המנוע, הפקודה ומודל הסימולציה הגיעו מוכנים."
   solutionLanguage="text"
 />
 

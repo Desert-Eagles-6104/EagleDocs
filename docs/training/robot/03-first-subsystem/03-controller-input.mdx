@@ -16,11 +16,11 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 היכן שמרנו את `TRAINING_OUTPUT`, ואיך קראנו אותו מתוך `Robot`?
 
 <ExerciseHelp
-  hints={["חפשו את המתודה שהוספנו לצד הקבוע."]}
-  solution="הקבוע נמצא בתוך TrainingFlywheel ונקרא דרך המתודה getTrainingOutput() על אובייקט תת־המערכת. גם הפקודה תקרא אותו דרך אותה מתודה; אין להעביר את הקבוע ל־Robot או ל־RobotContainer."
+  hints={["חפשו את השדה TRAINING_OUTPUT בתוך TrainingFlywheel."]}
+  solution="הקבוע נמצא בתוך TrainingFlywheel ונקרא דרך השדה הסטטי TrainingFlywheel.TRAINING_OUTPUT. גם הפקודה תקרא את אותו שדה; אין להעביר את הקבוע ל־Robot או ל־RobotContainer."
   solutionLanguage="text"
 />
-השתמשו באותה מתודה גם עבור הפקודה. הקבוע נשאר ב־`TrainingFlywheel`.
+השתמשו באותו שדה גם עבור הפקודה. הקבוע נשאר ב־`TrainingFlywheel`.
 
 שמרו והחילו את השינוי דרך הברק בהרצת Debug. ב־Teleop, לפני חיבור הפקודה, המנוע אמור להישאר ללא בקשת הפעלה. אם הוא מתחיל להסתובב, בדקו שההוראה הישנה אכן הוסרה ושהשינוי הוחל בהרצה.
 
@@ -39,21 +39,74 @@ import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercenta
 ```java
 this.trainingFlywheel.ifPresent(flywheel -> {
     this.driverController.northButton().whileTrue(
-        new MotorSubsystemSetPercentage<>(flywheel, flywheel::getTrainingOutput));
+        new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT));
 });
 ```
 
+### קוראים את תחביר ה־lambda
+
+בדוגמה יש שתי lambdas. המבנה שלהן הוא `פרמטרים -> פעולה`:
+
+```java
+flywheel -> {
+    // קוד שמשתמש בתת־המערכת שהתקבלה
+}
+```
+
+זו הפעולה שמסרנו ל־`ifPresent`. היא מקבלת פרמטר אחד, שקראנו לו `flywheel`. Java מסיקה שהוא מסוג `TrainingFlywheel` מתוך ה־`Optional<TrainingFlywheel>`. כשיש אובייקט, `ifPresent` מוסרת אותו לפעולה ומריצה את הקוד שבין הסוגריים המסולסלים. לפעולה הזאת אין ערך מוחזר.
+
+ה־lambda השנייה נראית כך:
+
+```java
+() -> TrainingFlywheel.TRAINING_OUTPUT
+```
+
+`()` אומר שאין פרמטרים. אחרי החץ מופיע ביטוי שהערך שלו מוחזר - כאן מספר מסוג `double`. אפשר לכתוב את אותה lambda גם בצורה הארוכה:
+
+```java
+() -> {
+    return TrainingFlywheel.TRAINING_OUTPUT;
+}
+```
+
+הפקודה מצפה ל־`DoubleSupplier`: פעולה שאפשר לקרוא לה כדי לקבל מספר. לכן מוסרים לה את ה־lambda, ולא רק את המספר עצמו. יצירת ה־lambda אינה מפעילה את המנוע; בזמן שהפקודה רצה היא קוראת לפעולה כדי לקבל את אחוז הפלט.
+
+### מה אומרות הסוגריים הזוויתיות?
+
+`MotorSubsystemSetPercentage` היא מחלקה **גנרית**: היא יכולה לעבוד עם סוגים שונים של תתי־מערכות מנוע שיורשות מ־`MotorSubsystemTalon`. סוג תת־המערכת הוא פרמטר של המחלקה. במקרה שלנו הסוג הוא `TrainingFlywheel`.
+
+אפשר לכתוב את יצירת הפקודה עם הסוג במפורש:
+
+```java
+new MotorSubsystemSetPercentage<TrainingFlywheel>(
+    flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
+```
+
+בכתיבה `new MotorSubsystemSetPercentage<>(...)`, הסימנים `<>` נקראים **diamond**. הם מאפשרים ל־Java להסיק את הסוג מהפרמטרים שהעברנו - כאן מהאובייקט `flywheel`. זו אותה בחירת סוג, בכתיבה קצרה יותר. הסוגריים `(...)` שאחריהם מכילים את הפרמטרים לבנאי: תת־המערכת והפעולה שמספקת את הפלט.
+
+### בדקו את עצמכם
+
+למה `flywheel -> { ... }` מקבלת פרמטר, אבל `() -> TrainingFlywheel.TRAINING_OUTPUT` אינה מקבלת פרמטרים? איזה סוג Java מסיקה בתוך `<>` בדוגמה שלנו?
+
+<ExerciseHelp
+  hints={[
+    "מה ifPresent צריכה למסור לפעולה, ומה הפקודה צריכה לקבל מה־DoubleSupplier?",
+    "מה הסוג של האובייקט שהעברנו כפרמטר הראשון לבנאי?",
+  ]}
+  solution="ifPresent מוסרת לפעולה את תת־המערכת שבתוך ה־Optional, ולכן ה־lambda הראשונה מקבלת את flywheel. ה־DoubleSupplier רק מתבקשת להחזיר מספר ואינה צריכה לקבל פרמטר, ולכן נכתבים סוגריים ריקים. מתוך flywheel, Java מסיקה שסוג תת־המערכת של הפקודה הוא TrainingFlywheel."
+  solutionLanguage="text"
+/>
 נקרא את החיבור בחלקים:
 
 - מה יקרה לחיבור הזה אם ה־`Optional` ריקה?
 - `northButton()` הוא הכפתור העליון בקבוצת ארבעת הכפתורים: Triangle ב־PS5 או Y ב־Xbox.
 - `whileTrue` מתזמנת את הפקודה בתחילת הלחיצה ומבטלת אותה בשחרור.
 - לאיזה מופע מתייחס כאן השם `flywheel`? היכן יצרנו אותו?
-- `flywheel::getTrainingOutput` מוסרת לפקודה מתודה שממנה תקרא את הפלט בזמן הריצה. איפה השתמשנו קודם בכתיבה עם `::`? כאן נדרשת מתודה שמחזירה מספר, במקום המתודה שמפרסמת לוגים.
+- `() -> TrainingFlywheel.TRAINING_OUTPUT` היא lambda שמחזירה את ערך השדה כשהפקודה מבקשת אותו. הסוגריים הריקים מציינים שאינה מקבלת פרמטרים.
 
 <ExerciseHelp
   hints={["חזרו לחיבור הלוגים וליצירת המופע בבנאי."]}
-  solution="אם ה־Optional ריקה, בלוק החיבור אינו מתבצע ולא נרשם binding למנגנון. flywheel הוא אותו מופע שנוצר בבנאי RobotContainer. השתמשנו ב־:: גם בחיבור TrainingFlywheel::logTelemetry; כאן flywheel::getTrainingOutput מספקת לפקודה מתודה שמחזירה את אחוז הפלט."
+  solution="אם ה־Optional ריקה, בלוק החיבור אינו מתבצע ולא נרשם binding למנגנון. flywheel הוא אותו מופע שנוצר בבנאי RobotContainer. ה־lambda קוראת את אחוז הפלט מהשדה הסטטי TrainingFlywheel.TRAINING_OUTPUT, בלי צורך במתודת getter."
   solutionLanguage="text"
 />
 
@@ -99,3 +152,32 @@ this.trainingFlywheel.ifPresent(flywheel -> {
   solution="אפשר למשל להחליף northButton ב־southButton. בלי לחיצה אין הפעלה, בזמן ההחזקה הפקודה מבקשת פלט, ובשחרור היא מבוטלת ומפסיקה את הפלט. גם Disable מונע הנעה. teleopPeriodic כבר אינה שולחת פלט למנגנון; הפקודה מנהלת את ההפעלה והעצירה."
   solutionLanguage="text"
 />
+
+### לחיצה מפעילה, לחיצה נוספת עוצרת
+
+עכשיו שנו את החיבור כך שלא צריך להחזיק את הכפתור: לחיצה אחת תתחיל את הפקודה, שחרור ישאיר אותה פעילה ולחיצה נוספת תבטל אותה.
+
+השתמשו ב־`toggleOnTrue` במקום `whileTrue`. הפעולה בודקת בכל תחילת לחיצה אם הפקודה פעילה: אם אינה פעילה היא מתזמנת אותה, ואם היא פעילה היא מבטלת אותה. שחרור הכפתור אינו מחליף את המצב.
+
+החליפו את החיבור הקיים, בלי להוסיף חיבור נוסף לאותו כפתור. לפני הבדיקה כתבו מה צפוי לקרות אחרי לחיצה ראשונה, שחרור, לחיצה שנייה ו־Disable. בדקו גם את המתח והמהירות וגם את שם הפקודה בלוגים.
+
+<ExerciseHelp
+  hints={[
+    "צריך לשנות את המתודה שמחברת את הכפתור לפקודה; הפקודה עצמה נשארת כפי שהיא.",
+    "שחרור אינו לחיצה חדשה. איזו פעולה תבטל עכשיו את הפקודה?",
+  ]}
+  solution={`this.trainingFlywheel.ifPresent(flywheel -> {
+    this.driverController.northButton().toggleOnTrue(
+        new MotorSubsystemSetPercentage<>(
+            flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT));
+});`}
+  solutionLanguage="java"
+/>
+
+<ExerciseHelp
+  hints={["עקבו אחרי הפקודה הפעילה, ולא רק אחרי התנועה שיכולה לדעוך בהדרגה."]}
+  solution="בלחיצה הראשונה הפקודה מתחילה ומבקשת פלט. בשחרור היא ממשיכה לפעול. בלחיצה השנייה היא מבוטלת ומימוש הסיום שלה מבטל את הפלט; המהירות יכולה לדעוך בהדרגה. גם מעבר ל־Disabled מבטל את הפקודה בתבנית שלנו ומונע הנעה. לאחר מכן שחררו את הכפתור וחזרו ל־Teleop: נדרשת לחיצה חדשה כדי להתחיל שוב."
+  solutionLanguage="text"
+/>
+
+בסיום בחרו אם לשמור הפעלה בהחזקה או בהחלפה בלחיצות, וציינו את הבחירה בתיאור ה־commit.
