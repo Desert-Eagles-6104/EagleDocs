@@ -4,7 +4,8 @@ sidebar_position: 2
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
-import GraphScreenshot from "../assets/interfaces/advantagescope-graph.png";
+import TrainingFlywheelGraphScreenshot from "../assets/training-flywheel-advantagescope-graph-screenshot.png";
+
 
 תת־המערכת מחוברת, אבל עוד לא ביקשנו מהמנוע להסתובב. עכשיו נוסיף לה הוראה שחוזרת בכל מחזור, ונראה איך שינוי בקוד משפיע על התנועה ועל המדידות.
 
@@ -13,7 +14,7 @@ import GraphScreenshot from "../assets/interfaces/advantagescope-graph.png";
 פתחו `TrainingFlywheel.java`. בתוך המחלקה, מעל הבנאי, הוסיפו קבוע בעל שם:
 
 ```java
-private static final double TRAINING_OUTPUT = 0.15;
+public static final double TRAINING_OUTPUT = 0.15;
 ```
 
 זה הערך שנשנה במהלך הניסוי. למה מתאים לשמור אותו בתת־המערכת? ומה `final` אומרת על ההשמה שלו?
@@ -24,13 +25,6 @@ private static final double TRAINING_OUTPUT = 0.15;
   solutionLanguage="text"
 />
 
-כדי לקרוא אותו מחוץ למחלקה, הוסיפו בתוכה גם את המתודה הבאה:
-
-```java
-public double getTrainingOutput() {
-    return TRAINING_OUTPUT;
-}
-```
 
 הקבוע נשאר פרטי בתת־המערכת. המתודה מאפשרת לשאר הקוד לקרוא את הערך שנבחר בלי להחזיק עותק נוסף שלו.
 
@@ -40,7 +34,7 @@ public double getTrainingOutput() {
 @Override
 public void teleopPeriodic() {
     RobotContainer.getInstance().trainingFlywheel.ifPresent(flywheel -> {
-        flywheel.setPercentOutput(flywheel.getTrainingOutput(), false);
+        flywheel.setPercentOutput(TrainingFlywheel.TRAINING_OUTPUT, false);
     });
 }
 ```
@@ -104,13 +98,14 @@ public void teleopPeriodic() {
 
 גררו את המהירות אל **Left Axis** ואת המתח אל **Right Axis**, כדי שלכל יחידה יהיה ציר משלה. הפעילו Teleop ואז Disabled ועקבו אחרי שני הקווים.
 
-<a href={GraphScreenshot} target="_blank" rel="noopener noreferrer">
+<a href={TrainingFlywheelGraphScreenshot} target="_blank" rel="noopener noreferrer">
   <img
-    src={GraphScreenshot}
+    src={TrainingFlywheelGraphScreenshot}
     alt="דוגמת ממשק Line Graph ב־AdvantageScope עם אזורי בחירת הנתונים והצירים"
     loading="lazy"
   />
 </a>
+
 
 הצילום מציג דוגמת ממשק של מנגנון אחר. אצלכם חפשו מתח שמופיע לאחר Enable ומהירות שעולה בעקבותיו. לאחר Disable פלט ההנעה מתבטל והמהירות דועכת. אם הקו נשאר באפס, בדקו את מצב הרובוט, החיבור ואת בחירת הנתון בגרף.
 
@@ -118,9 +113,9 @@ public void teleopPeriodic() {
 
 לפני כל שינוי נחשו מה יקרה. ב־`TrainingFlywheel.java` שנו רק את `TRAINING_OUTPUT` ושמרו. כשהסימולציה רצה במצב Debug, לחצו על **אייקון הברק — Apply Code Changes** כדי להחיל את השינוי, והמתינו לסיום העדכון. אין צורך לסגור ולפתוח את הסימולציה בכל שינוי ערך.
 
-הערך נקרא דרך `getTrainingOutput()`, ולכן הקוד המעודכן של המתודה מספק אותו גם בהרצה הנוכחית. התחילו כל ניסוי כשהגלגל במנוחה והשוו אחרי אותו משך זמן ב־Enable. אם מתקבלת הודעה שלא ניתן להחיל שינוי מסוים, הפעילו מחדש את הסימולציה.
+הערך נקרא דרך השדה הסטטי TRAINING_OUTPUT, ולכן הקוד המעודכן של השדה מספק אותו גם בהרצה הנוכחית. התחילו כל ניסוי כשהגלגל במנוחה והשוו אחרי אותו משך זמן ב־Enable. אם מתקבלת הודעה שלא ניתן להחיל שינוי מסוים, הפעילו מחדש את הסימולציה.
 
-{/* TODO: להוסיף צילום VS Code בזמן Debug, עם סימון אייקון הברק Apply Code Changes, ולצדו הקבוע TRAINING_OUTPUT בתת־המערכת. */}
+![](../assets/apply-code-changes-demo.png)
 
 | ערך הקבוע | מה בודקים בתנועה ובגרף?                        |
 | --------- | ---------------------------------------------- |

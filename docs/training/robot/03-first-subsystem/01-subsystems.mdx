@@ -9,8 +9,6 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 **תת־מערכת (Subsystem)** היא מחלקה שאחראית על חלק מסוים ברובוט: הרכיבים שלו, המדידות שלו והפעולות שאפשר לבצע בו. למשל, תת־מערכת של גלגל מסתובב מחזיקה את החיבור למנוע ומאפשרת לבקש ממנו להסתובב או להפסיק להפעיל כוח.
 
-{/* TODO למנטור: לכלול מראש בריפו ההכשרות את static/training/robot/TrainingFlywheel.java בנתיב src/main/java/frc/robot/subsystems/training/TrainingFlywheel.java, ולבדוק את הסימולציה והטלמטריה לפני המפגש. */}
-
 ## 1. מכירים את הקובץ הנתון
 
 פתחו `TrainingFlywheel.java` באמצעות Ctrl + P. בתוך המחלקה תראו בנאי ומתודה בשם `createConfiguration()`:
@@ -86,17 +84,15 @@ this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
 
 `ifPresent` מבצעת פעולה אם התיבה מכילה אובייקט. הכתיבה `TrainingFlywheel::logTelemetry` מציינת איזו מתודה להפעיל עליו. השורה מפרסמת את המדידות כדי שנוכל לראות אותן. השאירו את החיבורים של שאר תתי־המערכות במקומם.
 
-{/* TODO: להוסיף צילום של RobotContainer עם השדה, היצירה בבנאי וחיבור logTelemetry מסומנים. */}
-
 ## 4. רואים את המערכת בלוגים
 
 שמרו והפעילו את הסימולציה במצב Disabled.
 התחברו עם AdvantageScope כפי שעשינו בשיעור הסימולציה וחפשו `TrainingFlywheel`
 ברשימת הנתונים.
 
-אמור להופיע הענף `Subsystems/TrainingFlywheel`, עם מדידות תחת `Inputs`. עדיין לא ביקשנו מהמנוע לנוע. הנתון `Command` אמור להציג `None`, כי עדיין אין פקודה שמשתמשת בתת־המערכת.
+אמור להופיע הענף `Subsystems/TrainingFlywheel`, עם מדידות תחת `Inputs`.  אם הענף חסר, בדקו שהמופע נוצר בסימולציה, ששורת `logTelemetry()` נמצאת בתוך המתודה המתאימה ושאתם מחוברים להרצה הנוכחית.
 
-אם הענף חסר, בדקו שהמופע נוצר בסימולציה, ששורת `logTelemetry()` נמצאת בתוך המתודה המתאימה ושאתם מחוברים להרצה הנוכחית.
+![](../assets/training-flywheel-inputs-logs-in-advantage-scope.png)
 
 ### עצרו והסבירו
 
