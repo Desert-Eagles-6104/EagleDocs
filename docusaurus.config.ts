@@ -119,6 +119,11 @@ const config: Config = {
       },
       items: [
         {
+          to: '/control-playground/',
+          position: 'left',
+          label: 'מעבדת בקרה',
+        },
+        {
           to: '/training/getting-started/',
           position: 'left',
           label: 'מדריכים והכשרות',
