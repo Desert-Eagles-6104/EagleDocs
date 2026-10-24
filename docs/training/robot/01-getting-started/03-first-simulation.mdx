@@ -4,24 +4,22 @@ sidebar_position: 3
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
-import InterfaceScreenshot1 from "../assets/interfaces/vscode-run-simulation.png";
-import InterfaceScreenshot2 from "../assets/interfaces/vscode-pick-extension.png";
-import InterfaceScreenshot3 from "../assets/interfaces/sim-gui-with-labels.png";
-import InterfaceScreenshot4 from "../assets/interfaces/advantagescope-field.png";
+import InterfaceScreenshot1 from "./assets/interfaces/vscode-run-simulation.png";
+import InterfaceScreenshot2 from "./assets/interfaces/vscode-pick-extension.png";
+import InterfaceScreenshot3 from "./assets/interfaces/sim-gui-with-labels.png";
+import InterfaceScreenshot4 from "./assets/interfaces/advantagescope-field.png";
 
 **סימולציה** היא הרצה של קוד הרובוט על המחשב, עם מודל שמחשב איך הרובוט היה מגיב. לא צריך לחבר roboRIO או מנועים. נשתמש בפרויקט שכבר שוכפל, ונפעיל את מערכת הנהיגה הקיימת שלו.
 
 **swerve** היא מערכת הנהיגה שבה כל גלגל יכול גם להסתובב סביב הציר שלו וגם לשנות את כיוון הנסיעה שלו. כרגע נבדוק נסיעה וסיבוב, בלי ללמוד איך בונים את המערכת.
 
-:::warning לפני הניסוי
-בגרסת התבנית שנבדקה חסרים ערכי הגדרה למערכת הנהיגה. המנטור צריך להשלים ולבדוק אותם לפני המפגש. אם התוכנית נכשלת מיד בהפעלה, הראו את ההודעה למנטור; זו אינה משימה לנחש הגדרות מנוע. [מידע מפורט למנטור](../template-readiness.mdx).
-:::
-
 ## 1. חוזרים לפרויקט שהכנו
 
-[פתחו את הפרויקט הקיים](../../getting-started/working-in-vscode.mdx#open-project) מתוך תיקיית המאגר האישי `robot-training`. ב־Explorer ודאו שרואים `build.gradle`, לא רק תיקיית `src`.
+[פתחו את הפרויקט הקיים](../../getting-started/working-in-vscode.mdx#open-project) מתוך תיקיית המאגר האישי `Moshe-robot-training` (כאשר במקום Moshe מופיע השם שלכם). ב־Explorer ודאו שרואים `build.gradle`, לא רק תיקיית `src`.
 
 את הבנייה הראשונה כבר ביצענו בפרק יצירת המאגר. אם עדיין לא קיבלתם `BUILD SUCCESSFUL`, חזרו ל[בנייה הראשונה ופתרון תקלות](./02-template-repository.mdx#first-build) לפני ההרצה.
+
+לפני ההרצה ודאו שהשלמתם את [הורדת ספריית הקבוצה בטרמינל חדש](./02-template-repository.mdx#initialize-submodules) ושהבנייה שאחריה הצליחה. אם יש בעיה, קראו למנטור.
 
 ## 2. מפעילים סימולציה {#run-simulation}
 
@@ -90,7 +88,7 @@ import InterfaceScreenshot4 from "../assets/interfaces/advantagescope-field.png"
 4. לחצו על שורת השלט, החזיקו את כפתור העכבר וגררו אותה אל **Joystick[0]** באזור **Joysticks**. הספרה 0 חשובה: זה מספר יציאת השלט שקוד התבנית קורא.
 5. הזיזו בעדינות סטיק. **ציר (Axis)** הוא ערך מספרי שמשתנה לפי מידת ההטיה של הסטיק. צפו לשינוי של ערכי הצירים בחלונית Joystick[0]. לחיצה על כפתור אמורה לשנות את חיווי הכפתור.
 
-![גוררים שלט מרשימת System Joysticks לאחת מיציאות Joysticks; אצלנו בוחרים Joystick[0]](../assets/interfaces/sim-gui-dragging-joysticks.png)
+![גוררים שלט מרשימת System Joysticks לאחת מיציאות Joysticks; אצלנו בוחרים Joystick[0]](./assets/interfaces/sim-gui-dragging-joysticks.png)
 
 **בדיקת עצירה לפני המשך:** אם השלט מופיע ברשימת המחשב אבל עדיין כתוב `Unassigned` מתחת ל־Joystick[0], הוא עוד לא משויך לקוד. אם אין שינוי בצירים, לא מנסים לתקן באמצעות הגדלת מהירות. בקשו מהמנטור לבדוק זיהוי ומיפוי - ההתאמה בין כפתורי השלט למספרים שהקוד קורא. התבנית מתחילה במיפוי PS5 ומנסה לזהות גם Xbox; לשלט לא מזוהה ייתכן שיידרש מיפוי אחר. אין בתבנית מיפוי מקלדת מוכן לנהיגה.
 

@@ -4,7 +4,6 @@
 
 choose-owner.png: Screenshot 2026-10-15 041819.png
 repository-details.png: Screenshot 2026-10-15 041916.png
-create-repository.png: Screenshot 2026-10-15 041920.png
 personal-repository.png: Screenshot 2026-10-15 041944.png
 copy-clone-url.png: Screenshot 2026-10-15 041957.png
 clone-in-vscode.png: Screenshot 2026-10-15 043238.png
@@ -16,4 +15,12 @@ build-command.png: Screenshot 2026-10-15 043725.png
 build-success.png: Screenshot 2026-10-15 043537.png
 clean-java-workspace.png: Screenshot 2026-10-15 043627.png
 confirm-java-reload.png: Screenshot 2026-10-15 043638.png
-open-terminal.png: Screenshot 2026-10-11 074553.png
+
+צילומים חדשים שסופקו על ידי המשתמש ב־24 באוקטובר 2026, הועתקו ללא שינוי תוכן:
+template-repository.png: Screenshot 2026-10-24 230349.png
+choose-owner.png: Screenshot 2026-10-24 230439.png
+repository-details.png: Screenshot 2026-10-24 230537.png
+personal-repository.png: Screenshot 2026-10-24 230614.png
+copy-clone-url.png: Screenshot 2026-10-24 230628.png
+initialize-submodules.png: Screenshot 2026-10-24 231359.png
+צילומי GitHub החדשים מציגים את robot-training-template ואת המאגר האישי moshe-robot-training. צילומי VS Code שלא הוחלפו עדיין מציגים את robot-training.

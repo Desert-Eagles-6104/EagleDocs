@@ -4,35 +4,45 @@ sidebar_position: 2
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
-import Shot0 from "../assets/template-cloning/choose-owner.png";
-import Shot1 from "../assets/template-cloning/repository-details.png";
-import Shot2 from "../assets/template-cloning/create-repository.png";
-import Shot3 from "../assets/template-cloning/personal-repository.png";
-import Shot4 from "../assets/template-cloning/copy-clone-url.png";
-import Shot5 from "../assets/template-cloning/clone-in-vscode.png";
-import Shot6 from "../assets/template-cloning/clone-destination.png";
-import Shot7 from "../assets/template-cloning/open-repository.png";
-import Shot8 from "../assets/template-cloning/trust-repository.png";
-import Shot9 from "../assets/template-cloning/project-explorer.png";
-import Shot10 from "../assets/template-cloning/build-command.png";
-import Shot11 from "../assets/template-cloning/build-success.png";
-import Shot12 from "../assets/template-cloning/clean-java-workspace.png";
-import Shot13 from "../assets/template-cloning/confirm-java-reload.png";
+import TemplateRepository from "./assets/template-cloning/template-repository.png";
+import InitializeSubmodules from "./assets/template-cloning/initialize-submodules.png";
+import Shot0 from "./assets/template-cloning/choose-owner.png";
+import Shot1 from "./assets/template-cloning/repository-details.png";
+import Shot3 from "./assets/template-cloning/personal-repository.png";
+import Shot4 from "./assets/template-cloning/copy-clone-url.png";
+import Shot5 from "./assets/template-cloning/clone-in-vscode.png";
+import Shot6 from "./assets/template-cloning/clone-destination.png";
+import Shot7 from "./assets/template-cloning/open-repository.png";
+import Shot8 from "./assets/template-cloning/trust-repository.png";
+import Shot9 from "./assets/template-cloning/project-explorer.png";
+import Shot10 from "./assets/template-cloning/build-command.png";
+import Shot11 from "./assets/template-cloning/build-success.png";
+import Shot12 from "./assets/template-cloning/clean-java-workspace.png";
+import Shot13 from "./assets/template-cloning/confirm-java-reload.png";
 
 נרצה פרויקט אישי שמתחיל מהקוד של הקבוצה. **תבנית היא פרויקט מוכן שמעתיקים למאגר חדש משלנו.** **Clone - שכפול** - מורידה למחשב את הקבצים והיסטוריית Git של המאגר שכבר יצרנו באתר. אלה שני צעדים נפרדים: קודם יוצרים מאגר אישי ב־GitHub, ואז משכפלים אותו למחשב.
 
 ## 1. מוצאים את התבנית
 
-1. היכנסו לחשבון שלכם ב־GitHub, ואז פתחו [robot-template של הקבוצה](https://github.com/Desert-Eagles-6104/robot-template).
-2. בראש הדף ודאו שהשם הוא `Desert-Eagles-6104 / robot-template`. באזור שמעל רשימת הקבצים ודאו שנבחר `main`: זה שם הענף שממנו מתחילים. **ענף** הוא מסלול עבודה ב־Git; כרגע מספיק לבחור את המסלול שהקבוצה ביקשה.
+1. היכנסו לחשבון שלכם ב־GitHub, ואז פתחו [robot-training-template של הקבוצה](https://github.com/Desert-Eagles-6104/robot-training-template).
+2. בראש הדף ודאו שהשם הוא `Desert-Eagles-6104 / robot-training-template`. באזור שמעל רשימת הקבצים ודאו שנבחר `main`: זה שם הענף שממנו מתחילים. **ענף** הוא מסלול עבודה ב־Git; כרגע מספיק לבחור את המסלול שהקבוצה ביקשה.
 3. לחצו **Use this template**, ואז **Create a new repository**.
 
-אפשר ללחוץ על כל צילום כדי לפתוח אותו בגודל מלא בלשונית חדשה. הצילומים מציגים את התהליך עם החשבון `kalmanmoshe` והמאגר `robot-training`; אצלכם יופיע שם החשבון שלכם. אם אין **Use this template**, הראו למנטור את דף התבנית לפני שממשיכים.
+<a href={TemplateRepository} target="_blank" rel="noopener noreferrer">
+  <img
+    src={TemplateRepository}
+    alt="דף התבנית robot-training-template של הקבוצה עם הכפתור Use this template"
+    loading="lazy"
+    style={{ maxWidth: "100%", height: "auto" }}
+  />
+</a>
+
+אפשר ללחוץ על כל צילום כדי לפתוח אותו בגודל מלא בלשונית חדשה. צילומי GitHub החדשים מציגים את החשבון `kalmanmoshe` והמאגר `moshe-robot-training`; אצלכם יופיעו החשבון והשם שלכם. בחלק מצילומי VS Code הישנים מופיע עדיין השם `robot-training`, אך הפעולות זהות. אם אין **Use this template**, הראו למנטור את דף התבנית לפני שממשיכים.
 
 ## 2. ממלאים את טופס יצירת המאגר
 
 1. בשדה **Owner** - מי הבעלים - בחרו את החשבון שלכם, ולא את חשבון הקבוצה.
-2. בשדה **Repository name** כתבו `robot-training` או שם שהמנטור ביקש.
+2. בשדה **Repository name** כתבו את השם שלכם באנגלית, ואחריו `-robot-training`. למשל, אם קוראים לכם Moshe, שם המאגר יהיה `moshe-robot-training`.
 3. בחרו Public או Private לפי הנחיית המנטור. Public פתוח לצפייה; Private דורש הרשאה. אין להוסיף מידע אישי לקוד.
 4. השאירו **Include all branches** כבוי. אין צורך למלא את שדה Copilot לצורך התרגול.
 5. לחצו **Create repository** והמתינו.
@@ -48,32 +58,23 @@ import Shot13 from "../assets/template-cloning/confirm-java-reload.png";
   />
 </a>
 
-ודאו שהתבנית היא `Desert-Eagles-6104/robot-template`, שהשם הוא `robot-training` ושהבעלים הוא החשבון האישי. בדוגמה נבחרה האפשרות Private.
+ודאו שהתבנית היא `Desert-Eagles-6104/robot-training-template`, ששם המאגר מתחיל בשם שלכם ומסתיים ב־`-robot-training` (למשל `moshe-robot-training`) ושהבעלים הוא החשבון האישי. בצילום החדש נבחרה האפשרות Public; אצלכם בחרו לפי הנחיית המנטור.
 
 <a href={Shot1} target="_blank" rel="noopener noreferrer">
   <img
     src={Shot1}
-    alt="טופס יצירת מאגר מהתבנית עם בעלים אישי, שם robot-training וחשיפה Private"
+    alt="יצירת מאגר moshe-robot-training מהתבנית robot-training-template בחשבון האישי, עם חשיפה Public"
     loading="lazy"
     style={{ maxWidth: "100%", height: "auto" }}
   />
 </a>
 
-<a href={Shot2} target="_blank" rel="noopener noreferrer">
-  <img
-    src={Shot2}
-    alt="כפתור Create repository בתחתית טופס יצירת המאגר"
-    loading="lazy"
-    style={{ maxWidth: "100%", height: "auto" }}
-  />
-</a>
-
-**תוצאה צפויה:** בראש הדף החדש מופיע `שם-החשבון-שלכם / robot-training`, ורשימת הקבצים כוללת `src` ו־`build.gradle`. אם עדיין כתוב Desert-Eagles-6104, אתם עדיין בדף התבנית; אל תתחילו משם Clone.
+**תוצאה צפויה:** בראש הדף החדש מופיע `שם-החשבון-שלכם / moshe-robot-training`, ורשימת הקבצים כוללת `src` ו־`build.gradle`. אם עדיין כתוב Desert-Eagles-6104, אתם עדיין בדף התבנית; אל תתחילו משם Clone.
 
 <a href={Shot3} target="_blank" rel="noopener noreferrer">
   <img
     src={Shot3}
-    alt="המאגר האישי kalmanmoshe/robot-training לאחר יצירתו, עם קובצי התבנית"
+    alt="המאגר האישי kalmanmoshe/moshe-robot-training לאחר יצירתו מהתבנית החדשה"
     loading="lazy"
     style={{ maxWidth: "100%", height: "auto" }}
   />
@@ -84,10 +85,10 @@ import Shot13 from "../assets/template-cloning/confirm-java-reload.png";
 בדף החדש לחצו על הכפתור **Code**, בחרו **HTTPS** ולחצו על סמל ההעתקה ליד הכתובת. היא אמורה להיראות כך:
 
 ```text
-https://github.com/YOUR-ACCOUNT/robot-training.git
+https://github.com/YOUR-ACCOUNT/moshe-robot-training.git
 ```
 
-`YOUR-ACCOUNT` כאן הוא מקום לשם המשתמש **שלכם**; הכתובת שמעתיקים מהאתר כבר כוללת אותו. אין להקליד את הדוגמה הזאת כפי שהיא.
+`YOUR-ACCOUNT` כאן הוא מקום לשם המשתמש **שלכם**, ו־`moshe-robot-training` הוא שם מאגר לדוגמה — אצלכם יופיע השם שבחרתם; הכתובת שמעתיקים מהאתר כבר כוללת אותו. אין להקליד את הדוגמה הזאת כפי שהיא.
 
 <a href={Shot4} target="_blank" rel="noopener noreferrer">
   <img
@@ -118,7 +119,7 @@ https://github.com/YOUR-ACCOUNT/robot-training.git
   />
 </a>
 
-בחרו תיקיית אב, למשל Documents, ולחצו **Select as Repository Destination**. המאגר יישמר בתיקיית `robot-training` בתוכה.
+בחרו תיקיית אב, למשל Documents, ולחצו **Select as Repository Destination**. המאגר יישמר בתיקיית `moshe-robot-training` בתוכה.
 
 <a href={Shot6} target="_blank" rel="noopener noreferrer">
   <img
@@ -145,18 +146,18 @@ https://github.com/YOUR-ACCOUNT/robot-training.git
 <a href={Shot8} target="_blank" rel="noopener noreferrer">
   <img
     src={Shot8}
-    alt="חלון Workspace Trust עבור תיקיית robot-training בלבד"
+    alt="חלון Workspace Trust עבור תיקיית המאגר בלבד; בצילום מופיע שם התיקייה הישן"
     loading="lazy"
     style={{ maxWidth: "100%", height: "auto" }}
   />
 </a>
 
-כעת רואים את תיקיית הפרויקט ב־Explorer. המתינו לסיום טעינת Java ו־WPILib; בפתיחה הראשונה ייתכנו הורדות תלויות.
+כעת רואים את תיקיית הפרויקט ב־Explorer. בפתיחה הראשונה Java ו־WPILib מתחילים לטעון את הפרויקט, וייתכנו הורדות של תלויות. **הבנייה האוטומטית הראשונית צפויה להיכשל כי ספריית הקבוצה עדיין לא הורדה. מיד אחרי הפתיחה בצעו את שלב הורדת הספרייה שבהמשך, לפני בנייה נוספת.**
 
 <a href={Shot9} target="_blank" rel="noopener noreferrer">
   <img
     src={Shot9}
-    alt="המאגר robot-training פתוח ב־VS Code עם build.gradle, src ו־vendordeps"
+    alt="המאגר פתוח ב־VS Code עם build.gradle, src ו־vendordeps; בצילום מופיע שם המאגר הישן"
     loading="lazy"
     style={{ maxWidth: "100%", height: "auto" }}
   />
@@ -165,7 +166,7 @@ https://github.com/YOUR-ACCOUNT/robot-training.git
 **תוצאה צפויה:** בפרויקט שלכם רואים את הפריטים הבאים ברמה העליונה:
 
 ```text
-robot-training
+moshe-robot-training
 ├── build.gradle
 ├── gradlew
 ├── gradlew.bat
@@ -173,9 +174,38 @@ robot-training
 └── vendordeps
 ```
 
-זו רשימת זיהוי, לא צילום מסך ולא הוראה ליצור תיקיות חסרות. **שורש הפרויקט** הוא התיקייה שמכילה את כל הפריטים האלה. אם פתחתם רק את `src`, [פתחו את הפרויקט](../../getting-started/working-in-vscode.mdx#open-project) מתוך תיקיית `robot-training` שמעליה. כך גם חוזרים אליו במפגש הבא, בלי לבצע Clone שוב.
+זו רשימת זיהוי, לא צילום מסך ולא הוראה ליצור תיקיות חסרות. **שורש הפרויקט** הוא התיקייה שמכילה את כל הפריטים האלה. אם פתחתם רק את `src`, [פתחו את הפרויקט](../../getting-started/working-in-vscode.mdx#open-project) מתוך תיקיית `moshe-robot-training` שמעליה. כך גם חוזרים אליו במפגש הבא, בלי לבצע Clone שוב.
+
+### חובה: מורידים את ספריית הקבוצה {#initialize-submodules}
+
+הפרויקט משתמש בספריית הקבוצה שנשמרת במאגר נפרד ומקושרת לפרויקט באמצעות **Git submodule**. השכפול הראשוני עדיין לא מוריד את תוכן הספרייה; הפקודה הבאה תוריד אותה ואת הרכיבים המקושרים שלה לגרסה שהפרויקט צריך.
+
+1. כשהמאגר האישי פתוח ב־VS Code, [פתחו **טרמינל חדש** לפי ההוראות בדף העזר](../../getting-started/working-in-vscode.mdx#terminal): **Terminal → New Terminal**.
+2. ודאו שנפתחה שורת פקודה רגילה, למשל `PS ...\moshe-robot-training>`, בתוך תיקיית המאגר האישי שלכם.
+3. הדביקו את הפקודה הבאה ולחצו Enter:
+
+```bash
+git submodule update --init --recursive
+```
+
+**חייבים טרמינל חדש. אין להקליד את הפקודה בטרמינל של הבנייה האוטומטית (`Java Build Task` או `Build`) — הוא מציג פלט של משימה ואינו הטרמינל שבו מריצים את הפקודה.** בצילום נבחר הטרמינל `powershell`, בנפרד מ־`Java Build Task` שנכשל.
+
+<a href={InitializeSubmodules} target="_blank" rel="noopener noreferrer">
+  <img
+    src={InitializeSubmodules}
+    alt="הרצת git submodule update --init --recursive בטרמינל PowerShell חדש בתוך moshe-robot-training, בנפרד מ־Java Build Task שנכשל"
+    loading="lazy"
+    style={{ maxWidth: "100%", height: "auto" }}
+  />
+</a>
+
+4. המתינו לסיום ההורדה ולחזרת שורת הפקודה. רק לאחר שהפקודה הסתיימה בהצלחה, המשיכו לבנייה שבהמשך.
+
+**אם יש שגיאה, ההורדה אינה מסתיימת או שאינכם בטוחים באיזה טרמינל להשתמש — קראו למנטור לפני שממשיכים.** הכישלון הראשוני של הבנייה אינו סיבה לדלג על השלב הזה.
 
 ### בונים בפעם הראשונה {#first-build}
+
+אחרי שפקודת הורדת הספרייה הסתיימה בהצלחה, הפעילו בנייה מחדש.
 
 **בנייה (build)** בודקת שהקוד ניתן לתרגום ומכינה את הקבצים שירוצו. היא אינה מפעילה עדיין את הרובוט.
 
@@ -238,7 +268,7 @@ robot-training
 
 ## 5. בודקים לאן יישלחו שינויים
 
-פתחו [טרמינל](../../getting-started/working-in-vscode.mdx#terminal) כאשר הפרויקט פתוח. שם התיקייה שבשורת הטרמינל צריך להיות `robot-training`. הקלידו שורה אחת ולחצו Enter:
+פתחו [טרמינל](../../getting-started/working-in-vscode.mdx#terminal) כאשר הפרויקט פתוח. שם התיקייה שבשורת הטרמינל צריך להיות `moshe-robot-training`. הקלידו שורה אחת ולחצו Enter:
 
 ```bash
 git remote -v
@@ -247,15 +277,15 @@ git remote -v
 **origin** הוא הכינוי ש־Git נותנת כאן למאגר ב־GitHub. **fetch** מציינת כתובת לקבלת שינויים, ו־**push** כתובת לשליחתם. צפו לשתי שורות עם הכתובת האישית:
 
 ```text
-origin  https://github.com/YOUR-ACCOUNT/robot-training.git (fetch)
-origin  https://github.com/YOUR-ACCOUNT/robot-training.git (push)
+origin  https://github.com/YOUR-ACCOUNT/moshe-robot-training.git (fetch)
+origin  https://github.com/YOUR-ACCOUNT/moshe-robot-training.git (push)
 ```
 
 אם הכתובת שייכת לקבוצה, עצרו לפני Push ובדקו שיצרתם ושכפלתם את המאגר האישי.
 
 ### מגדירים שם ודוא״ל לפרויקט הזה בלבד {#local-git-config}
 
-באותו [טרמינל](../../getting-started/working-in-vscode.mdx#terminal), מתוך תיקיית `robot-training`, הריצו:
+באותו [טרמינל](../../getting-started/working-in-vscode.mdx#terminal), מתוך תיקיית `moshe-robot-training`, הריצו:
 
 ```bash
 git rev-parse --show-toplevel
@@ -293,11 +323,11 @@ git config --local --get user.email
 
 ### בודקים את התוצאה בלי לנחש
 
-| לפני הפעולה                     | אחרי הפעולה                                  |
-| ------------------------------- | -------------------------------------------- |
-| `hello.txt` תחת Changes | אחרי `+`: הקובץ תחת Staged Changes           |
-| הקובץ תחת Staged Changes        | אחרי Commit: הוא לא ברשימת השינויים הממתינים |
-| הקובץ קיים רק במחשב             | אחרי Push ורענון GitHub: הוא מופיע גם באתר   |
+| לפני הפעולה              | אחרי הפעולה                                  |
+| ------------------------ | -------------------------------------------- |
+| `hello.txt` תחת Changes  | אחרי `+`: הקובץ תחת Staged Changes           |
+| הקובץ תחת Staged Changes | אחרי Commit: הוא לא ברשימת השינויים הממתינים |
+| הקובץ קיים רק במחשב      | אחרי Push ורענון GitHub: הוא מופיע גם באתר   |
 
 בתיבת ההודעה של Source Control כותבים את **תיאור השינוי**. את תוכן הקובץ עצמו כותבים באזור העורך. אפשר להצביע על המעבר ברשימות גם בלי להבין את כל הסמלים של Git.
 
@@ -320,4 +350,4 @@ git config --local --get user.email
 
 ## בדיקת סיום
 
-הציגו למנטור את המאגר האישי, `origin`, את `build.gradle` ואת פלט הבנייה `BUILD SUCCESSFUL`. המשיכו ל[הרצה הראשונה](./03-first-simulation.mdx).
+ודאו שהרצתם בהצלחה `git submodule update --init --recursive`. הציגו למנטור את המאגר האישי, `origin`, את `build.gradle` ואת פלט הבנייה `BUILD SUCCESSFUL`. המשיכו ל[הרצה הראשונה](./03-first-simulation.mdx).
