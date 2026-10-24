@@ -4,7 +4,6 @@
   "customProps": {
     "devOnly": true
   },
-  "className": "hidden",
   "link": {
     "type": "doc",
     "id": "robot/getting-started/index"

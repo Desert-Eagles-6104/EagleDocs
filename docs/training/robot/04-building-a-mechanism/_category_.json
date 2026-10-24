@@ -1,0 +1,10 @@
+{
+  "label": "בונים מנגנון",
+  "position": 4,
+  "customProps": { "devOnly": true },
+  "link": {
+    "type": "generated-index",
+    "slug": "/robot/building-a-mechanism",
+    "description": "מהקוד אל המנוע: מבינים את החומרה לפני שבונים תת־מערכת משלנו."
+  }
+}

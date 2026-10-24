@@ -23,7 +23,7 @@ slug: /java/first-project
 ## 2. יוצרים פרויקט Java {#creating-project}
 
 1. פתחו **WPILib VS Code 2026**.
-2. בחרו **View → Command Palette**, או לחצו `Ctrl + Shift + P`.
+2. פתחו את [חלון הפקודות](../../getting-started/working-in-vscode.mdx#command-palette) (`Ctrl + Shift + P`).
 3. בחלונית למעלה הקלידו `Java: Create Java Project`.
 4. לחצו על הפקודה המתאימה. אם חסרה, חזרו ל־[התקנת התמיכה ב־Java](../../getting-started/installation/installation.md).
 5. ברשימת סוגי הפרויקטים בחרו **No build tools**.
@@ -37,12 +37,12 @@ slug: /java/first-project
 *בתמונה מופיעות אפשרויות נוספות. בפרויקט התרגול שלנו בוחרים No build tools.*
 
 :::info פרויקט התרגול שלנו
-זה פרויקט Java רגיל ללימוד יסודות השפה. בחרנו סוג פשוט כדי להתמקד בכתיבת הקוד ובהרצתו. בהמשך ניצור פרויקט רובוט בעזרת הכלים של WPILib, והוא יכלול גם הגדרות וספריות ייעודיות.
+זה פרויקט Java רגיל ללימוד יסודות השפה. בחרנו סוג פשוט כדי להתמקד בכתיבת הקוד ובהרצתו. בהמשך [ניצור מאגר רובוט מהתבנית של הקבוצה ונשכפל אותו למחשב](../../robot/01-getting-started/02-template-repository.mdx). זה יהיה פרויקט נפרד, עם הגדרות וספריות ייעודיות.
 :::
 
 ## 3. מוצאים את קובץ הקוד
 
-בצד שמאל נמצא **Explorer** - רשימת הקבצים של הפרויקט. אם לא רואים אותו, לחצו `Ctrl + Shift + E`.
+ב־[Explorer - רשימת הקבצים של הפרויקט](../../getting-started/working-in-vscode.mdx#files) - נמצא את קובץ הקוד הראשון שלנו.
 
 פתחו את התיקייה `src` באמצעות החץ שלידה, ואז לחצו על הקובץ `App.java`.
 
@@ -109,6 +109,6 @@ Hello, World!
 
 ## איך חוזרים לפרויקט בפעם הבאה?
 
-פתחו את WPILib VS Code 2026 ובחרו **File → Open Folder**. בחרו את תיקיית הפרויקט עם השם שלכם שבתוך `FRC-Training`, למשל `MosheJavaTraining`. במחשב משותף ודאו שבחרתם את הפרויקט שלכם. פתחו את `src`, ואז את `Main.java`.
+לפי [ההוראות לפתיחת פרויקט קיים](../../getting-started/working-in-vscode.mdx#open-project), פתחו את התיקייה שלכם בתוך `FRC-Training`, למשל `MosheJavaTraining`. לאחר מכן פתחו את `src/Main.java`.
 
-**שמרו את הפרויקט - נשתמש בו בהכשרה.** כשנוסיף מחלקות, 
+**שמרו את הפרויקט - נמשיך להשתמש בו בתרגילי Java לאורך ההכשרה.**
