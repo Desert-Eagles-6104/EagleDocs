@@ -4,7 +4,7 @@ sidebar_position: 2
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
-import TrainingFlywheelGraphScreenshot from "./assets/training-flywheel-advantagescope-graph-screenshot.png";
+import TrainingFlywheelGraphScreenshot from "./assets/advantagescope-line-graph-example.png";
 
 תת־המערכת מחוברת, אבל עוד לא ביקשנו מהמנוע להסתובב. עכשיו נוסיף לה הוראה שחוזרת בכל מחזור, ונראה איך שינוי בקוד משפיע על התנועה ועל המדידות.
 
@@ -26,7 +26,13 @@ public static final double TRAINING_OUTPUT = 0.15;
 
 הקבוע מוגדר כ־`public static final`, ולכן אפשר לקרוא אותו דרך שם המחלקה: `TrainingFlywheel.TRAINING_OUTPUT`.
 
-כעת פתחו `Robot.java` וחפשו את המתודה הקיימת `teleopPeriodic()` והוסיפו בתוכה את הקריאה למנוע, כך שתיראה כך. אל תיצרו מתודה נוספת באותו שם:
+כעת פתחו `Robot.java` והוסיפו ליד שאר ה־imports:
+
+```java
+import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
+```
+
+חפשו את המתודה הקיימת `teleopPeriodic()` והוסיפו בתוכה את הקריאה למנוע, כך שתיראה כך. אל תיצרו מתודה נוספת באותו שם:
 
 ```java
 @Override
@@ -75,7 +81,6 @@ public void teleopPeriodic() {
 
 הפלט משפיע על תנועת המנוע, אבל המהירות בפועל היא מדידה נפרדת. **אנקודר** הוא חיישן שמודד סיבוב; בסימולציה המדידה מחושבת באמצעות המודל המוכן.
 
-{/* TODO: להוסיף צילום של TrainingFlywheel עם הקבוע TRAINING_OUTPUT, ולצדו Robot.teleopPeriodic עם הקריאה לתת־המערכת. */}
 
 ## 3. מפעילים ועוצרים
 
@@ -116,7 +121,7 @@ public void teleopPeriodic() {
 
 לאחר החלת השינוי בדקו שהפלט השתנה בגרף. קבועי `static final` עשויים להשתלב בקוד שקורא אותם בזמן הקומפילציה; אם הערך נשאר כפי שהיה, הפעילו מחדש את הסימולציה. התחילו כל ניסוי כשהגלגל במנוחה והשוו אחרי אותו משך זמן ב־Enable. אם מתקבלת הודעה שלא ניתן להחיל שינוי מסוים, הפעילו מחדש את הסימולציה.
 
-![](./assets/apply-code-changes-demo.png)
+![אייקון Apply Code Changes בסרגל Debug של VS Code](./assets/apply-code-changes-demo.png)
 
 | ערך הקבוע | מה בודקים בתנועה ובגרף?                        |
 | --------- | ---------------------------------------------- |

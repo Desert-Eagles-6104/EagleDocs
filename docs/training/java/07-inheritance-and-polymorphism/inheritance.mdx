@@ -9,10 +9,12 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
 **בסוף השיעור תוכלו לכתוב מחלקה יורשת, לאתחל אותה ולהוסיף או להתאים פעולות.** פתרו את התרגילים בזמן הקריאה, לא רק בסוף.
 
-:::info פרויקט לימודי חדש
-התחילו פרויקט Java נפרד, כדי לשמור את הפרויקט המסכם הקודם. כאן נשתמש במחלקת `Robot` מצומצמת, בלי `Motor`, כדי להתמקד בהורשה. כל מחלקה ציבורית תהיה בקובץ משלה, באותה תיקיית קוד וללא הכרזת `package`.
+:::info אותה סביבת עבודה, מודל נוסף
+המשיכו באותו פרויקט Java. בתוך `src` צרו תיקייה בשם `inheritance`. כל מחלקה בשיעור תהיה בקובץ משלה בתיקייה הזאת, עם `package inheritance;` בשורה הראשונה, כפי שעשינו עם חבילת `mechanisms` בתרגיל המסכם.
 
-המתודות כאן מדפיסות טקסט בלבד; הן לא מפעילות חומרה ולא מחליפות את מחלקת `Robot` של WPILib.
+כך נשמור את הרובוט והמנוע שכבר בנינו, ונוכל להתמקד כאן במודל שמדפיס טקסט. צרו גם `src/inheritance/Main.java` עם אותה מעטפת `public class Main` ו־`public static void main(String[] args)` שאתם מכירים. הריצו באמצעות Run מעל `main` בקובץ הזה; בבחירת מחלקה בחרו `inheritance.Main`.
+
+המתודות כאן מדפיסות בלבד ואינן מפעילות חומרה. הקבצים בחבילות האחרות נשארים זמינים להרצה בנפרד.
 :::
 
 ## 1. מתי הורשה מתאימה?
@@ -53,6 +55,8 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 צרו `Robot.java`:
 
 ```java
+package inheritance;
+
 public class Robot {
     private String name;
 
@@ -94,6 +98,8 @@ Robot: Eagle
 צרו `CompetitionRobot.java`:
 
 ```java
+package inheritance;
+
 public class CompetitionRobot extends Robot {
     public CompetitionRobot(String name) {
         super(name);
@@ -331,7 +337,9 @@ public void printStatus() {
 
 <ExerciseHelp
   hints={["כתבו קודם בנאי ובדקו את האתחול, ורק אחר כך הוסיפו את הפעולות.", "אל תעתיקו את name ואת drive למחלקה היורשת. השתמשו במה שכבר מוגדר באב.", "getName נותנת גישה לשם; super.printStatus מפעילה את הדפסת האב."]}
-  solution={`public class CompetitionRobot extends Robot {
+  solution={`package inheritance;
+
+public class CompetitionRobot extends Robot {
     private int teamNumber;
 
     public CompetitionRobot(String name, int teamNumber) {
@@ -351,6 +359,8 @@ public void printStatus() {
 }
 
 // Main.java - קובץ נפרד
+package inheritance;
+
 public class Main {
     public static void main(String[] args) {
         CompetitionRobot first = new CompetitionRobot("Eagle", 6104);

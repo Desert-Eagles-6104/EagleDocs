@@ -62,7 +62,7 @@ slug: /java/first-project
 
 אם מופיעה ההודעה שבתמונה הבאה, לחצו **OK** כדי לאשר את עדכון הקוד בעקבות שינוי השם.
 
-![הודעת אישור לאחר שינוי שם הקובץ](./assets/redHat-file-rename-warning.png)
+![הודעת אישור לאחר שינוי שם הקובץ](./assets/redhat-rename-confirmation.png)
 
 פתחו את `Main.java`. הקוד אמור להיראות כך:
 

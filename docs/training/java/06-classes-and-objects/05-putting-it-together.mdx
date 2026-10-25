@@ -26,10 +26,12 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
 לא ניצור ב־`Robot` שדה `double speed` נוסף: המידע הזה יהיה במנוע. כך לא יהיו שני ערכים שצריך לזכור לעדכן יחד.
 
-:::warning מתחילים את הפרויקט המסכם בתיקייה נפרדת
-שמרו עותק של פרויקט ארבעת החלקים הקודמים. בפרויקט המסכם תהיה גרסה חדשה של `Robot` עם בנאי אחר. צרו פרויקט Java נפרד באותה דרך שכבר למדתם, והניחו בו `Main.java`, `Motor.java` ו־`Robot.java` באותה תיקיית קוד.
+:::info ממשיכים באותו פרויקט Java
+השאירו את `src/Robot.java` ואת שאר התרגילים במקומם. בתוך `src` צרו תיקייה בשם `mechanisms`. כאן נכתוב `Main.java`, `Motor.java` ו־`Robot.java` חדשים, בלי לשנות את הגרסאות הקודמות.
 
-אל תשאירו שתי מחלקות בשם `Robot` באותו פרויקט. אם יצרתם `Motor` בתרגול הבנאים, כאן כתבו את הגרסה החדשה לפי הדרישות שלמטה.
+בשורה הראשונה של **כל אחד משלושת הקבצים** כתבו `package mechanisms;`. חבילה (package) נותנת לקבוצת מחלקות שם משותף: `mechanisms.Robot` ו־`Robot` מהתרגילים הקודמים הם טיפוסים שונים, ולכן יכולים להתקיים באותו פרויקט. אין צורך לייבא מחלקות שנמצאות יחד באותה חבילה.
+
+הריצו דרך **Run שמעל main בקובץ `src/mechanisms/Main.java`**. אם מוצעת בחירת מחלקה, בחרו `mechanisms.Main`. לא יוצרים פרויקט נוסף ולא מעתיקים את התיקייה כולה.
 :::
 
 ## 2. חיבור קצר: שדה יכול להיות גם מטיפוס מחלקה
@@ -90,6 +92,8 @@ public void stop() {
 <ExerciseHelp
   hints={["מי אחראי לשמור את המהירות בטווח? רכזו את הבדיקה במחלקה שמחזיקה את השדה.", "זה אותו כלל מהחלק הקודם; השינוי הוא שהאחריות נמצאת עכשיו ב־Motor.", "הבנאי מתחיל באפס. setSpeed בודק את שני הגבולות יחד; stop יכול לקרוא ל־setSpeed(0)."]}
   solution={`// Motor.java
+package mechanisms;
+
 public class Motor {
     private double speed;
 
@@ -142,6 +146,8 @@ System.out.println(motor.getSpeed()); // 0.0`}
 <ExerciseHelp
   hints={["Robot מחזיק Motor, לכן הפעולות שלו יכולות להפעיל את המתודות הציבוריות של אותו מנוע.", "הבנאי צריך גם לשמור שם וגם ליצור מנוע. הכרזת השדה לבדה לא יוצרת אובייקט.", "drive משתמשת ב־motor.setSpeed(speed), ו־getSpeed מחזירה את התוצאה של motor.getSpeed()."]}
   solution={`// Robot.java
+package mechanisms;
+
 public class Robot {
     private String name;
     private Motor motor;
@@ -267,6 +273,8 @@ public double getSpeed() {
 <ExerciseHelp
   hints={["שני רובוטים צריכים להיווצר בשתי קריאות נפרדות ל־new Robot(...). כל בנאי ייצור מנוע משלו.", "Main עובד דרך המתודות של Robot; אין צורך לחשוף את השדה motor.", "אחרי הבקשה 2, המנוע של Falcon ישאיר את המהירות הקודמת ‎-0.25."]}
   solution={`// Main.java - לצד Motor.java ו־Robot.java משלבים א ו־ב
+package mechanisms;
+
 public class Main {
     public static void main(String[] args) {
         Robot first = new Robot("Eagle");
@@ -312,27 +320,31 @@ Falcon
 אם הפלט שונה, בדקו קודם באיזה אובייקט משתמשת כל קריאה. אחר כך בדקו אילו מתודות משנות את המנוע ואילו מחזירות את ערכו.
 
 ## 8. אתגר: שני מנועים לכל רובוט
+{/* TODO: יש בעיה בין תרגילים 8 לתרגיל הסיום אני לא רוצה ליצור main חדש אז נראה מה נעשה */}
+רק אחרי שהגרסה עם מנוע אחד עובדת ואתם יכולים להסביר אותה: צרו באותה חבילת `mechanisms` את `TwoMotorRobot.java` ואת `TwoMotorMain.java`. העתיקו אליהם את גרסת הבסיס, ושנו את שם המחלקה והבנאי בהתאם. השאירו את `Robot.java`, `Main.java` ו־`Motor.java` במקומם; בדיקת הסיום משתמשת בהם. בכל קובץ חדש השאירו `package mechanisms;` בראשו.
 
-רק אחרי שהגרסה עם מנוע אחד עובדת ואתם יכולים להסביר אותה:
+בגרסת האתגר:
 
 - החליפו את השדה `motor` בשני שדות פרטיים: `leftMotor` ו־`rightMotor`.
 - בבנאי צרו שני מנועים חדשים, בשתי קריאות ל־`new Motor()`.
 - שנו את `drive` לקבל `double leftSpeed` ו־`double rightSpeed`.
 - `stop()` צריכה לעצור את שניהם.
 - החליפו את `getSpeed()` ב־`getLeftSpeed()` ו־`getRightSpeed()`.
-- עדכנו את `printStatus()` להדפיס שם ואת שתי המהירויות, ואת כל הקריאות ב־`Main` לחתימות החדשות.
+- עדכנו את `printStatus()` להדפיס שם ואת שתי המהירויות, ואת כל הקריאות ב־`TwoMotorMain` לחתימות החדשות.
 
 בדקו גם בקשה שבה רק ערך אחד לא תקין. לפי הכלל שלנו, כל מנוע בודק את בקשתו בנפרד: הבקשה התקינה מתקבלת והשנייה נדחית.
 
 <ExerciseHelp
-  hints={["אין צורך לשנות את Motor. Robot משתמש בשני אובייקטים מאותה מחלקה.", "אל תשתמשו באותה יצירה עבור שני השדות; כל מנוע צריך new משלו.", "העבירו לכל מנוע את הפרמטר המתאים, ועדכנו גם את הבדיקה ב־Main."]}
-  solution={`// Robot.java - גרסת אתגר, מחליפה את הגרסה עם מנוע אחד
-public class Robot {
+  hints={["אין צורך לשנות את Motor. TwoMotorRobot משתמש בשני אובייקטים מאותה מחלקה.", "אל תשתמשו באותה יצירה עבור שני השדות; כל מנוע צריך new משלו.", "העבירו לכל מנוע את הפרמטר המתאים, ועדכנו גם את הבדיקה ב־TwoMotorMain."]}
+  solution={`// TwoMotorRobot.java - גרסת אתגר נפרדת, לצד הגרסה עם מנוע אחד
+package mechanisms;
+
+public class TwoMotorRobot {
     private String name;
     private Motor leftMotor;
     private Motor rightMotor;
 
-    public Robot(String name) {
+    public TwoMotorRobot(String name) {
         this.name = name;
         leftMotor = new Motor();
         rightMotor = new Motor();
@@ -363,10 +375,12 @@ public class Robot {
     }
 }
 
-// Main.java - גרסת אתגר; Motor.java נשאר כפי שהוא
-public class Main {
+// TwoMotorMain.java - גרסת אתגר; Motor.java נשאר כפי שהוא
+package mechanisms;
+
+public class TwoMotorMain {
     public static void main(String[] args) {
-        Robot robot = new Robot("Eagle");
+        TwoMotorRobot robot = new TwoMotorRobot("Eagle");
         robot.drive(0.5, -0.25);
         robot.printStatus(); // Eagle, 0.5, -0.25
         robot.drive(0.75, 2);

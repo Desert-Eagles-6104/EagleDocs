@@ -116,3 +116,17 @@
   display: none !important;
 }
 
+/* Preserve screenshot proportions on narrow screens and center diagrams. */
+.theme-doc-markdown img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  margin-block: 1rem;
+}
+
+.theme-doc-markdown table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+

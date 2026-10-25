@@ -129,6 +129,8 @@ public void accelerate(double amount) {
 }
 ```
 
+עדכנו גם את `doubleSpeed()` מבדיקת הסיום של חלק המתודות כך שתשתמש ב־`setSpeed(speed * 2)`. אם הוספתם בנאים נוספים, ודאו שגם הם משתמשים בבדיקת הטווח. אין להשאיר דרך אחרת שעוקפת את הכלל.
+
 עכשיו גם האצה עוברת דרך אותה בדיקה. אם הסכום חורג מהטווח, כל בקשת ההאצה נדחית; לא מגבילים את התוצאה אוטומטית לערך הקצה.
 
 ### תרגיל 2: מה יודפס?
@@ -214,7 +216,7 @@ public void accelerate(double amount) {
 
 ## 5. מחלקה מלאה, אחרי התיקון
 
-עדכנו את `Robot.java` שלכם. שמרו רק גרסה אחת של המחלקה בפרויקט:
+עדכנו את `Robot.java` שלכם. הדוגמה מרכזת את פעולות הליבה; אם כתבתם גם `rename`, השאירו אותה. השאירו גם את `doubleSpeed` מבדיקת הסיום, עם בדיקת הטווח כפי שמופיע כאן. שמרו רק גרסה אחת של המחלקה:
 
 ```java
 public class Robot {
@@ -239,6 +241,10 @@ public class Robot {
 
     public void accelerate(double amount) {
         setSpeed(speed + amount);
+    }
+
+    public void doubleSpeed() {
+        setSpeed(speed * 2);
     }
 
     public void stop() {

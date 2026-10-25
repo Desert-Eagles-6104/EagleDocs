@@ -11,9 +11,11 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
 ## 1. המחלקות שעליהן עובדים
 
-המשיכו בפרויקט של שיעור ההורשה. השתמשו בגרסה הסופית של `CompetitionRobot`, עם שם ומספר קבוצה, וב־`TrainingRobot` מבדיקת הסיום. כאן הגרסה של `TrainingRobot` לצורך בדיקת הפרויקט:
+המשיכו באותו פרויקט Java, בתוך `src/inheritance`. כל קובץ חדש מתחיל ב־`package inheritance;`; מריצים את `inheritance.Main`. השתמשו בגרסה הסופית של `CompetitionRobot`, עם שם ומספר קבוצה, וב־`TrainingRobot` מבדיקת הסיום. כאן הגרסה של `TrainingRobot` לצורך בדיקת הפרויקט:
 
 ```java
+package inheritance;
+
 public class TrainingRobot extends Robot {
     public TrainingRobot(String name) {
         super(name);
@@ -53,7 +55,7 @@ Robot robot = new CompetitionRobot("Eagle", 6104);
 
 האובייקט **לא הפך לרובוט רגיל** ולא הועתק לאובייקט חדש. המשתנה מחזיק הפניה לאותו רובוט תחרותי שנוצר.
 
-![משתנה מטיפוס Robot מפנה לאובייקט CompetitionRobot; בדיקת הקריאה ובחירת המימוש הן שתי שאלות שונות](./assets/polymorphism-dispatch.png)
+[![משתנה מטיפוס Robot מפנה לאובייקט CompetitionRobot; בדיקת הקריאה ובחירת המימוש הן שתי שאלות שונות](./assets/polymorphism-dispatch.png)](./assets/polymorphism-dispatch.png)
 
 ## 3. שאלה ראשונה: האם מותר לקרוא למתודה?
 
@@ -267,6 +269,8 @@ public static void showRobot(Robot robot) {
 <ExerciseHelp
   hints={["העבודה החדשה נמצאת ב־Main; המחלקות כבר מגדירות את ההתנהגות הדרושה.", "בשתי מתודות העזר הפרמטר יכול להיות Robot, כי שתי הפעולות קיימות בטיפוס הזה.", "הדריסה נבחרת גם כשהקריאה נמצאת בתוך מתודה שקיבלה פרמטר מהטיפוס המשותף."]}
   solution={`// Main.java - לצד Robot, CompetitionRobot ו־TrainingRobot
+package inheritance;
+
 public class Main {
     public static void main(String[] args) {
         Robot basic = new Robot("Basic");

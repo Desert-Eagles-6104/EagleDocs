@@ -25,7 +25,7 @@ slug: /java/installation
 2. לחצו עם הכפתור הימני על הקובץ שהורדתם ובחרו **Mount / טען**.
 3. בכונן שנפתח, פתחו את `WPILibInstaller.exe`.
 
-![בחירת Mount כדי לפתוח את קובץ ההתקנה](./assets/extract-windows-10.png)
+![בחירת Mount כדי לפתוח את קובץ ההתקנה](./assets/windows-mount-iso.png)
 
 ## 3. מתקינים
 

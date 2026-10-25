@@ -376,7 +376,7 @@ System.out.println("Starting");
 כנראה כדאי לשאול האם אפשר להפוך אותו למתודה:
 
 ```java
-void printStarting() {
+static void printStarting() {
     System.out.println("Starting");
 }
 ```
@@ -384,6 +384,8 @@ void printStarting() {
 ואז:
 
 ```java
+printStarting();
+printStarting();
 printStarting();
 ```
 
@@ -490,7 +492,7 @@ speed = 0.5;
 פחות טוב:
 
 ```java
-void doEverything() {
+static void doEverything() {
     System.out.println("Starting");
     // lots of unrelated code...
 }
@@ -499,11 +501,11 @@ void doEverything() {
 עדיף לחלק פעולות שונות למתודות עם שמות ברורים:
 
 ```java
-void startMotor() {
+static void startMotor() {
     System.out.println("Motor started");
 }
 
-void checkSensor() {
+static void checkSensor() {
     System.out.println("Sensor checked");
 }
 ```
@@ -591,9 +593,9 @@ if (motorSpeed > 0) {
 אבל רק אחד מהם הוא קוד שנרצה לעבוד איתו בפרויקט גדול.
 
 
-# תרגול
+## תרגול
 
-בתרגילים הבאים נתרגל כתיבת קוד מסודר, קריא וברור.
+בתרגילים הבאים נתרגל כתיבת קוד מסודר, קריא וברור. ממשיכים באותו `Main.java`: מתודות עזר נכתבות מחוץ ל־`main` ובתוך המחלקה, והקריאות אליהן בתוך `main`.
 
 זכרו: המטרה היא לא רק שהקוד יעבוד, אלא שגם מישהו אחר יוכל להבין אותו בקלות.
 
@@ -667,13 +669,13 @@ int gamePieceCount = 2;`}
 איזה שם עדיף?
 
 ```java
-void thing()
+static void thing()
 ```
 
 או:
 
 ```java
-void stopMotor()
+static void stopMotor()
 ```
 
 למה?
@@ -779,7 +781,7 @@ System.out.println(motorSpeed);`}
 בקוד של הרובוט מופיעה המתודה הבאה:
 
 ```java
-void doStuff(double x, boolean b) {
+static void doStuff(double x, boolean b) {
     if (b) {
         System.out.println(x);
     }
@@ -803,7 +805,7 @@ void doStuff(double x, boolean b) {
     "שם אפשרי למתודה הוא printSpeedIfSensorActive. לפרמטרים אפשר לקרוא motorSpeed ו-sensorActive."
   ]}
   multipleSolutions={true}
-  solution={`void printSpeedIfSensorActive(double motorSpeed, boolean sensorActive) {
+  solution={`static void printSpeedIfSensorActive(double motorSpeed, boolean sensorActive) {
     if (sensorActive) {
         System.out.println(motorSpeed);
     }

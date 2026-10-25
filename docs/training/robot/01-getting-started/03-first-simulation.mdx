@@ -7,6 +7,7 @@ import InterfaceScreenshot1 from "./assets/interfaces/vscode-run-simulation.png"
 import InterfaceScreenshot2 from "./assets/interfaces/vscode-pick-extension.png";
 import InterfaceScreenshot3 from "./assets/interfaces/sim-gui-with-labels.png";
 import InterfaceScreenshot4 from "./assets/interfaces/debug-toolbar.png";
+import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.png";
 
 **סימולציה** היא הרצה של קוד הרובוט על המחשב, עם מודל שמחשב איך הרובוט היה מגיב. לא צריך לחבר roboRIO או מנועים. נשתמש בפרויקט שכבר שוכפל.
 
@@ -89,6 +90,21 @@ import InterfaceScreenshot4 from "./assets/interfaces/debug-toolbar.png";
     loading="lazy"
   />
 </a>
+
+## מחברים שלט לסימולציה {#controller}
+
+לבדיקת מצבי הרובוט אין צורך בשלט. לפני תרגיל הכפתורים, חברו שלט USB ובצעו את החיבור הבא כשהרובוט Disabled:
+
+1. בחלונית **System Joysticks** מצאו את השלט המחובר.
+2. גררו אותו אל מקום **0** בחלונית **Joysticks**. בתבנית `driverController` משתמש בערוץ 0; הופעת השלט ברשימת המערכת לבדה אינה מחברת אותו לקוד.
+3. אם השלט דורש מיפוי Gamepad, הפעילו **Map gamepad**. פתחו את פרטי `Joystick[0]`, לחצו ושחררו כפתור, וודאו שהחיווי משתנה.
+4. אם החיווי אינו משתנה, בדקו את השיוך והמיפוי לפני שינוי קוד המנוע. אחרי החלפת סוג שלט עברו שוב ל־Teleop כדי שהתבנית תזהה אותו בזמן חיבור הכפתורים.
+
+<a href={JoystickAssignment} target="_blank" rel="noopener noreferrer">
+  <img src={JoystickAssignment} alt="גרירת שלט מ־System Joysticks אל ערוץ 0 בחלונית Joysticks" loading="lazy" />
+</a>
+
+הצילום מהתיעוד הרשמי מציג שלט Xbox; אותו עיקרון משמש גם לשלט אחר. אם אין שלט זמין, אפשר למפות מקלדת דרך **DS → Keyboard 0 Settings** ולגרור את Keyboard 0 לערוץ 0, בעזרת המנטור. [מיפוי שלט ומקלדת בסימולציה](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html#adding-a-system-joystick-to-joysticks).
 
 ## מפסיקים את הסימולציה {#stop-simulation}
 

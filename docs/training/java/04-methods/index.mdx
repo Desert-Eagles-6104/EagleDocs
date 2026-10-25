@@ -14,6 +14,24 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 בהכשרה נשתמש לפעמים במילה "פונקציה" ולפעמים "מתודה", אבל הכוונה היא לאותו רעיון.
 :::
 
+## מריצים מתודה מתוך התוכנית שלנו
+
+המשיכו ב־`src/Main.java` ושמרו קודם את תרגיל התנאים. בשיעור הזה המתודות שנכתוב יהיו `static`, כדי שנוכל לקרוא להן מתוך `main`. את **הגדרת המתודה** כותבים בתוך המחלקה אבל מחוץ ל־`main`; את **הקריאה** כותבים בתוך `main`:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        sayHello();
+    }
+
+    static void sayHello() {
+        System.out.println("Hello");
+    }
+}
+```
+
+הריצו וצפו ל־`Hello`. בהמשך מחליפים או מוסיפים מתודות בתוך אותה מחלקה. אם כבר כתבתם מתודה באותו שם ועם אותם פרמטרים, עדכנו אותה במקום ליצור עותק. האיורים מפרקים את התחביר; בחלקם מוצגות מתודות ללא `static`, שאותן נפגוש במחלקות של אובייקטים בהמשך.
+
 ## מה זו פונקציה?
 
 פונקציה היא קטע קוד שקיבל שם, ואפשר להריץ אותו מתי שרוצים.
@@ -21,7 +39,7 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 לדוגמה:
 
 ```java
-void sayHello() {
+static void sayHello() {
     System.out.println("Hello");
 }
 ```
@@ -51,7 +69,7 @@ sayHello();
 לדוגמה:
 
 ```java
-void sayHello() {
+static void sayHello() {
     System.out.println("Hello");
 }
 ```
@@ -59,7 +77,7 @@ void sayHello() {
 הפונקציה מורכבת מכמה חלקים.
 
 
-![מבנה של פונקציה פשוטה](./assets/method-simple.png) 
+![מבנה של פונקציה פשוטה](./assets/method-simple.png)
 
 בדוגמה הזו:
 
@@ -140,7 +158,7 @@ print_motor_speed()
 נסתכל על הפונקציה:
 
 ```java
-void sayHello() {
+static void sayHello() {
     System.out.println("Hello");
 }
 ```
@@ -158,7 +176,7 @@ void
 לדוגמה:
 
 ```java
-void printReady() {
+static void printReady() {
     System.out.println("Ready");
 }
 ```
@@ -184,7 +202,7 @@ Ready
 לדוגמה:
 
 ```java
-void printSpeed(double speed) {
+static void printSpeed(double speed) {
     System.out.println(speed);
 }
 ```
@@ -222,7 +240,7 @@ printSpeed(1.0);
 בהגדרה:
 
 ```java
-void printSpeed(double speed) {
+static void printSpeed(double speed) {
     System.out.println(speed);
 }
 ```
@@ -275,7 +293,7 @@ printSpeed(0.75);
 כלומר:
 
 ```java
-void printSpeed(double speed)
+static void printSpeed(double speed)
 ```
 
 `speed` הוא הפרמטר.
@@ -297,7 +315,7 @@ printSpeed(0.75);
 לדוגמה:
 
 ```java
-void printNumbers(int first, int second) {
+static void printNumbers(int first, int second) {
     System.out.println(first);
     System.out.println(second);
 }
@@ -340,7 +358,7 @@ second = 10
 לדוגמה:
 
 ```java
-int getNumber() {
+static int getNumber() {
     return 5;
 }
 ```
@@ -388,7 +406,7 @@ return
 לדוגמה:
 
 ```java
-int add(int a, int b) {
+static int add(int a, int b) {
     return a + b;
 }
 ```
@@ -430,7 +448,7 @@ result
 לדוגמה:
 
 ```java
-int add(int a, int b) {
+static int add(int a, int b) {
     return a + b;
 }
 ```
@@ -444,7 +462,7 @@ int
 דוגמה עם `double`:
 
 ```java
-double divide(double a, double b) {
+static double divide(double a, double b) {
     return a / b;
 }
 ```
@@ -452,7 +470,7 @@ double divide(double a, double b) {
 ודוגמה עם `boolean`:
 
 ```java
-boolean isPositive(int number) {
+static boolean isPositive(int number) {
     return number > 0;
 }
 ```
@@ -464,7 +482,7 @@ boolean isPositive(int number) {
 לדוגמה:
 
 ```java
-boolean isPositive(int number) {
+static boolean isPositive(int number) {
     return number > 0;
 }
 ```
@@ -498,7 +516,7 @@ true
 לדוגמה:
 
 ```java
-boolean isValidSpeed(double speed) {
+static boolean isAtMostOne(double speed) {
     if (speed > 1) {
         return false;
     }
@@ -534,7 +552,7 @@ return true;
 לדוגמה:
 
 ```java
-int add(int a, int b) {
+static int add(int a, int b) {
     return a + b;
 }
 ```
@@ -542,7 +560,7 @@ int add(int a, int b) {
 ואפשר ליצור פונקציה נוספת:
 
 ```java
-void printSum(int a, int b) {
+static void printSum(int a, int b) {
     System.out.println(add(a, b));
 }
 ```
@@ -596,7 +614,7 @@ System.out.println(20 + 7);
 אפשר ליצור:
 
 ```java
-int add(int a, int b) {
+static int add(int a, int b) {
     return a + b;
 }
 ```
@@ -613,7 +631,7 @@ System.out.println(add(20, 7));
 לפעמים נראה פונקציות שנכתבות כך:
 
 ```java
-public void sayHello() {
+public static void sayHello() {
     System.out.println("Hello");
 }
 ```
@@ -621,7 +639,7 @@ public void sayHello() {
 או:
 
 ```java
-private void printMessage() {
+private static void printMessage() {
     System.out.println("Message");
 }
 ```
@@ -752,7 +770,7 @@ Hello
 נתונה הפונקציה:
 
 ```java
-void sayHello() {
+static void sayHello() {
     System.out.println("Hello");
 }
 ```
@@ -773,7 +791,7 @@ void sayHello() {
 נתונה הפונקציה:
 
 ```java
-void printNumber(int number) {
+static void printNumber(int number) {
     System.out.println(number);
 }
 ```
@@ -795,10 +813,12 @@ void printNumber(int number) {
 ### תרגיל 3 - מה יודפס?
 
 ```java
-void printValue(double value) {
+// מחוץ ל־main, בתוך Main
+static void printValue(double value) {
     System.out.println(value);
 }
 
+// בתוך main
 printValue(0.75);
 ```
 
@@ -814,10 +834,11 @@ printValue(0.75);
 ### תרגיל 4 - מה מוחזר?
 
 ```java
-int add(int a, int b) {
+static int add(int a, int b) {
     return a + b;
 }
 
+// בתוך main
 int result = add(5, 4);
 ```
 
@@ -856,7 +877,7 @@ Ready
     "השתמשו ב-void, כתבו את שם הפונקציה ואחריו סוגריים ריקים. בתוך גוף הפונקציה השתמשו ב-System.out.println כדי להדפיס את ההודעה.",
     "מבנה הפונקציה צריך לכלול void, את השם printReady, סוגריים ריקים וגוף בתוך סוגריים מסולסלים. זכרו שההודעה Ready היא טקסט ולכן צריכה להופיע במרכאות."
   ]}
-  solution={`void printReady() {
+  solution={`static void printReady() {
     System.out.println("Ready");
 }`}
 />
@@ -884,7 +905,7 @@ double speed
     "מכיוון שהפונקציה רק מדפיסה, השתמשו ב-void. בתוך הסוגריים של הגדרת הפונקציה צריך להופיע פרמטר מסוג double.",
     "הגדירו פונקציה בשם printSpeed עם הפרמטר double speed. בתוך גוף הפונקציה השתמשו ב-System.out.println כדי להדפיס את המשתנה speed ללא מרכאות."
   ]}
-  solution={`void printSpeed(double speed) {
+  solution={`static void printSpeed(double speed) {
     System.out.println(speed);
 }`}
 />
@@ -906,7 +927,7 @@ multiply
     "השתמשו ב-int בתור טיפוס הערך המוחזר. בתוך הסוגריים הגדירו שני פרמטרים מסוג int עם שמות שונים.",
     "בתוך גוף הפונקציה השתמשו ב-return כדי להחזיר את המכפלה של שני הפרמטרים. זכרו שהאופרטור לכפל ב-Java הוא *."
   ]}
-  solution={`int multiply(int a, int b) {
+  solution={`static int multiply(int a, int b) {
     return a * b;
 }`}
 multipleSolutions={true}
@@ -934,7 +955,7 @@ true
     "השתמשו ב-boolean כטיפוס הערך המוחזר. הפונקציה צריכה לקבל פרמטר מסוג int ולבדוק אם הוא גדול מ-10.",
     "ביטוי השוואה כמו number > 10 כבר מחזיר ערך מסוג boolean. אפשר להחזיר את התוצאה שלו ישירות באמצעות return, בלי להשתמש ב-if ו-else."
   ]}
-  solution={`boolean isGreaterThanTen(int number) {
+  solution={`static boolean isGreaterThanTen(int number) {
     return number > 10;
 }`}
 multipleSolutions={true}

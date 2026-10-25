@@ -25,8 +25,8 @@ public final SwerveSubsystem swerveSubsystem;
 
 ```java
 final SwerveIO swerveIO = isSim
-    ? new SwerveIOSim(this.constants.swerveConstants)
-    : new SwerveIOHardware(this.constants.swerveConstants);
+    ? new SwerveIOSim(Constants.SwerveConstants.SWERVE_CONFIG)
+    : new SwerveIOHardware(Constants.SwerveConstants.SWERVE_CONFIG);
 ```
 
 קוראים כך: אם `isSim` היא true, משתמשים בערך שאחרי `?`; אחרת משתמשים בערך שאחרי `:`. כאן בוחרים חיבור לסביבת האימון או לחומרה. רק הצד שנבחר מתבצע. זו כתיבה קצרה של בחירה שאפשר לבטא גם בעזרת `if` ו־`else`.
