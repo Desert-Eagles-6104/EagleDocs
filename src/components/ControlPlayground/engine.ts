@@ -108,8 +108,8 @@ export const supportedMethods: Record<Request, readonly Method[]> = {
   duty: ["open"],
   voltage: ["open"],
   torque: ["open"],
-  velocity: ["pid", "ff", "combined", "bang"],
-  position: ["pid", "combined", "profile"],
+  velocity: ["open", "pid", "ff", "combined", "bang"],
+  position: ["open", "pid", "ff", "combined", "profile"],
   magic: ["pid", "ff", "combined", "profile"],
 };
 export function supports(cfg: Config, c: Controller) {

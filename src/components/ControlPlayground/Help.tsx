@@ -1,10 +1,14 @@
-import React, { useId, useState } from "react";
+import React, { memo, useId, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import styles from "./styles.module.css";
 
-export function MathText({ children }: { children: string }) {
+export const MathText = memo(function MathText({
+  children,
+}: {
+  children: string;
+}) {
   return (
     <div className={styles.math}>
       <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
@@ -12,7 +16,7 @@ export function MathText({ children }: { children: string }) {
       </ReactMarkdown>
     </div>
   );
-}
+});
 export function Help({
   text,
   label = "הסבר",
@@ -55,6 +59,16 @@ export function Help({
   );
 }
 export const hints: Record<string, string> = {
+  "מיקום היעד":
+    "המיקום הסופי שרוצים להשיג. כל הבקרים מנסים להגיע לאותו מיקום; שינוי היעד מתחיל ניסוי חדש ממנוחה.",
+  "מהירות היעד":
+    "המהירות שרוצים להשיג ולשמור עליה. כל הבקרים מקבלים אותה מטרה.",
+  "מתח ההפעלה":
+    "מתח קבוע שמפעילים על המנוע. התנועה שמתקבלת תלויה במנגנון ובעומס.",
+  "זרם ההפעלה":
+    "הזרם שמפעילים על המנוע. הוא קובע כוח או מומנט שקול לפי המודל; זה אינו יעד כוח עם משוב.",
+  "עוצמת ההפעלה":
+    "אחוז ממתח הסוללה, בכיוון חיובי או שלילי. עוצמה קבועה אינה מבטיחה מהירות קבועה.",
   kP: "כוח התגובה לשגיאה הנוכחית. ערך גבוה מקרב מהר יותר ליעד, אך עלול לגרום לחריגה ולתנודות.",
   kI: "כוח התגובה לשגיאה המצטברת לאורך זמן. מסייע לבטל שגיאה קבועה, אך עלול לצבור פלט מיותר בזמן רוויה.",
   kD: "כוח התגובה לקצב שינוי השגיאה. יכול לרסן תנודות; רגיש לרעש במדידה.",

@@ -7,6 +7,7 @@ import {
   type Config,
   type Controller,
 } from "./engine";
+export const MAX_QUERY_LENGTH = 36000;
 export const methods = {
   open: "חוג פתוח",
   pid: "משוב • P / PI / PD / PID",
@@ -22,6 +23,16 @@ export const requests = {
   position: "Position — מיקום",
   torque: "Torque Current — זרם מומנט",
   magic: "Motion Magic — תנועה לפי פרופיל",
+};
+// Goal names describe the experiment; Phoenix request names are implementation
+// details kept separately for existing links and the optional teaching material.
+export const goals = {
+  position: "להגיע למיקום ולהחזיק בו",
+  velocity: "לשמור על מהירות",
+  voltage: "להפעיל מתח קבוע",
+  torque: "להפעיל זרם קבוע",
+  duty: "להפעיל בעוצמה קבועה (%)",
+  magic: "להגיע למיקום ולהחזיק בו",
 };
 const numbers: Record<string, [number, number]> = {
   kp: [0, 30],
@@ -50,9 +61,9 @@ function number(v: unknown, fallback: number, lo: number, hi: number) {
     ? clamp(v, lo, hi)
     : fallback;
 }
-function control(v: unknown): Controller {
+function control(v: unknown, fallback: Controller): Controller {
   const r = record(v),
-    c = { ...controller };
+    c = { ...fallback };
   for (const k of Object.keys(numbers)) {
     const [lo, hi] = numbers[k];
     (c as unknown as Record<string, unknown>)[k] = number(
@@ -66,9 +77,15 @@ function control(v: unknown): Controller {
     if (typeof r[k] === "boolean") c[k] = r[k];
   if (typeof r.method === "string" && Object.hasOwn(methods, r.method))
     c.method = r.method as Controller["method"];
-  if (["direct", "trapezoid", "scurve"].includes(String(r.profile)))
+  if (
+    typeof r.profile === "string" &&
+    ["direct", "trapezoid", "scurve"].includes(r.profile)
+  )
     c.profile = r.profile as Controller["profile"];
-  if (["auto", "none", "time", "target"].includes(String(r.stop)))
+  if (
+    typeof r.stop === "string" &&
+    ["auto", "none", "time", "target"].includes(r.stop)
+  )
     c.stop = r.stop as Controller["stop"];
   return c;
 }
@@ -76,11 +93,14 @@ export function validate(v: unknown): Config {
   const r = record(v),
     c: Config = {
       ...defaults,
-      a: control(r.a ?? defaults.a),
-      b: control(r.b ?? defaults.b),
+      a: control(r.a, defaults.a),
+      b: control(r.b, defaults.b),
       graphs: [...defaults.graphs],
     };
-  if (["wheel", "arm", "elevator"].includes(String(r.mechanism)))
+  if (
+    typeof r.mechanism === "string" &&
+    ["wheel", "arm", "elevator"].includes(r.mechanism)
+  )
     c.mechanism = r.mechanism as Config["mechanism"];
   if (typeof r.request === "string" && Object.hasOwn(requests, r.request))
     c.request = r.request as Config["request"];
@@ -228,6 +248,8 @@ for (const preset of Object.values(presets))
   if (preset.config.b) preset.config.compare = true;
 export function readConfig(search: string): Config {
   try {
+    // Check before parsing the query; old full-state links remain supported.
+    if (search.length > MAX_QUERY_LENGTH) return validate(defaults);
     const q = new URLSearchParams(search),
       encoded = q.get("experiment");
     if (encoded && encoded.length <= 12000)
@@ -271,5 +293,24 @@ export function readConfig(search: string): Config {
   }
 }
 export function serialize(c: Config) {
-  return "?experiment=" + encodeURIComponent(JSON.stringify(validate(c)));
+  // Persist settings only. Frames, graph samples and runtime state never belong
+  // in a URL. Omit defaults to keep links small even with both controllers.
+  const validated = validate(c);
+  const compact: Record<string, unknown> = {};
+  for (const key of Object.keys(defaults) as (keyof Config)[]) {
+    if (key === "a" || key === "b") {
+      const changes = Object.fromEntries(
+        Object.entries(validated[key]).filter(
+          ([field, value]) =>
+            value !== defaults[key][field as keyof Controller],
+        ),
+      );
+      if (Object.keys(changes).length) compact[key] = changes;
+    } else if (
+      JSON.stringify(validated[key]) !== JSON.stringify(defaults[key])
+    ) {
+      compact[key] = validated[key];
+    }
+  }
+  return "?experiment=" + encodeURIComponent(JSON.stringify(compact));
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
   bounds,
   isDirect,
@@ -10,6 +10,7 @@ import {
 } from "./engine";
 import styles from "./styles.module.css";
 import { Help } from "./Help";
+import { type Sample } from "./simulation";
 export function MechanismView({
   state,
   cfg,
@@ -128,13 +129,12 @@ export function MechanismView({
       </svg>
       <small>
         {isDirect(cfg)
-          ? "הפלט נקבע בבקשת הבקרה; אין יעד תנועה בבקשה זו."
+          ? "בניסוי הזה קובעים את הפלט ובודקים את התנועה שמתקבלת."
           : "גררו ושחררו לקביעת יעד; אפשר גם להשתמש במחוון היעד."}
       </small>
     </div>
   );
 }
-export type Sample = { a: State; b: State };
 export const graphNames: Record<string, string> = {
   response: "יעד ומדידה",
   error: "שגיאת עקיבה",
@@ -155,7 +155,7 @@ const graphHints: Record<string, string> = {
   terms:
     "כמה תורם כל איבר של הבקר הראשון לפלט, לפני רוויה. P מגיב לשגיאה, I לצבירה, D לקצב השינוי ו־FF למודל.",
 };
-export function Graph({
+export const Graph = memo(function Graph({
   history,
   kind,
   cfg,
@@ -221,9 +221,13 @@ export function Graph({
         ),
       });
   }
-  const all = series.flatMap((s) => s.values);
-  let min = Math.min(0, ...all),
-    max = Math.max(1, ...all);
+  let min = 0;
+  let max = 1;
+  for (const { values } of series)
+    for (const value of values) {
+      min = Math.min(min, value);
+      max = Math.max(max, value);
+    }
   const pad = (max - min) * 0.1;
   min -= pad;
   max += pad;
@@ -317,4 +321,4 @@ export function Graph({
       </div>
     </figure>
   );
-}
+});
