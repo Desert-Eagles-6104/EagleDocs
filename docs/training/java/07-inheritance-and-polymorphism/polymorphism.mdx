@@ -313,7 +313,7 @@ Robot: Practice
 Mode: training
 ```
 
-## בדיקת סיום בלי רמזים
+## בדיקת סיום
 
 צרו `InspectionRobot` שיורשת מ־`Robot`. היא תקבל שם בבנאי ותדרוס `printStatus()` כך שתדפיס את הדפסת האב ואחריה `Mode: inspection`.
 
@@ -331,4 +331,40 @@ Robot robot = new InspectionRobot("Check");
 - איזה מימוש של המתודה יופעל?
 - האם נוצר כאן אובייקט אחד או שניים?
 
-אם אתם יכולים לענות על השאלות וגם להשתמש בקוד בעצמכם, הבנתם את הרעיון המרכזי. המרות טיפוס, מחלקות מופשטות וממשקים יילמדו כשיהיה בהם צורך.
+<ExerciseHelp
+  hints={[
+    "InspectionRobot יורשת מ־Robot, בדיוק כמו המחלקות היורשות שבניתם קודם.",
+    "השתמשו ב־@Override וב־super.printStatus() כדי להוסיף את השורה החדשה.",
+    "showRobot מקבלת Robot, ולכן היא יכולה לקבל גם אובייקט ממחלקה שיורשת ממנו.",
+    "בקריאה למתודה שנדרסה, Java מפעילה את המימוש של מחלקת האובייקט בפועל."
+  ]}
+  solution={`// InspectionRobot.java
+public class InspectionRobot extends Robot {
+
+    public InspectionRobot(String name) {
+        super(name);
+    }
+
+    @Override
+    public void printStatus() {
+        super.printStatus();
+        System.out.println("Mode: inspection");
+    }
+}
+
+// בתוך Main
+InspectionRobot inspection = new InspectionRobot("Check");
+showRobot(inspection);
+
+// אין צורך לשנות את showRobot.
+
+// הסבר:
+// Robot הוא טיפוס המשתנה.
+// InspectionRobot היא המחלקה שממנה נוצר האובייקט.
+// מותר לקרוא ל־printStatus כי היא קיימת ב־Robot.
+// בפועל יופעל המימוש של InspectionRobot.
+// נוצר אובייקט אחד של InspectionRobot,
+// ולא אובייקט נוסף של Robot.`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>

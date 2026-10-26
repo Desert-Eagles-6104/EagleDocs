@@ -270,14 +270,44 @@ System.out.println(second.score); // 90`}
   multipleSolutions={true}
 />
 
-## לפני שממשיכים: בדיקה בלי רמזים
+## לפני שממשיכים: בדקו את עצמכם
 
 צרו מחלקה `Lamp` עם שדה ציבורי `boolean on`. צרו שתי מנורות חדשות, הפעילו רק אחת והדפיסו את מצב שתיהן. כתבו במפורש את המצב של כל מנורה לפני ההדפסה.
 
-הסבירו למדריך או לחבר:
+הסבירו:
 
 - מהי המחלקה ומהם האובייקטים בתוכנית שלכם?
 - באיזו שורה נוצר כל אובייקט?
 - למה שינוי המנורה הראשונה לא שינה את השנייה?
 
-אם קשה לכם לבצע או להסביר זאת, חזרו לדוגמת שני הרובוטים לפני ההמשך.
+<ExerciseHelp
+  hints={[
+    "צרו קובץ Lamp.java עם מחלקה בשם Lamp ושדה public boolean on.",
+    "ב־Main צרו שתי מנורות באמצעות שתי קריאות נפרדות ל־new Lamp().",
+    "לכל אובייקט יש שדה on משלו. שנו את השדה של מנורה אחת בלבד."
+  ]}
+  solution={`// Lamp.java
+public class Lamp {
+    public boolean on;
+}
+
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        Lamp first = new Lamp();
+        Lamp second = new Lamp();
+
+        first.on = true;
+        second.on = false;
+
+        System.out.println(first.on);  // true
+        System.out.println(second.on); // false
+    }
+}
+
+// Lamp היא המחלקה.
+// first ו־second מפנים לשני אובייקטים שונים.
+// כל new Lamp() יוצר אובייקט נפרד,
+// ולכן שינוי שדה באחד לא משפיע על השני.`}
+  solutionLanguage="java"
+/>

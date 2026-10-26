@@ -329,10 +329,41 @@ second.printStatus();`}
   multipleSolutions={true}
 />
 
-## לפני שממשיכים: בדיקה בלי רמזים
+## לפני שממשיכים: בדקו את עצמכם
 
 הוסיפו ל־`Robot` מתודה `doubleSpeed()` שמכפילה את מהירותו פי שניים. צרו שני אובייקטים, הפעילו אותה רק על אחד ובדקו את שניהם.
 
 הסבירו: איך המתודה יודעת באיזה שדה `speed` להשתמש? מה ההבדל בין שינוי השדה, הדפסתו והחזרתו באמצעות `return`?
 
 **שמרו את המחלקה.** בחלק הבא נשנה את הדרך שבה יוצרים אובייקט ומגדירים את המצב ההתחלתי שלו.
+
+<ExerciseHelp
+  hints={[
+    "המתודה doubleSpeed לא צריכה לקבל פרמטר, כי היא משתמשת בשדה speed של האובייקט.",
+    "כדי להכפיל את המהירות אפשר לכתוב speed = speed * 2;",
+    "כשקוראים ל־first.doubleSpeed(), המתודה פועלת על האובייקט first בלבד."
+  ]}
+  solution={`// בתוך Robot.java
+public void doubleSpeed() {
+    speed = speed * 2;
+}
+
+// דוגמה לבדיקה ב־Main
+Robot first = new Robot();
+Robot second = new Robot();
+
+first.speed = 0.3;
+second.speed = 0.4;
+
+first.doubleSpeed();
+
+System.out.println(first.speed);  // 0.6
+System.out.println(second.speed); // 0.4
+
+// המתודה פועלת על האובייקט שעליו קראו לה.
+// השמה (=) משנה את השדה.
+// println מדפיסה ערך.
+// return מחזיר ערך למי שקרא למתודה.`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>

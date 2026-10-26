@@ -320,31 +320,37 @@ Falcon
 אם הפלט שונה, בדקו קודם באיזה אובייקט משתמשת כל קריאה. אחר כך בדקו אילו מתודות משנות את המנוע ואילו מחזירות את ערכו.
 
 ## 8. אתגר: שני מנועים לכל רובוט
-{/* TODO: יש בעיה בין תרגילים 8 לתרגיל הסיום אני לא רוצה ליצור main חדש אז נראה מה נעשה */}
-רק אחרי שהגרסה עם מנוע אחד עובדת ואתם יכולים להסביר אותה: צרו באותה חבילת `mechanisms` את `TwoMotorRobot.java` ואת `TwoMotorMain.java`. העתיקו אליהם את גרסת הבסיס, ושנו את שם המחלקה והבנאי בהתאם. השאירו את `Robot.java`, `Main.java` ו־`Motor.java` במקומם; בדיקת הסיום משתמשת בהם. בכל קובץ חדש השאירו `package mechanisms;` בראשו.
 
-בגרסת האתגר:
+עד עכשיו לכל רובוט היה מנוע אחד. עכשיו נשדרג אותו כך שיוכל לשלוט בשני מנועים בנפרד.
 
-- החליפו את השדה `motor` בשני שדות פרטיים: `leftMotor` ו־`rightMotor`.
-- בבנאי צרו שני מנועים חדשים, בשתי קריאות ל־`new Motor()`.
-- שנו את `drive` לקבל `double leftSpeed` ו־`double rightSpeed`.
-- `stop()` צריכה לעצור את שניהם.
-- החליפו את `getSpeed()` ב־`getLeftSpeed()` ו־`getRightSpeed()`.
-- עדכנו את `printStatus()` להדפיס שם ואת שתי המהירויות, ואת כל הקריאות ב־`TwoMotorMain` לחתימות החדשות.
+**עבדו עם אותם קבצים:** `Robot.java`, `Motor.java` ו־`Main.java`. אין צורך ליצור מחלקות חדשות או לשנות את `Motor`.
 
-בדקו גם בקשה שבה רק ערך אחד לא תקין. לפי הכלל שלנו, כל מנוע בודק את בקשתו בנפרד: הבקשה התקינה מתקבלת והשנייה נדחית.
+ב־`Robot`:
 
-<ExerciseHelp
-  hints={["אין צורך לשנות את Motor. TwoMotorRobot משתמש בשני אובייקטים מאותה מחלקה.", "אל תשתמשו באותה יצירה עבור שני השדות; כל מנוע צריך new משלו.", "העבירו לכל מנוע את הפרמטר המתאים, ועדכנו גם את הבדיקה ב־TwoMotorMain."]}
-  solution={`// TwoMotorRobot.java - גרסת אתגר נפרדת, לצד הגרסה עם מנוע אחד
+1. החליפו את `motor` בשני שדות פרטיים: `leftMotor` ו־`rightMotor`.
+2. בבנאי צרו שני אובייקטים נפרדים של `Motor`.
+3. שנו את `drive` לקבל שתי מהירויות, אחת לכל מנוע.
+4. עדכנו את `stop()` לעצור את שניהם.
+5. החליפו את `getSpeed()` ב־`getLeftSpeed()` ו־`getRightSpeed()`.
+6. עדכנו את `printStatus()` להדפיס את שם הרובוט ואת שתי המהירויות.
+
+עדכנו גם את `Main.java` ובדקו נסיעה, עצירה, ובקשה שבה רק אחת המהירויות אינה תקינה. זכרו שכל מנוע בודק את הבקשה שלו בנפרד.
+
+<escape><ExerciseHelp
+  hints={[
+    "אין צורך לשנות את Motor. אפשר ליצור כמה אובייקטים מאותה מחלקה.",
+    "כל שדה צריך לקבל new Motor() משלו.",
+    "ב־drive העבירו לכל מנוע את הפרמטר המתאים לו."
+  ]}
+  solution={`// Robot.java
 package mechanisms;
 
-public class TwoMotorRobot {
+public class Robot {
     private String name;
     private Motor leftMotor;
     private Motor rightMotor;
 
-    public TwoMotorRobot(String name) {
+    public Robot(String name) {
         this.name = name;
         leftMotor = new Motor();
         rightMotor = new Motor();
@@ -373,50 +379,87 @@ public class TwoMotorRobot {
         System.out.println(getLeftSpeed());
         System.out.println(getRightSpeed());
     }
-}
-
-// TwoMotorMain.java - גרסת אתגר; Motor.java נשאר כפי שהוא
-package mechanisms;
-
-public class TwoMotorMain {
-    public static void main(String[] args) {
-        TwoMotorRobot robot = new TwoMotorRobot("Eagle");
-        robot.drive(0.5, -0.25);
-        robot.printStatus(); // Eagle, 0.5, -0.25
-        robot.drive(0.75, 2);
-        robot.printStatus(); // Eagle, 0.75, -0.25
-        robot.stop();
-        robot.printStatus(); // Eagle, 0.0, 0.0
-    }
 }`}
   solutionLanguage="java"
   multipleSolutions={true}
-/>
+/></escape>
 
-## 9. איפה כל מה שלמדנו מופיע?
+## 9. מזהים את מה שלמדנו
 
-חזרו לקוד שלכם וסמנו דוגמה לכל מושג:
+חזרו לקוד שלכם ומצאו דוגמה לכל אחד מהמושגים:
 
-| מושג | מה לחפש בקוד? |
-| --- | --- |
-| מחלקה | הגדרת טיפוס כמו `class Motor` |
-| אובייקט | מנוע או רובוט שנוצר באמצעות `new` |
-| שדה | מידע שנשמר באובייקט בין קריאות למתודות |
-| מתודה | פעולה כמו `drive` או `stop` |
-| פרמטר | מידע שהבנאי או המתודה מקבלים |
-| `return` | העברת ערך לקוד שקרא למתודה |
-| בנאי | אתחול בעת יצירת האובייקט |
-| `this` | הבחנה בין שדה לפרמטר באותו שם |
-| `private` | הגבלת הגישה הישירה מבחוץ |
-| `public` | חשיפת בנאי או פעולה לשאר התוכנית |
-| כימוס | `Motor` שומר את המהירות ושולט בדרכים לשנותה |
+| | | |
+|---|---|---|
+| מחלקה | אובייקט | שדה |
+| מתודה | פרמטר | בנאי |
+| `return` | `this` | `private` |
+| `public` | כימוס | |
 
-## בדיקת סיום בלי רמזים
+נסו גם להסביר במילים שלכם מה כל אחד מהם עושה.
 
-הוסיפו לגרסה עם מנוע אחד מתודה `isMoving()` ב־`Robot`, שמחזירה אם המהירות שונה מאפס. בדקו לפני הנסיעה, בזמן הנסיעה ואחרי עצירה.
+<escape><ExerciseHelp
+  hints={[
+    "חפשו איפה מוגדרים המחלקות, השדות והמתודות.",
+    "בדקו מה קורה כשמשתמשים ב־new.",
+    "חשבו למה אי אפשר לשנות ישירות את המהירות מתוך Main."
+  ]}
+  solution={`מחלקה: Robot או Motor.
+אובייקט: כל רובוט או מנוע שנוצר באמצעות new.
+שדה: name, leftMotor או rightMotor.
+מתודה: drive, stop או printStatus.
+פרמטר: name, leftSpeed או rightSpeed.
+בנאי: Robot(String name).
+return: החזרת ערך מתוך getLeftSpeed.
+this: הבחנה בין השדה name לפרמטר name.
+private: הגבלת הגישה הישירה לשדות.
+public: מאפשר שימוש במתודות ובבנאי מבחוץ.
+כימוס: Motor מנהל את המהירות שלו דרך המתודות שלו.`}
+  solutionLanguage="text"
+/></escape>
 
-אחר כך עקבו בקול אחרי `first.drive(0.5)`: באיזו מחלקה מתחילים, איזו מתודה מופעלת בהמשך, ואיזה שדה משתנה בסוף?
+## בדיקת סיום
 
-לבסוף הסבירו למה עצירת `first` אינה עוצרת את `second` בפרויקט שלכם. הצביעו על שתי יצירות הרובוטים ועל יצירת המנוע בתוך כל בנאי.
+**בלי להסתכל על הפתרון**, הוסיפו ל־`Robot` מתודה בשם `isMoving()` שמחזירה `true` אם לפחות אחד מהמנועים נע, ו־`false` אחרת.
 
-אם הצלחתם לכתוב, לבדוק ולהסביר את המסלול הזה, אתם מוכנים להמשיך. אין צורך לזכור כל דוגמה בעל פה; חשוב שתוכלו לבנות חיבור דומה בעצמכם.
+בדקו את המתודה לפני נסיעה, בזמן נסיעה ואחרי עצירה.
+
+לאחר מכן, הסבירו:
+- מה קורה מרגע הקריאה ל־`first.drive(0.5, -0.25)` ועד שהמהירויות משתנות?
+- למה עצירת `first` לא עוצרת גם את `second`?
+
+<escape><ExerciseHelp
+  hints={[
+    "אפשר לבדוק את המהירות של כל מנוע באמצעות המתודות שכבר כתבתם.",
+    "צריך להחזיר true אם לפחות אחת משתי המהירויות שונה מאפס.",
+    "לכל Robot נוצרים שני אובייקטים נפרדים של Motor בבנאי."
+  ]}
+  solution={`// בתוך Robot.java
+public boolean isMoving() {
+    return getLeftSpeed() != 0 || getRightSpeed() != 0;
+}
+
+// בתוך Main.java
+Robot first = new Robot("Eagle");
+Robot second = new Robot("Falcon");
+
+System.out.println(first.isMoving()); // false
+first.drive(0.5, -0.25);
+System.out.println(first.isMoving()); // true
+first.stop();
+System.out.println(first.isMoving()); // false
+
+/*
+הקריאה ל־drive מפעילה מתודה ב־Robot.
+היא קוראת ל־setSpeed על כל אחד משני המנועים.
+כל Motor בודק ושומר את המהירות שלו.
+
+עצירת first אינה משפיעה על second,
+מכיוון שלכל רובוט יש מנועים משלו.
+*/`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/></escape>
+
+---
+
+אם הצלחתם לכתוב, לבדוק ולהסביר את הקוד, אתם מוכנים להמשיך. המטרה אינה לזכור הכול בעל פה, אלא לדעת להשתמש במה שלמדתם כדי לבנות משהו חדש.

@@ -324,10 +324,61 @@ public void setSpeed(double speed) {
   multipleSolutions={true}
 />
 
-## לפני שממשיכים: בדיקה בלי רמזים
+## לפני שממשיכים: בדקו את עצמכם
 
-צרו `Battery` עם שדה פרטי `int percent`. הבנאי יקבל אחוז טעינה התחלתי. הוסיפו `getPercent()` ו־`setPercent(int percent)`.
+צרו מחלקה `Battery` עם שדה פרטי `int percent`. הבנאי יקבל אחוז טעינה התחלתי. הוסיפו `getPercent()` ו־`setPercent(int percent)`.
 
-הכללים: רק ערכים בין `0` ל־`100` מתקבלים. ערך התחלתי לא תקין משאיר `0`; שינוי לא תקין משאיר את הערך הקודם. בדקו ב־`Main` את הקצוות ואת `150`.
+הכללים:
+
+- רק ערכים בין `0` ל־`100` מתקבלים.
+- ערך התחלתי לא תקין משאיר `0`.
+- שינוי לא תקין משאיר את הערך הקודם.
+
+בדקו ב־`Main` את ערכי הקצה `0` ו־`100`, וגם את `150`.
 
 הסבירו: למה `private` לבדו לא מספיק? באילו מקומות במחלקה צריך לשמור על הכלל?
+
+<ExerciseHelp
+  hints={[
+    "הגדירו private int percent כדי למנוע שינוי ישיר מבחוץ.",
+    "ב־setPercent בדקו שהערך נמצא בתחום התקין לפני שינוי השדה.",
+    "אפשר לקרוא ל־setPercent מתוך הבנאי, וכך להשתמש באותה בדיקה גם בזמן יצירת האובייקט."
+  ]}
+  solution={`// Battery.java
+public class Battery {
+    private int percent;
+
+    public Battery(int percent) {
+        setPercent(percent);
+    }
+
+    public int getPercent() {
+        return percent;
+    }
+
+    public void setPercent(int percent) {
+        if (percent >= 0 && percent <= 100) {
+            this.percent = percent;
+        }
+    }
+}
+
+// בתוך Main
+Battery battery = new Battery(150);
+System.out.println(battery.getPercent()); // 0
+
+battery.setPercent(100);
+System.out.println(battery.getPercent()); // 100
+
+battery.setPercent(0);
+System.out.println(battery.getPercent()); // 0
+
+battery.setPercent(150);
+System.out.println(battery.getPercent()); // 0
+
+// private מונע שינוי ישיר מבחוץ,
+// אבל המתודות והבנאי עדיין יכולים לשנות את השדה.
+// לכן צריך לוודא שגם דרכם לא נשמר ערך לא תקין.`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>

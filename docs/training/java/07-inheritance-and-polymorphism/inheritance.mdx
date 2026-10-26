@@ -377,14 +377,49 @@ public class Main {
   multipleSolutions={true}
 />
 
-## בדיקת סיום בלי רמזים
+## בדיקת סיום
 
 צרו `TrainingRobot` שיורשת מ־`Robot`:
 
 - הבנאי יקבל שם ויעביר אותו לבנאי האב.
-- `printStatus()` תדפיס קודם את הדפסת האב ואחריה `Mode: training`.
+- `printStatus()` תפעיל קודם את הדפסת האב ואחריה תדפיס `Mode: training`.
 - ב־`Main` צרו אובייקט, הפעילו עליו `drive()` ו־`printStatus()`.
 
-הסבירו למה לא צריך להגדיר שוב את השדה `name` או את המתודה `drive`. הסבירו את ההבדל בין `super(name)` לבין `super.printStatus()`.
+הסבירו למה לא צריך להגדיר שוב את השדה `name` או את המתודה `drive`. מה ההבדל בין `super(name)` לבין `super.printStatus()`?
 
 שמרו את `Robot`, את `CompetitionRobot` ואת `TrainingRobot`. הן יהיו הבסיס לשיעור הפולימורפיזם.
+
+<ExerciseHelp
+  hints={[
+    "השתמשו ב־extends Robot כדי לרשת מהמחלקה Robot.",
+    "הבנאי של המחלקה היורשת צריך לקרוא ל־super(name) כפעולה הראשונה שלו.",
+    "השתמשו ב־@Override וב־super.printStatus() כדי להוסיף הדפסה בלי לשכפל את הקוד של האב."
+  ]}
+  solution={`// TrainingRobot.java
+public class TrainingRobot extends Robot {
+
+    public TrainingRobot(String name) {
+        super(name);
+    }
+
+    @Override
+    public void printStatus() {
+        super.printStatus();
+        System.out.println("Mode: training");
+    }
+}
+
+// בתוך Main
+TrainingRobot robot = new TrainingRobot("Eagle");
+robot.drive();
+robot.printStatus();
+
+// TrainingRobot יורשת את drive מ־Robot.
+// השדה name כבר מוגדר במחלקת האב,
+// ואין צורך להגדיר אותו מחדש.
+
+// super(name) קורא לבנאי של Robot.
+// super.printStatus() קורא למתודה של Robot.`}
+  solutionLanguage="java"
+  multipleSolutions={true}
+/>
