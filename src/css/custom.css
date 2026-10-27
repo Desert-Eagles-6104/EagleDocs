@@ -84,10 +84,31 @@
 
 
 /* Sidebar hierarchy */
-.theme-doc-sidebar-menu .menu__list .menu__list {
-  margin-inline-start: 0.65rem;
-  padding-inline-start: 0.85rem;
-  border-inline-start: 1px solid var(--ifm-color-emphasis-300);
+.theme-doc-sidebar-menu .menu__list {
+  --sidebar-branch-color: var(--ifm-color-emphasis-400);
+
+  margin-inline-start: 0.8rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--sidebar-branch-color);
+}
+
+.theme-doc-sidebar-menu .menu__list > .menu__list-item {
+  position: relative;
+}
+
+/* Connect every child to its parent's rail, including the first nested level. */
+.theme-doc-sidebar-menu .menu__list > .menu__list-item::before {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-start: calc(-1rem - 2px);
+  width: 0.8rem;
+  border-block-start: 2px solid var(--sidebar-branch-color);
+  content: '';
+  pointer-events: none;
+}
+
+.theme-doc-sidebar-menu .menu__list:has(.menu__link--active) {
+  --sidebar-branch-color: var(--ifm-color-primary);
 }
 
 /* Category headings */
@@ -96,7 +117,7 @@
 }
 
 /* More separation between top-level sections */
-.theme-doc-sidebar-menu > .menu__list > .menu__list-item {
+.theme-doc-sidebar-menu > .menu__list-item {
   margin-block-end: 0.4rem;
 }
 

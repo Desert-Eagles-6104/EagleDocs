@@ -133,7 +133,7 @@ function DemoSession({
           {keys.map((key, index) => (
             <MechanismView
               key={key}
-              label={`בקר ${index + 1} — ${methods[cfg[key].method]}`}
+              label={`בקר ${index + 1} - ${methods[cfg[key].method]}`}
               state={current[key]}
               cfg={cfg}
               interactive={adjustTarget}

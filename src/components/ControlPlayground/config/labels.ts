@@ -8,12 +8,12 @@ export const methods: Record<Method, string> = {
   profile: "פרופיל תנועה",
 };
 export const requests: Record<Request, string> = {
-  duty: "Duty Cycle — אחוזי עוצמה",
-  voltage: "Voltage — מתח",
-  velocity: "Velocity — מהירות",
-  position: "Position — מיקום",
-  torque: "Torque Current — זרם מומנט",
-  magic: "Motion Magic — תנועה לפי פרופיל",
+  duty: "Duty Cycle - אחוזי עוצמה",
+  voltage: "Voltage - מתח",
+  velocity: "Velocity - מהירות",
+  position: "Position - מיקום",
+  torque: "Torque Current - זרם מומנט",
+  magic: "Motion Magic - תנועה לפי פרופיל",
 };
 // Goal names describe the experiment; Phoenix request names are implementation
 // details kept separately for existing links and the optional teaching material.

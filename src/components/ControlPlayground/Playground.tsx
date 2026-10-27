@@ -53,7 +53,7 @@ export default function ControlPlayground() {
         </p>
       </div>
       <details className={styles.card}>
-        <summary>ניסויים מודרכים — בוחרים שאלה ובודקים אותה</summary>
+        <summary>ניסויים מודרכים - בוחרים שאלה ובודקים אותה</summary>
         <p>
           כל ניסוי טוען מנגנון והגדרות התחלה. ניסוי השוואתי מוסיף בקר שני עם
           שינוי מוגדר, כדי לראות מה משפיע על התגובה.
@@ -83,7 +83,7 @@ export default function ControlPlayground() {
         </p>
       )}
       <section className={styles.card} aria-label="תנאי הסימולציה">
-        <h2>תנאי הסימולציה — המערכת והמטרה</h2>
+        <h2>תנאי הסימולציה - המערכת והמטרה</h2>
         <div className={styles.toolbar}>
           <label>
             סוג המנגנון
@@ -142,7 +142,7 @@ export default function ControlPlayground() {
         {keys.map((key, i) => (
           <div key={key}>
             <MechanismView
-              label={`בקר ${i + 1} — ${methods[cfg[key].method]}`}
+              label={`בקר ${i + 1} - ${methods[cfg[key].method]}`}
               state={current[key]}
               cfg={cfg}
               onTarget={(n) => update({ ...cfg, target: n })}

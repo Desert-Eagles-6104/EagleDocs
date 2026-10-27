@@ -120,7 +120,7 @@ export function RequestLesson({ request }: { request: Request }) {
         <a
           href={`https://api.ctr-electronics.com/phoenix6/stable/java/com/ctre/phoenix6/controls/${name}.html`}
         >
-          תיעוד CTRE הרשמי — {name}
+          תיעוד CTRE הרשמי - {name}
         </a>{" "}
         (נבדק מול Phoenix 6 Java 26.3.0).
       </p>
