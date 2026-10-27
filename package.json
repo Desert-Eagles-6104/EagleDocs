@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "test": "node --test scripts/test-control-*.cjs",
     "docusaurus": "docusaurus",
     "prefetch-javadoc": "bash scripts/fetch-javadoc.sh",
     "start": "npx docusaurus start --config ./docusaurus.config.ts",

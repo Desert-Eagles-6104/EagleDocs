@@ -71,6 +71,3 @@ export default function Home(): ReactNode {
     </Layout>
   );
 }
-
-//http://localhost:3000/docs/javadoc/
-//http://localhost:3000/docs/javadoc/

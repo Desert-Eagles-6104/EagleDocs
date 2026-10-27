@@ -1,0 +1,468 @@
+.playground {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.intro {
+  padding: 2rem;
+  border-radius: 20px;
+  background: linear-gradient(
+    125deg,
+    var(--ifm-color-emphasis-100),
+    var(--ifm-background-surface-color)
+  );
+  border-inline-start: 5px solid var(--ifm-color-primary);
+  margin-bottom: 1rem;
+}
+
+.intro h1 {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  margin: 0.6rem 0;
+}
+
+.eyebrow {
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.playground button,
+.playground select {
+  border: 1px solid var(--ifm-color-emphasis-400);
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+}
+
+.playground select {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.playground button {
+  cursor: pointer;
+}
+
+.playground button[aria-pressed="true"] {
+  background: var(--ifm-color-primary);
+  color: var(--ifm-background-color);
+}
+
+.playground button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.playground :focus-visible {
+  outline: 3px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}
+
+.playground input[type="checkbox"] {
+  margin-inline-end: 0.5rem;
+  accent-color: var(--ifm-color-primary);
+}
+
+.simulationControls {
+  overflow: hidden;
+  margin: 1.25rem 0;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 14px;
+  background: var(--ifm-background-surface-color);
+}
+
+.controlHeader,
+.controlBody,
+.transportControls,
+.experimentControls,
+.runStatus,
+.simulationClock,
+.playbackSpeed {
+  display: flex;
+  align-items: center;
+}
+
+.controlHeader {
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.runStatus {
+  gap: 0.5rem;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--ifm-color-emphasis-500);
+}
+
+.runStatus[data-running="true"] .statusDot {
+  background: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px var(--ifm-color-emphasis-200);
+}
+
+.simulationClock {
+  gap: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.simulationClock strong {
+  color: var(--ifm-font-color-base);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.controlBody {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.5rem;
+  padding: 1rem;
+}
+
+.transportControls,
+.experimentControls {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.simulationControls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.55rem 0.85rem;
+  border-color: var(--ifm-color-emphasis-300);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.simulationControls button:not(:disabled):hover {
+  border-color: var(--ifm-color-emphasis-500);
+  background: var(--ifm-color-emphasis-100);
+}
+
+.simulationControls .runButton {
+  min-width: 112px;
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: var(--ifm-background-color);
+  font-weight: 700;
+}
+
+.simulationControls .runButton:not(:disabled):hover {
+  border-color: var(--ifm-color-primary-dark);
+  background: var(--ifm-color-primary-dark);
+}
+
+.controlHint {
+  margin-inline-start: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.playbackSpeed {
+  gap: 0.65rem;
+  margin-inline-end: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.playbackSpeed select {
+  width: auto;
+  min-height: 42px;
+  margin: 0;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.simulationControls .disturbanceButton {
+  border-style: dashed;
+}
+
+.simulationProgress {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border: 0;
+  background: var(--ifm-color-emphasis-200);
+  accent-color: var(--ifm-color-primary);
+}
+
+.simulationProgress::-webkit-progress-bar {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.simulationProgress::-webkit-progress-value {
+  background: var(--ifm-color-primary);
+}
+
+.simulationProgress::-moz-progress-bar {
+  background: var(--ifm-color-primary);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.card,
+.graph,
+.mechanism {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 14px;
+  padding: 1.2rem;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.card legend {
+  width: auto;
+  padding: 0 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.card summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.slider {
+  display: block;
+  margin: 0.9rem 0;
+}
+
+.slider > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.slider bdi {
+  font-variant-numeric: tabular-nums;
+}
+
+.slider input {
+  width: 100%;
+  accent-color: var(--ifm-color-primary);
+  direction: ltr;
+}
+
+.slider small,
+.mechanism small {
+  display: block;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.mechanism svg {
+  display: block;
+  width: 100%;
+  height: 230px;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.mechanism svg[data-interactive="false"] {
+  cursor: default;
+  touch-action: auto;
+}
+
+.playground.demo {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 16px;
+  background: var(--ifm-background-surface-color);
+}
+
+.demoHeading {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.demoPrompt {
+  margin-top: 0.5rem;
+}
+
+.demo .mechanism svg {
+  height: 180px;
+}
+
+.demo .graph {
+  margin-bottom: 0;
+}
+
+.demoTuning {
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+}
+
+.demoTuning legend {
+  padding-inline: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.readout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.single {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.explanation {
+  margin: 1rem 0;
+}
+
+.explanation summary {
+  cursor: pointer;
+}
+
+.help {
+  display: inline-block;
+  position: relative;
+  text-align: start;
+  font-weight: normal;
+}
+
+.playground .help-button {
+  border: 0;
+  padding: 0.1rem 0.3rem;
+  color: var(--ifm-color-primary);
+  background: transparent;
+  font-size: 1rem;
+}
+
+.tooltip {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 100%;
+  z-index: 10;
+  width: min(260px, 65vw);
+  padding: 0.8rem;
+  border: 1px solid var(--ifm-color-emphasis-400);
+  border-radius: 8px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  box-shadow: 0 4px 16px #0003;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.math {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.math [class~="katex"] {
+  /* rtl:ignore */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.math p {
+  margin-bottom: 0.3rem;
+}
+
+.graph svg {
+  display: block;
+  width: 100%;
+  direction: ltr;
+}
+
+.legend,
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.legend {
+  font-size: 0.8rem;
+}
+
+.links {
+  margin-top: 1rem;
+}
+
+@media (width <= 700px) {
+  .controlBody {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .transportControls {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+  }
+
+  .experimentControls {
+    justify-content: space-between;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+  }
+
+  .simulationControls button {
+    gap: 0.35rem;
+    padding-inline: 0.6rem;
+  }
+
+  .simulationControls .runButton {
+    min-width: 0;
+  }
+
+  .controlHeader {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .intro {
+    padding: 1rem;
+  }
+
+  .playground.demo {
+    padding: 0.85rem;
+  }
+}

@@ -125,6 +125,11 @@ const config: Config = {
           activeBaseRegex: '^/training/',
         },
         {
+          to: '/control-playground/',
+          position: 'left',
+          label: 'מעבדת בקרה',
+        },
+        {
           to: '/lib/',
           position: 'left',
           label: 'ספריית DELib',
