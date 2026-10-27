@@ -136,13 +136,6 @@ const config: Config = {
           activeBaseRegex: '^/lib/',
         },
         {
-          to: '/javadoc/',
-          label: 'Javadoc',
-          position: 'left',
-          target: '_blank',
-          rel: 'noopener noreferrer',
-        },
-        {
           href: 'https://github.com/Desert-Eagles-6104/EagleDocs',
           label: 'GitHub',
           position: 'right',

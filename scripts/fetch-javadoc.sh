@@ -18,8 +18,8 @@ chmod +x "$TMP_DIR/gradlew"
 
 (cd "$TMP_DIR" && ./gradlew -q javadoc)
 
-rm -rf static/javadoc
-mkdir -p static/javadoc
-cp -R "$TMP_DIR/build/docs/javadoc/"* static/javadoc/
+rm -rf static/lib/javadoc
+mkdir -p static/lib/javadoc
+cp -R "$TMP_DIR/build/docs/javadoc/"* static/lib/javadoc/
 
-echo "Javadoc copied into static/javadoc"
+echo "Javadoc copied into static/lib/javadoc"

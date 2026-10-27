@@ -55,7 +55,7 @@ export default function Home(): ReactNode {
             <FeatureCard
               title="תיעוד הקוד (Javadoc)"
               description="תיעוד המחלקות, המתודות והמערכות של DELib וקוד הרובוט, שנוצר ישירות מקוד המקור."
-              href="pathname:///docs/javadoc/"
+              href="pathname:///docs/lib/javadoc/"
               cta="לצפייה בתיעוד ←"
             />
 

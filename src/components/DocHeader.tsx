@@ -12,7 +12,7 @@ type Props = {
   className?: string;
 
   // Static Javadoc path served from /static
-  javadocPath?: string; // "/javadoc/....html"
+  javadocPath?: string; // "/lib/javadoc/....html"
 
   // GitHub source link:
   // - easiest: pass the java source path relative to repo root OR relative to srcRoot (see below)
