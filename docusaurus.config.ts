@@ -70,6 +70,8 @@ const config: Config = {
         hashed: true,
         language: ['he', 'en'],
         indexPages: true,
+        // Keep internal search available while noIndex blocks external search engines.
+        forceIgnoreNoIndex: true,
       },
     ],
     [

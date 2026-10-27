@@ -137,3 +137,31 @@
   overflow-x: auto;
 }
 
+/* Keep RTL search controls in place when Docusaurus flips the plugin's CSS. */
+/*rtl:begin:ignore*/
+html[dir='rtl'] .navbar__search .navbar__search-input {
+  padding-inline: 2.25em;
+  background-position: right 0.75rem center;
+}
+
+html[dir='rtl'] .navbar__search .navbar__search-input:placeholder-shown {
+  direction: rtl;
+  padding-inline-end: 5rem;
+}
+
+html[dir='rtl'] .navbar__search.navbar__search > button {
+  right: auto;
+  left: 0.8rem;
+}
+
+html[dir='rtl'] .navbar__search [class*='searchHintContainer'] {
+  right: auto;
+  left: 10px;
+}
+
+html[dir='rtl'] .navbar__search.navbar__search [class*='searchBarLoadingRing'] {
+  right: 10px;
+  left: auto;
+}
+/*rtl:end:ignore*/
+
