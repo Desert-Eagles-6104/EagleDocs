@@ -1,10 +1,6 @@
-export type Profile = "direct" | "trapezoid" | "scurve";
-export interface Reference {
-  p: number;
-  v: number;
-  a: number;
-}
-
+import { MotionProfile } from "../model/constants";
+import { type Profile } from "../model/constants";
+import { type Reference } from "../model/types";
 // Rest-to-rest trajectories. S-curve is a time-scaled quintic, not CTRE firmware.
 export function profile(
   kind: Profile,
@@ -16,18 +12,20 @@ export function profile(
 ): Reference {
   const d = Math.abs(distance),
     sign = Math.sign(distance);
-  if (!d || kind === "direct") return { p: distance, v: 0, a: 0 };
-  if (kind === "scurve") {
+  if (!d || kind === MotionProfile.Direct) return { p: distance, v: 0, a: 0 };
+  if (kind === MotionProfile.SCurve) {
     const T = Math.max(
       (1.875 * d) / vmax,
       Math.sqrt((5.774 * d) / amax),
       Math.cbrt((60 * d) / jmax),
     );
-    const s = Math.min(1, Math.max(0, t / T));
+    const state = Math.min(1, Math.max(0, t / T));
     return {
-      p: distance * (10 * s ** 3 - 15 * s ** 4 + 6 * s ** 5),
-      v: (distance / T) * (30 * s ** 2 - 60 * s ** 3 + 30 * s ** 4),
-      a: (distance / T ** 2) * (60 * s - 180 * s ** 2 + 120 * s ** 3),
+      p: distance * (10 * state ** 3 - 15 * state ** 4 + 6 * state ** 5),
+      v: (distance / T) * (30 * state ** 2 - 60 * state ** 3 + 30 * state ** 4),
+      a:
+        (distance / T ** 2) *
+        (60 * state - 180 * state ** 2 + 120 * state ** 3),
     };
   }
   const ramp = Math.min(vmax / amax, Math.sqrt(d / amax));

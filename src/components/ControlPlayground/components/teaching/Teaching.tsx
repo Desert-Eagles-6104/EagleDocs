@@ -1,5 +1,5 @@
 import React from "react";
-import { type Method, type Request } from "./engine";
+import { type Method, type Request } from "../../model/constants";
 const lessons: Record<Method, string[]> = {
   open: [
     "להפעיל מנוע בעוצמה קבועה.",

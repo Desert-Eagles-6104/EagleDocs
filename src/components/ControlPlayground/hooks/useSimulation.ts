@@ -1,14 +1,10 @@
 /* global requestAnimationFrame, cancelAnimationFrame */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DT, type Config } from "./engine";
-import {
-  advanceSimulation,
-  createSimulation,
-  HISTORY_LIMIT,
-  type Sample,
-} from "./simulation";
+import { DT, DISTURBANCE_DURATION, HISTORY_LIMIT } from "../model/constants";
+import { type Config, type Sample } from "../model/types";
+import { advanceSimulation, createSimulation } from "../engine/simulation";
 
-export function useSimulation(cfg: Config) {
+export function useSimulation(config: Config) {
   const simulation = useRef(createSimulation());
   const [running, setRunning] = useState(false);
   const [history, setHistory] = useState<Sample[]>([]);
@@ -25,7 +21,7 @@ export function useSimulation(cfg: Config) {
       try {
         const { samples, finished, blocked } = advanceSimulation(
           simulation.current,
-          cfg,
+          config,
           ticks,
         );
         if (samples.length)
@@ -42,7 +38,7 @@ export function useSimulation(cfg: Config) {
         return false;
       }
     },
-    [cfg],
+    [config],
   );
 
   useEffect(() => {
@@ -52,7 +48,8 @@ export function useSimulation(cfg: Config) {
     let accumulator = 0;
     const frame = (now: number) => {
       if (previousTime !== undefined)
-        accumulator += Math.min((now - previousTime) / 1000, 0.1) * cfg.speed;
+        accumulator +=
+          Math.min((now - previousTime) / 1000, 0.1) * config.speed;
       previousTime = now;
       const ticks = Math.floor(accumulator / DT);
       accumulator -= ticks * DT;
@@ -61,10 +58,11 @@ export function useSimulation(cfg: Config) {
     };
     frameId = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(frameId);
-  }, [running, cfg.speed, advance]);
+  }, [running, config.speed, advance]);
 
   const disturb = () => {
-    simulation.current.disturbanceUntil = simulation.current.a.t + 0.5;
+    simulation.current.disturbanceUntil =
+      simulation.current.a.t + DISTURBANCE_DURATION;
   };
 
   return { running, setRunning, history, reset, advance, disturb, error };

@@ -1,0 +1,105 @@
+---
+title: הטמעת הדגמות בקרה ב־MDX
+sidebar_position: 9
+unlisted: true
+---
+
+import ControlDemo from "@site/src/components/ControlPlayground/ControlDemo";
+
+# סימולציה קטנה בתוך ההסבר
+
+`ControlDemo` מציג ניסוי ממוקד בתוך דף MDX. מגדירים מראש את המערכת, המטרה והבקרים, ובוחרים מה הלומדים יוכלו לשנות. אין תפריט ניסויים או הגדרות בקר מלאות. כל הדגמה עצמאית: הפעלה ושינוי פרמטרים בה אינם משפיעים על הדגמות אחרות או על כתובת הדף.
+
+מוסיפים בראש קובץ ה־MDX:
+
+```jsx
+import ControlDemo from "@site/src/components/ControlPlayground/ControlDemo";
+```
+
+## הדגמה עם הגדרות קבועות
+
+שני בקרים מנסים להחזיק את אותה זרוע. ההגדרות והיעד נעולים; הלומדים מפעילים את הניסוי ומשווים את התגובה.
+
+<ControlDemo
+  title="האם משוב לבדו מספיק כדי להחזיק זרוע?"
+  preset="gravity"
+  config={{ duration: 10 }}
+  showStep={false}
+/>
+
+```jsx
+<ControlDemo
+  title="האם משוב לבדו מספיק כדי להחזיק זרוע?"
+  preset="gravity"
+  config={{ duration: 10 }}
+  showStep={false}
+/>
+```
+
+## תרגיל עם פרמטר אחד
+
+אפשר לחשוף רק את הפרמטר שנחקר ולהסתפק בגרף, כדי להשאיר את המיקוד בתרגיל.
+
+<ControlDemo
+  title="תרגיל: מה משתנה כשמגדילים את kP?"
+  preset="p"
+  config={{ duration: 8, a: { kp: 2 } }}
+  tune={["kp"]}
+  showMechanism={false}
+>
+  הפעילו את הניסוי עם kP נמוך. הגדילו אותו ובדקו מה קורה לזמן ההגעה, לתנודות
+  ולשגיאה שנשארת. כל שינוי מתחיל ניסוי חדש ממנוחה.
+</ControlDemo>
+
+```jsx
+<ControlDemo
+  title="תרגיל: מה משתנה כשמגדילים את kP?"
+  preset="p"
+  config={{ duration: 8, a: { kp: 2 } }}
+  tune={["kp"]}
+  showMechanism={false}
+>
+  הגדילו את kP ובדקו את התגובה. כל שינוי מתחיל ניסוי חדש ממנוחה.
+</ControlDemo>
+```
+
+## הגדרת ניסוי משלכם
+
+`config.goal` מתאר את המטרה: `position`, `velocity`, `voltage`, `torque` או `duty`. `a` ו־`b` מגדירים איך כל בקר פועל. `compare: true` מציג את שניהם. ההגדרות מתמזגות עם הניסוי שנבחר ב־`preset`, או עם ברירות המחדל של המעבדה אם לא נבחר ניסוי.
+
+```jsx
+<ControlDemo
+  title="PID מול Bang-Bang אחרי הפרעה"
+  config={{
+    mechanism: "wheel",
+    goal: "velocity",
+    target: 8,
+    duration: 12,
+    compare: true,
+    a: { method: "pid", kp: 2, ki: 2, kd: 0 },
+    b: { method: "bang", hysteresis: 0.2 },
+  }}
+  graphs={["response", "output"]}
+  tune={{ a: ["kp"], b: ["hysteresis"] }}
+  disturbance
+  showSpeed
+/>
+```
+
+| אפשרות          | משמעות                                                                          | ברירת מחדל                   |
+| --------------- | ------------------------------------------------------------------------------- | ---------------------------- |
+| `title`         | כותרת ההדגמה                                                                    | הדגמת בקרה                   |
+| תוכן בין התגיות | הסבר או הוראות לתרגיל                                                           | ללא                          |
+| `preset`        | ניסוי קיים, למשל `p`, `gravity`, `windup`, `flywheel` או `profiles`             | הגדרות המעבדה                |
+| `config`        | הגדרות התחלה: מטרה, יעד, מנגנון, תנאי פיזיקה ובקרים                             | לפי הניסוי                   |
+| `graphs`        | גרפים להצגה: `response`, `error`, `output`, `velocity`, `acceleration`, `terms` | תגובה; בניסוי פלט קבוע — פלט |
+| `tune`          | פרמטרים שהלומדים יכולים לשנות                                                   | ללא                          |
+| `adjustTarget`  | מתיר שינוי יעד במחוון וגם בגרירת המנגנון                                        | `false`                      |
+| `showMechanism` | מציג את אנימציית המנגנון                                                        | `true`                       |
+| `showStep`      | מציג התקדמות בצעדים של 20 ms                                                    | `true`                       |
+| `showSpeed`     | מציג בחירת מהירות הרצה                                                          | `false`                      |
+| `disturbance`   | מציג כפתור הפרעה לחצי שנייה                                                     | `false`                      |
+
+`tune={["kp", "kd"]}` חושף אותם פרמטרים בכל הבקרים המוצגים. `tune={{ a: ["kp"], b: [] }}` מאפשר לשנות רק את הבקר הראשון. הפרמטרים הזמינים הם `kp`, `ki`, `kd`, `ks`, `kv`, `ka`, `kg`, `output`, `hysteresis`, `low`, `high`, `vmax`, `amax`, `jmax`. חשפו רק פרמטרים ששיטת הבקר משתמשת בהם: למשל `kp` בבקר עם P מופעל, או `vmax` בבקר פרופיל תנועה.
+
+שינוי פרמטר או יעד עוצר ומאתחל את הסימולציה. **איפוס** מחזיר את המנגנון למנוחה ושומר את ערכי הכוונון שהלומדים בחרו. אין הפעלה אוטומטית. אפשר להסתיר את כל הגרפים עם `graphs={[]}` ולהציג רק את המנגנון.

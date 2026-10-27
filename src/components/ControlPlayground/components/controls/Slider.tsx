@@ -1,6 +1,6 @@
 import React from "react";
-import { Help, hintFor } from "./Help";
-import styles from "./styles.module.css";
+import { Help, hintFor } from "../common/Help";
+import styles from "../../styles.module.css";
 
 export function Slider({
   label,

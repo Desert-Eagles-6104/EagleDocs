@@ -1,13 +1,10 @@
+import { targetModel } from "../../view-model/target";
 import React from "react";
-import {
-  defaults,
-  isDirect,
-  isVelocity,
-  targetBounds,
-  type Config,
-} from "./engine";
-import { goals } from "./config";
-import { Slider } from "./Slider";
+import { defaults } from "../../model/defaults";
+import { isDirect } from "../../model/semantics";
+import { type Config } from "../../model/types";
+import { goals } from "../../config/labels";
+import { Slider } from "../controls/Slider";
 
 const goalDescriptions = {
   position:
@@ -28,9 +25,7 @@ export function GoalSettings({
 }) {
   // Motion Magic in old links is a position goal with a profiled controller.
   const goal = cfg.request === "magic" ? "position" : cfg.request;
-  const unit =
-    (cfg.mechanism === "elevator" ? "m" : "rad") +
-    (isVelocity(cfg) ? "/s" : "");
+  const target = targetModel(cfg);
   return (
     <div>
       <label>
@@ -58,24 +53,19 @@ export function GoalSettings({
         </select>
       </label>
       <p>{goalDescriptions[goal]}</p>
-      {isDirect(cfg) ? (
-        <Slider
-          label={`${goal === "duty" ? "עוצמת ההפעלה" : goal === "torque" ? "זרם ההפעלה" : "מתח ההפעלה"} (${goal === "duty" ? "%" : goal === "torque" ? "A" : "V"})`}
-          min={goal === "duty" ? -100 : goal === "torque" ? -40 : -12}
-          max={goal === "duty" ? 100 : goal === "torque" ? 40 : 12}
-          value={cfg.demand}
-          onChange={(demand) => update({ ...cfg, demand })}
-        />
-      ) : (
-        <Slider
-          label={`${isVelocity(cfg) ? "מהירות היעד" : "מיקום היעד"} (${unit})`}
-          min={targetBounds(cfg)[0]}
-          max={targetBounds(cfg)[1]}
-          step={0.05}
-          value={cfg.target}
-          onChange={(target) => update({ ...cfg, target })}
-        />
-      )}
+      <Slider
+        label={target.label}
+        min={target.min}
+        max={target.max}
+        step={target.direct ? 0.1 : 0.05}
+        value={target.value}
+        onChange={(value) =>
+          update({
+            ...cfg,
+            ...(target.direct ? { demand: value } : { target: value }),
+          })
+        }
+      />
       <p>
         <small>
           פרופיל תנועה הוא דרך להגיע למיקום. בוחרים אותו בכל בקר בנפרד, מתחת

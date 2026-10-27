@@ -1,24 +1,21 @@
-import { DT, initial, step, supports, type Config, type State } from "./engine";
-
-export type Sample = { a: State; b: State };
-export const SAMPLE_TICKS = 4;
-export const HISTORY_LIMIT = 600;
-// Limit work after a stalled frame, even at the fastest playback speed.
-export const MAX_FRAME_TICKS = 80;
-
-export function createSimulation() {
+import { DT, SAMPLE_TICKS, MAX_FRAME_TICKS } from "../model/constants";
+import { initial, step } from "./step";
+import { supports } from "../model/semantics";
+import { type Config, type Sample, type Simulation } from "../model/types";
+export function createSimulation(): Simulation {
   return { a: initial(), b: initial(), ticks: 0, disturbanceUntil: 0 };
 }
 
 export function advanceSimulation(
-  simulation: ReturnType<typeof createSimulation>,
-  cfg: Config,
+  simulation: Simulation,
+  config: Config,
   requestedTicks: number,
 ) {
   const samples: Sample[] = [];
-  const totalTicks = Math.round(cfg.duration / DT);
+  const totalTicks = Math.round(config.duration / DT);
   const compatible =
-    supports(cfg, cfg.a) && (!cfg.compare || supports(cfg, cfg.b));
+    supports(config, config.a) &&
+    (!config.compare || supports(config, config.b));
   if (!compatible) return { samples, finished: false, blocked: true };
 
   const ticks = Number.isFinite(requestedTicks)
@@ -26,10 +23,10 @@ export function advanceSimulation(
     : 0;
   for (let tick = 0; tick < ticks && simulation.ticks < totalTicks; tick++) {
     const force =
-      simulation.a.t < simulation.disturbanceUntil ? cfg.disturbance : 0;
-    const a = step(simulation.a, cfg, cfg.a, force);
-    const b = cfg.compare
-      ? step(simulation.b, cfg, cfg.b, force)
+      simulation.a.t < simulation.disturbanceUntil ? config.disturbance : 0;
+    const a = step(simulation.a, config, config.a, force);
+    const b = config.compare
+      ? step(simulation.b, config, config.b, force)
       : simulation.b;
     // Commit both controllers together, only after verifying the next state.
     if (

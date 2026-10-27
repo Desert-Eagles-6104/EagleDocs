@@ -1,7 +1,7 @@
 import React from "react";
-import { type Config } from "./engine";
-import { Slider } from "./Slider";
-import styles from "./styles.module.css";
+import { type Config } from "../../model/types";
+import { Slider } from "../controls/Slider";
+import styles from "../../styles.module.css";
 
 export function ExperimentSettings({
   cfg,

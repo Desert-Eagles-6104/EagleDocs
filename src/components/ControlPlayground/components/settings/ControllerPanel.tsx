@@ -4,14 +4,13 @@ import {
   supportedMethods,
   isDirect,
   isVelocity,
-  type Config,
-  type Controller,
-} from "./engine";
-import { goals, methods } from "./config";
-import { Help } from "./Help";
-import { Lesson } from "./Teaching";
-import { Slider } from "./Slider";
-import styles from "./styles.module.css";
+} from "../../model/semantics";
+import { type Config, type Controller } from "../../model/types";
+import { goals, methods } from "../../config/labels";
+import { Help } from "../common/Help";
+import { Lesson } from "../teaching/Teaching";
+import { Slider } from "../controls/Slider";
+import styles from "../../styles.module.css";
 
 export function ControllerPanel({
   value,

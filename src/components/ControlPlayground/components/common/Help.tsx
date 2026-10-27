@@ -2,7 +2,7 @@ import React, { memo, useId, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import styles from "./styles.module.css";
+import styles from "../../styles.module.css";
 
 export const MathText = memo(function MathText({
   children,
