@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="400" viewBox="0 0 720 400" role="img" aria-labelledby="title desc">
+  <title id="title">מהקוד אל המנוע הנכון</title>
+  <desc id="desc">הקוד בוחר את רשת rio ואת מזהה 50. הודעת הבקרה מגיעה לבקר Talon FX, שמפעיל את המנוע. הבקר והמנוע משולבים באותו מכלול.</desc>
+  <defs>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#2369aa"/></marker>
+    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#ae5911"/></marker>
+  </defs>
+  <style>text{paint-order:stroke;stroke:#f2f6fc;stroke-width:3px;stroke-linejoin:round}</style>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
+    <text x="360" y="40" font-size="27" direction="rtl">מהקוד אל המנוע הנכון</text>
+    <rect x="35" y="80" width="235" height="100" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
+    <text x="152" y="117" font-size="24" direction="rtl">קוד הרובוט</text>
+    <text x="152" y="153" font-size="20" direction="ltr">createConfiguration()</text>
+    <path d="M270 130H386" fill="none" stroke="#2369aa" stroke-width="4" marker-end="url(#blue)"/>
+    <rect x="395" y="80" width="290" height="100" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
+    <text x="540" y="114" font-size="23" direction="rtl">כתובת הבקר</text>
+    <text x="540" y="151" font-size="23" direction="ltr">CAN: rio · ID: 50</text>
+    <path d="M540 180V228" fill="none" stroke="#2369aa" stroke-width="4" marker-end="url(#blue)"/>
+    <rect x="35" y="217" width="650" height="158" rx="20" fill="none" stroke="#25866c" stroke-width="2" stroke-dasharray="7 5"/>
+    <rect x="395" y="242" width="265" height="88" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
+    <text x="527" y="278" font-size="24" direction="ltr">Talon FX</text>
+    <text x="527" y="309" font-size="20" direction="rtl">מקבל את הבקשה</text>
+    <path d="M395 286H299" fill="none" stroke="#ae5911" stroke-width="4" marker-end="url(#orange)"/>
+    <rect x="60" y="242" width="230" height="88" rx="16" fill="#fff0df" stroke="#ae5911" stroke-width="2"/>
+    <text x="175" y="278" font-size="24" direction="rtl">מנוע</text>
+    <text x="175" y="309" font-size="20" direction="rtl">מסובב את הציר</text>
+    <text x="360" y="359" font-size="20" direction="rtl">שני תפקידים באותו מכלול פיזי</text>
+  </g>
+</svg>
