@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="680" viewBox="0 0 640 680" role="img" aria-labelledby="title desc">
+  <title id="title">בחירה, כניסה לבדיקה והפעלת פקודה</title>
+  <desc id="desc">ב־Elastic, כשהרובוט Disabled, בוחרים TRAINING_ROLLER בבורר Test Mode. בחלון הסימולציה או ב־Driver Station בוחרים Test ועושים Enable. Robot.testInit קוראת דרך BindingsManager ל־bind. רק אחר כך מפעילים פקודה בכרטיס שלה ב־Elastic.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#2369aa"/></marker></defs>
+  <style>text{paint-order:stroke;stroke:#f2f6fc;stroke-width:3px;stroke-linejoin:round}</style>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
+    <text x="320" y="38" font-size="28" font-weight="700" direction="rtl">שלוש בחירות שונות בדרך להפעלה</text>
+    <rect x="40" y="66" width="560" height="130" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
+    <text x="320" y="103" font-size="26" direction="rtl">1. בוחרים בדיקה כשהרובוט מושבת</text>
+    <text x="320" y="145" font-size="27" direction="ltr">Test Mode → TRAINING_ROLLER</text>
+    <text x="320" y="179" font-size="24" direction="rtl">בוחרים איזה קוד בדיקה לחבר</text>
+    <path d="M320 196V233" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="40" y="242" width="560" height="130" rx="16" fill="#fff0df" stroke="#ae5911" stroke-width="2"/>
+    <text x="320" y="279" font-size="26" direction="rtl">2. בחלון הסימולציה או בתחנת הנהג</text>
+    <text x="320" y="321" font-size="27" direction="ltr">Test + Enable</text>
+    <text x="320" y="355" font-size="24" direction="rtl">בוחרים מצב ומאפשרים הפעלה</text>
+    <path d="M320 372V409" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="40" y="418" width="560" height="94" rx="16" fill="#d7f1e8" stroke="#25866c" stroke-width="2"/>
+    <text x="320" y="457" font-size="25" direction="ltr">testInit() → manager → bind()</text>
+    <text x="320" y="492" font-size="24" direction="rtl">התבנית מחברת את הבדיקה שנבחרה</text>
+    <path d="M320 512V549" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="40" y="558" width="560" height="94" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
+    <text x="320" y="597" font-size="26" direction="rtl">3. מפעילים פקודה בכרטיס בדשבורד</text>
+    <text x="320" y="632" font-size="24" direction="rtl">הבקשה מתחילה את פעולת הרולר</text>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="690" viewBox="0 0 640 690" role="img" aria-labelledby="title desc">
+  <title id="title">רצף לעומת עבודה מקבילה וכללי הסיום</title>
+  <desc id="desc">ברצף: איסוף, המתנה ופליטה מתחילים בזה אחר זה. במקביל שתי פעולות מתחילות יחד: א באורך שנייה וב באורך שלוש שניות. parallel מסתיימת בשנייה שלוש, race בשנייה אחת, ו־deadline של שתי שניות בשנייה שתיים. הקטע המקווקו מציין זמן שתוכנן אך לא בוצע.</desc>
+  <style>text{paint-order:stroke;stroke:#f2f6fc;stroke-width:3px;stroke-linejoin:round}</style>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
+    <text x="320" y="38" font-size="28" font-weight="700" direction="rtl">סדר התחלה וכלל סיום</text>
+    <text x="320" y="87" font-size="26" direction="rtl">רצף: שלב מתחיל אחרי קודמו</text>
+    <rect x="45" y="105" width="275" height="49" rx="10" fill="#d7f1e8" stroke="#25866c" stroke-width="2"/>
+    <rect x="325" y="105" width="115" height="49" rx="10" fill="#e4ebf4" stroke="#536a84" stroke-width="2"/>
+    <rect x="445" y="105" width="150" height="49" rx="10" fill="#fff0df" stroke="#ae5911" stroke-width="2"/>
+    <g font-size="25" direction="rtl"><text x="182" y="138">איסוף</text><text x="382" y="138">המתנה</text><text x="520" y="138">פליטה</text></g>
+    <text x="320" y="198" font-size="25" direction="rtl">במקביל: שתי מערכות מתחילות יחד</text>
+    <g font-size="23" direction="ltr"><text x="145" y="237">0</text><text x="285" y="237">1</text><text x="425" y="237">2</text><text x="565" y="237">3 s</text></g>
+    <g stroke="#a8bbd2" stroke-width="1" stroke-dasharray="4 5"><path d="M145 246V622"/><path d="M285 246V622"/><path d="M425 246V622"/><path d="M565 246V622"/></g>
+    <g font-size="24" direction="rtl"><text x="320" y="277">כולם מסיימים: 3 שניות</text><text x="320" y="405">הראשון מסיים: שנייה אחת</text><text x="320" y="533">פקודת היעד מסיימת: 2 שניות</text></g>
+    <g fill="#d7f1e8" stroke="#25866c" stroke-width="2"><rect x="145" y="291" width="140" height="31" rx="7"/><rect x="145" y="419" width="140" height="31" rx="7"/><rect x="145" y="547" width="140" height="31" rx="7"/></g>
+    <g fill="#dfeefa" stroke="#2369aa" stroke-width="2"><rect x="145" y="334" width="420" height="31" rx="7"/><rect x="145" y="462" width="140" height="31" rx="7"/><rect x="145" y="590" width="280" height="31" rx="7"/></g>
+    <g font-size="23" direction="rtl"><text x="100" y="315">א</text><text x="100" y="358">ב</text><text x="100" y="443">א</text><text x="100" y="486">ב</text><text x="100" y="571">א</text><text x="100" y="614">ב</text></g>
+    <g fill="none" stroke="#ae5911" stroke-width="2" stroke-dasharray="7 5"><rect x="285" y="462" width="280" height="31" rx="7"/><rect x="425" y="590" width="140" height="31" rx="7"/></g>
+    <g stroke="#ae5911" stroke-width="4"><path d="M285 452V503M425 580V631"/></g>
+    <text x="320" y="670" font-size="23" direction="rtl">קו מקווקו: זמן שתוכנן, אך הפעולה נקטעה</text>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="620" viewBox="0 0 640 620" role="img" aria-labelledby="title desc">
+  <title id="title">מאיפה הפקודה מקבלת את ההתנהגות?</title>
+  <desc id="desc">מלמעלה למטה: Command מספקת מחזור חיים. MotorDoubleSupplierCommand מוסיפה requirement, supplier וניקוי. MotorSubsystemSetPercentage מממשת execute באחוזי פלט. CollectCommand בוחרת את הרולר ואת קבוע האיסוף.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#2369aa"/></marker></defs>
+  <style>text{paint-order:stroke;stroke:#f2f6fc;stroke-width:3px;stroke-linejoin:round}</style>
+  <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
+    <text x="320" y="38" font-size="28" font-weight="700" direction="rtl">מאיפה מגיעה ההתנהגות?</text>
+    <g fill="#dfeefa" stroke="#2369aa" stroke-width="2">
+      <rect x="40" y="65" width="560" height="94" rx="16"/>
+      <rect x="40" y="202" width="560" height="94" rx="16"/>
+      <rect x="40" y="339" width="560" height="94" rx="16"/>
+    </g>
+    <rect x="40" y="476" width="560" height="94" rx="16" fill="#d7f1e8" stroke="#25866c" stroke-width="2"/>
+    <g font-size="25" direction="ltr" font-weight="700">
+      <text x="320" y="102">Command</text>
+      <text x="320" y="239">MotorDoubleSupplierCommand</text>
+      <text x="320" y="376">MotorSubsystemSetPercentage</text>
+      <text x="320" y="513">CollectCommand</text>
+    </g>
+    <g font-size="24" direction="rtl">
+      <text x="320" y="139">מחזור חיים שהמתזמן מנהל</text>
+      <text x="320" y="276">שומרת מערכת וספק ערך; מצהירה ומנקה</text>
+      <text x="320" y="413">קוראת ערך ושולחת אחוז פלט בכל מחזור</text>
+      <text x="320" y="550">בוחרת רולר וקבוע איסוף — אתם מוסיפים</text>
+    </g>
+    <path d="M320 161V194" fill="none" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/><path d="M320 298V331" fill="none" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/><path d="M320 435V468" fill="none" stroke="#2369aa" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="320" y="607" font-size="23" direction="rtl">כל מחלקה מקבלת גם את ההתנהגות שמעליה</text>
+  </g>
+</svg>
