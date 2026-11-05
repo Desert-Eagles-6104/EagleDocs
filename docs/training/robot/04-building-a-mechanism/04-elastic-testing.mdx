@@ -203,12 +203,12 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 1. עצרו פעולה באמצעות כרטיס הביטול, ואז הפעילו אותה שוב. בדקו שהמנוע מגיב פעם נוספת.
 2. עברו ל־Disabled, בחרו `NONE`, וחזרו ל־Test. אל תלחצו על כרטיסי הרולר שנשארו. הסבירו למה עצם הופעתם אינה מוכיחה שהרולר הוא הבדיקה שנבחרה.
 3. עברו שוב ל־Disabled, בחרו `TRAINING_ROLLER`, וחזרו ל־Test. הפעילו איסוף פעם אחת ובטלו אותה. ודאו שאינה מתחילה מחדש מעצמה.
-4. הוסיפו לבדיקה גם כרטיס ל־`FadeCollectCommand` מהשיעור הקודם. צרו לו שדה פקודה בבנאי ופרסום ב־`binding()`, עם מפתח חדש `Training Roller/Commands/Fade`. השוו השלמה של שנייה לביטול מוקדם.
+4. הוסיפו לבדיקה גם כרטיס ל־`TimedCollectCommand` מהשיעור הקודם. צרו לו שדה פקודה בבנאי ופרסום ב־`binding()`, עם מפתח חדש `Training Roller/Commands/TimedCollect`. השוו השלמה של שנייה לביטול מוקדם.
 
 <ExerciseHelp
   hints={[
     "ה־enum שומר את אובייקט הבדיקה; bind נקראת שוב, אבל הכרטיסים אינם מתנקים אוטומטית.",
-    "לכרטיס החדש צרו Command פעם אחת בבנאי, והשתמשו ב־DashboardUtils.setData ב־binding. שימו לב ל־import של FadeCollectCommand.",
+    "לכרטיס החדש צרו Command פעם אחת בבנאי, והשתמשו ב־DashboardUtils.setData ב־binding. שימו לב ל־import של TimedCollectCommand.",
     "ב־Fade, הסיום בזמן מגיע מ־isFinished; ביטול מוקדם מגיע מבקשת הביטול בכרטיס. בשניהם end צריכה לבטל פלט.",
   ]}
 />
