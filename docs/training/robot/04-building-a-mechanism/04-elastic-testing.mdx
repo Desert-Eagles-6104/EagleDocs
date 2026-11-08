@@ -10,33 +10,27 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 בסיום תוכלו להוסיף בדיקה לתשתית של הפרויקט ולעקוב אחרי שלושה דברים נפרדים: מה ביקשנו להריץ, איזו פקודה מחזיקה במנגנון ומה המנוע עושה בפועל. המשיכו עם `TrainingRoller` ועם שלוש הפקודות מהשיעור הקודם.
 
-## 1. Binding הוא חיבור להפעלה
+## 1. מה זה NetworkTables, ומה Elastic מציגה?
 
-עד עכשיו חיברנו trigger של כפתור לפקודה. בתבנית יש גם מחלקות בדיקה שמפרסמות פקודות לדשבורד. פתחו, לקריאה בלבד:
+**NetworkTables היא מערכת של WPILib להעברת נתונים בין תוכנית הרובוט לתוכנות שמחוברות אליה.** התוכנית מפרסמת ערכים תחת שמות, והדשבורד מקבל עדכונים שלהם. גם בסימולציה הנתונים עוברים באותה דרך, כשהתוכנית והדשבורד רצים באותו מחשב.
 
-- `src/main/java/frc/robot/TestModeBindings.java` — ה־`enum` שמרכז את הבדיקות.
-- `src/main/java/frc/robot/BindingsManager.java` — יוצר את הבורר ומבקש מהבדיקה שנבחרה לפעול.
-- `src/main/java/frc/DELib26/bindings/Bindings.java` — מחלקת הבסיס.
-- `src/main/java/frc/DELib26/subsystems/swerve/swerveBindings/SwerveGeneralBindings.java` — דוגמה אמיתית לפרסום פקודות בעזרת `DashboardUtils.setData`.
+הנתונים מסודרים בעץ שמזכיר תיקיות. למשל, `/SmartDashboard/Training Roller/Commands/Collect` הוא הנתיב שבו נפרסם את פקודת האיסוף. הסימן `/` מפריד בין חלקי הנתיב. זהו שם ברשת, לא קובץ ששמור במחשב.
 
-`enum` הוא סוג עם רשימת ערכים מוגדרת מראש; כאן כל ערך הוא בחירה בבדיקות. בבסיס `Bindings` יש שלוש מתודות רלוונטיות:
+**Elastic היא הדשבורד שמציגה את הנתונים האלה בכרטיסים.** כרטיס מספרי יכול להציג מתח שהקוד מפרסם; כרטיס פקודה מאפשר לשלוח לתוכנית בקשת הפעלה או ביטול. Elastic אינה מפעילה מנוע בעצמה: תוכנית הרובוט מקבלת את הבקשה ומריצה את הפקודה.
 
-| מתודה        | מה היא עושה בפועל?                                                          |
-| ------------ | --------------------------------------------------------------------------- |
-| `bind()`     | מתודה `final` שקוראת ל־`binding()` בכל קריאה. היא אינה מבטיחה ״רק פעם אחת״. |
-| `binding()`  | מתודה `protected` שנדרוס כדי לפרסם פקודות או לחבר triggers בעת ההפעלה.      |
-| `periodic()` | נקודת עדכון מחזורית, ריקה בבסיס. כאן לא יוצרים שוב commands או bindings.    |
+`SmartDashboard` היא אחת הטבלאות ב־NetworkTables, וגם שם ה־API שבעזרתו מפרסמים אליה מהקוד. אין צורך לפתוח את תוכנת SmartDashboard הישנה. אצלנו `DashboardUtils.setData(...)` מפרסמת לשם את הפקודות, והמדידות שכבר חיברנו מגיעות תחת `AdvantageKit`.
 
-יצירת מופע `Bindings` אינה קוראת אוטומטית ל־`bind()`. אין בבסיס גם `unbind()` שמוחקת פרסומים מהדשבורד.
+[הסבר נוסף על NetworkTables בתיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/networktables-intro.html).
 
-## 2. יוצרים בדיקה לרולר
+## 2. יוצרים Bindings לרולר
 
-צרו `src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java`. זהו **הקובץ המלא**; הוא משתמש ב־`CollectCommand` וב־`EjectCommand` שיצרתם, ובפקודת העצירה מהספרייה:
+**Bindings מרכזת את מה שנרצה לפרסם ולהפעיל בבדיקה של המנגנון.** נשתמש באותו סגנון כמו [ShooterHoodBindings בקוד הרובוט](https://github.com/Desert-Eagles-6104/robot2026/blob/dev/src/main/java/frc/robot/subsystems/shooterHood/Bindings/ShooterHoodBindings.java): קבועים לנתיבים בראש המחלקה, שמירת המנגנון בבנאי ופרסום בתוך `binding()`.
+
+צרו `src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java`. זהו **הקובץ המלא**:
 
 ```java
 package frc.robot.subsystems.trainingRoller;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib26.bindings.Bindings;
 import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemDisableMotors;
 import frc.DELib26.util.dashboard.DashboardUtils;
@@ -44,29 +38,31 @@ import frc.robot.subsystems.trainingRoller.commands.CollectCommand;
 import frc.robot.subsystems.trainingRoller.commands.EjectCommand;
 
 public class TrainingRollerTestBindings extends Bindings {
-    private final Command collect;
-    private final Command eject;
-    private final Command stop;
+    private static final String DASHBOARD_FOLDER = "Training Roller";
+    private static final String COMMANDS_FOLDER = DASHBOARD_FOLDER + "/Commands/";
+
+    private static final String COLLECT_KEY = COMMANDS_FOLDER + "Collect";
+    private static final String EJECT_KEY = COMMANDS_FOLDER + "Eject";
+    private static final String STOP_KEY = COMMANDS_FOLDER + "Stop";
+
+    private final TrainingRoller roller;
 
     public TrainingRollerTestBindings(TrainingRoller roller) {
-        collect = new CollectCommand(roller);
-        eject = new EjectCommand(roller);
-        stop = new MotorSubsystemDisableMotors<>(roller);
-        stop.setName("Roller Stop");
+        this.roller = roller;
     }
 
     @Override
     protected void binding() {
-        DashboardUtils.setData("Training Roller/Commands/Collect", collect);
-        DashboardUtils.setData("Training Roller/Commands/Eject", eject);
-        DashboardUtils.setData("Training Roller/Commands/Stop", stop);
+        DashboardUtils.setData(COLLECT_KEY, new CollectCommand(roller));
+        DashboardUtils.setData(EJECT_KEY, new EjectCommand(roller));
+        DashboardUtils.setData(STOP_KEY, new MotorSubsystemDisableMotors<>(roller));
     }
 }
 ```
 
-הבנאי יוצר פקודות, בלי לתזמן אותן ובלי להניע את המנוע. `setName` בוחרת שם לזיהוי פקודת העצירה; היא אינה מפעילה אותה. ה־requirements כבר נמצאות בפקודות. `DashboardUtils.setData` עם `Command` מעבירה אותה ל־`SmartDashboard.putData`, כפי שעושות הבדיקות הקיימות.
+הבנאי מקבל את הרולר שכבר נוצר ושומר אותו. ב־`binding()` יוצרים את הפקודות ומפרסמים אותן תחת המפתחות שהגדרנו. למשל, `COLLECT_KEY` מכיל את `Training Roller/Commands/Collect`, וב־Elastic נחפש אותו תחת `SmartDashboard`.
 
-אין כאן דריסה של `periodic()`: אין לנו עדכון נוסף. המתזמן כבר מריץ את הפקודות, ופרסום מדידות הרולר כבר מחובר ל־`RobotContainer.logTelemetry()`. אין להוסיף קריאת `setPercentOutput` למחלקת הבדיקה.
+**פרסום פקודה יוצר אפשרות להפעיל אותה; הוא אינו מתחיל את הפעולה.** הפקודות הן אלה ששולחות פלט למנוע ומבטלות אותו בסיום, כפי שלמדנו בפרק הקודם. המדידות כבר מחוברות לרולר, ולכן אין כאן קוד נוסף שמפעיל מנוע או מעדכן אותו בכל מחזור.
 
 ### רושמים ב־TestModeBindings
 
@@ -84,11 +80,11 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
     .orElse(null)),
 ```
 
-`map` מפעילה את פעולת היצירה רק אם ה־`Optional` מכילה רולר. `TrainingRollerTestBindings::new` היא דרך קצרה לכתוב `roller -> new TrainingRollerTestBindings(roller)`. `orElse(null)` מחזירה כאן `null` אם אין רולר; בתשתית הזאת זו הדרך לסמן שבדיקה אינה זמינה. `isBindingsAvailable()` בודקת בדיוק זאת, וה־manager לא מוסיף לבורר בדיקה שאינה זמינה.
+`map` יוצרת את הבדיקה רק אם קיים רולר בתוך ה־`Optional`. הכתיבה `TrainingRollerTestBindings::new` שקולה ל־`roller -> new TrainingRollerTestBindings(roller)`. אם אין רולר, `orElse(null)` מסמנת שהבדיקה אינה זמינה.
 
-מאחר שיצרנו את הרולר בסימולציה בלבד, **`TRAINING_ROLLER` תופיע כרגע רק בסימולציה**. אין לשנות את תנאי יצירת החומרה כדי לגרום לאפשרות להופיע בעמדה פיזית בלי התאמת התצורה עם המנטור.
+יצרנו את הרולר בסימולציה בלבד, ולכן **`TRAINING_ROLLER` זמינה כרגע בסימולציה**.
 
-הסירו מ־`RobotContainer.configureTeleopBindings()` רק את חיבור North הזמני של הרולר. שאר החיבורים נשארים. כך מסיימים את ניסוי הכפתור ועוברים לבדיקת Test אחת, בלי להוסיף manager או chooser חדשים. בנו את הפרויקט והפעילו מחדש את הסימולציה; הוספת ערך ל־`enum` דורשת אתחול חדש.
+הסירו מ־`RobotContainer.configureTeleopBindings()` את חיבור North הזמני של הרולר. בנו את הפרויקט והפעילו מחדש את הסימולציה כדי שהאפשרות החדשה תיטען.
 
 ### עצרו והסבירו
 
@@ -99,36 +95,11 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
     "יש שלוש פעולות שונות: new TrainingRoller, יצירת אובייקט Command ופרסום שלו.",
     "חפשו איזו פעולה עדיין חסרה כדי להתחיל את מחזור החיים של Command.",
   ]}
-  solution="RobotContainer יוצר רולר אחד. בנאי TrainingRollerTestBindings מקבל אותו ויוצר פקודות. binding מפרסמת אותן. רק בקשת תזמון שאושרה מתחילה פקודה; בנאים ופרסום אינם בקשת הנעה."
+  solution="RobotContainer יוצר רולר אחד. בנאי TrainingRollerTestBindings מקבל ושומר אותו. binding יוצרת את הפקודות ומפרסמת אותן. רק בקשת תזמון שאושרה מתחילה פקודה; בנאים ופרסום אינם בקשת הנעה."
   solutionLanguage="text"
 />
 
-## 3. מי מפעיל את הבדיקה ומתי?
-
-קראו את הקריאות הקיימות, בלי לשנות את `Robot` או את `BindingsManager`:
-
-1. `Robot.robotInit()` קוראת ל־`BindingsManager.init()`.
-2. ה־manager עובר על `TestModeBindings.values()`, מוסיף אפשרויות לפי `mode.name()` ומגדיר `NONE` כברירת המחדל. `configureTestMode()` מפרסמת את הבורר בשם **`Test Mode`**.
-3. בכניסה ל־Test, `Robot.testInit()` מבטלת פקודות קיימות ומנקה את לולאת הכפתורים. אחר כך `testModeInit()` מתאימה את מיפוי השלט וקוראת `getSelected().getBindings().bind()`.
-4. במהלך Test, `testModePeriodic()` קוראת ל־`periodic()` של הבחירה שהבורר מחזיר באותו רגע. במקביל `robotPeriodic()` ממשיכה להריץ מתזמן ולוגים.
-
-[![ב־Disabled בוחרים TRAINING_ROLLER בבורר Test Mode; בחלון הסימולציה בוחרים Test ומפעילים Enable; רק אז נקראת binding ומפורסמות פקודות הרולר ב־Elastic](./assets/test-activation.svg)](./assets/test-activation.svg)
-
-**הבחירה נקראת מחדש ב־periodic, אבל `bind()` נקראת רק בכניסה ל־Test.** אם מחליפים בחירה בזמן Test, ה־periodic עשויה כבר להשתייך לבדיקה החדשה בעוד החיבורים שייכים לקודמת. לכן משתמשים תמיד ברצף: **Disable → בחירת בדיקה → Test → Enable**. אל תנסו להחליף בדיקות בזמן הפעלה.
-
-### מה קורה בהפעלה חוזרת וביציאה?
-
-ב־`TestModeBindings` נשמר מופע הבדיקה שנוצר באתחול. בכניסה חוזרת ל־Test נקראת שוב `binding()` על אותו מופע. בדוגמה שלנו היא מפרסמת שוב את אותם שלושה אובייקטי פקודות; היא אינה מוסיפה פקודות פעילות או שכבות של חיבורי כפתורים.
-
-ב־`Robot.disabledInit()` כבר יש `cancelAll()`, ניקוי של לולאת הכפתורים ו־`disableAll()`. גם `testInit()` ו־`teleopInit()` מבטלות פקודות ומנקות את הלולאה; `teleopExit()` עושה ניקוי דומה. לעומתן, **`testExit()` ריקה**: אין בה פעולת ניקוי מיוחדת. בפרט, אין להסיק שמעבר ישיר מ־Test ל־Autonomous מבצע אותו ניקוי. בניסויים עוברים דרך Disabled.
-
-הפרסומים של `SmartDashboard` אינם נמחקים כשמנקים את לולאת הכפתורים. כרטיסי פקודות מבדיקה קודמת יכולים להישאר בדשבורד, וגם `NONE` אינה מוחקת אותם. **הבורר בוחר קוד חיבור; הוא אינו מגביל הרשאות להרצת כרטיס Command במצבים מופעלים אחרים.** מפעילים את כרטיסי האימון רק אחרי בחירת הבדיקה וכניסה ל־Test. ב־Disabled פקודות המנוע שלנו אינן מורשות להתחיל.
-
-## 4. מחברים Elastic להרצה הנוכחית {#connect-elastic}
-
-**Elastic** היא דשבורד: היא מציגה נתוני NetworkTables ויכולה לשלוח בקשות דרך כרטיסים שתוכנית הרובוט מפרסמת. `SmartDashboard` היא טבלת נתונים/API בקוד; איננו צריכים לפתוח את תוכנת SmartDashboard הישנה.
-
-בתוכנית שלנו יש שני מקורות רלוונטיים: `SmartDashboard.putData` מפרסמת בורר ופקודות; AdvantageKit מפרסמת מדידות ושמות פקודות דרך `NT4Publisher`, שנוספה כבר ב־`Robot`. Elastic מציגה את מה שהקוד שולח, ואינה מחשבת בעצמה מהירות מנוע.
+## 3. מחברים Elastic להרצה הנוכחית {#connect-elastic}
 
 1. השאירו סימולציה רצה ב־Disabled. פתחו **Elastic (WPILib) 2026** דרך כלי WPILib או מתפריט ההתחלה. אם אינה מותקנת, היעזרו במנטור וב[הוראות ההתקנה הרשמיות](https://frc-elastic.gitbook.io/docs/getting-started/installation).
 2. פתחו **Settings** ובשיטת החיבור בחרו **localhost** לסימולציה באותו מחשב. חכו לחיווי ירוק **Network Tables: Connected**. מספר קבוצה לבדו אינו חיבור לסימולטור.
@@ -136,15 +107,29 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 
 אם כבר פתוחה פריסה של רובוט אחר, הוסיפו לשונית אימון במקום לשנות את כרטיסי המנגנונים שלו. בתבנית האימון שנבדקה אין קובץ פריסת Elastic מוכן לרולר; נבנה תצוגה משלנו.
 
-### מוסיפים את הבורר
+## 4. נכנסים ל־Test, בוחרים בדיקה ומפעילים מחדש
 
-לחצו **Add Widget**, הרחיבו את `SmartDashboard` וגררו את **`Test Mode` כטבלה שלמה** ללשונית. הנתיב הוא `/SmartDashboard/Test Mode`. היא מזוהה כ־`String Chooser`; אין לגרור רק את `selected` או את `options`.
+יש שתי בחירות שונות: **Test הוא מצב הרובוט**, ו־**`TRAINING_ROLLER` היא הבדיקה שנרצה להפעיל במצב הזה**. בחירה בבורר לבדה עדיין אינה מוסיפה את פקודות הבדיקה.
 
-בסימולציה יופיעו `NONE`, `CONTROLLER_DIAGNOSTICS`, `SWERVE_PID_CALIBRATIONS`, `SWERVE_GENERAL` והאפשרות שהוספנו, `TRAINING_ROLLER`. בחרו `TRAINING_ROLLER` כשהרובוט Disabled. התוויות הן שמות ערכי ה־`enum`, לא שמות המחלקות.
+1. בחלון **Robot Simulation**, באזור **Robot State**, בחרו **Test** ועשו **Enable**. ב־Driver Station משתמשים בבחירת Test וב־Enable המקבילות. כך נכנסים למצב הבדיקות ומוודאים שבורר הבדיקות זמין. [תזכורת לממשק הסימולציה](../01-getting-started/03-first-simulation.mdx#robot-state).
+2. ב־Elastic לחצו **Add Widget**, פתחו את `SmartDashboard` וגררו את **`Test Mode` כטבלה שלמה** ללשונית. הנתיב הוא `/SmartDashboard/Test Mode`, וסוג הכרטיס הוא **String Chooser**. אין לגרור רק את `selected` או את `options`.
+3. בבורר **Test Mode** בחרו **`TRAINING_ROLLER`**, האפשרות שהוספתם בקוד.
+4. בחלון הסימולציה עשו **Disable**, ואז **Enable מחדש כשמצב Test עדיין נבחר**. רק בכניסה המחודשת הזאת יתווספו ה־Bindings של הבדיקה שבחרתם ויפורסמו פקודות הרולר.
+5. ודאו שב־**Add Widget** הופיעה התיקייה `SmartDashboard → Training Roller → Commands`. עברו ל־Disabled בזמן סידור הכרטיסים.
 
-**הבחירה הזאת לא משנה את מצב הרובוט ולא עושה Enable.** בחלון **Robot Simulation**, באזור **Robot State** שכבר הכרתם, בחרו **Test** והפעילו אותו. בחומרה, בחירת Test ו־Enable נעשות ב־**Driver Station**. [תזכורת לממשק הסימולציה](../01-getting-started/03-first-simulation.mdx#robot-state).
+**זכרו את הסדר: Test ו־Enable → בחירת `TRAINING_ROLLER` → Disable → Enable מחדש ב־Test → הופעת פקודות הבדיקה.** בכל החלפת בדיקה צריך שוב Disable ו־Enable; שינוי הבחירה לבדו אינו מחבר את הבדיקה החדשה.
 
-אין צורך ללחוץ עדיין על פקודת מנוע. הכניסה הראשונה מפרסמת את שלושת הכרטיסים. חזרו ל־Disabled כדי להכין את שאר התצוגה.
+### איך מוסיפים כרטיס ב־Elastic?
+
+כך נראה חלון **Add Widget** עם טבלאות פתוחות:
+
+![חלון Add Widget ב־Elastic עם עץ טבלאות פתוח](https://2618450072-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEx5VqM8nP9DEeHJRWNYF%2Fuploads%2F69DbrBM1bR0U1fG7WWSP%2Fdialog_expanded.png?alt=media&token=d8f8e74b-daae-4993-85eb-c37725e18899)
+
+לאחר שמוצאים את הטבלה או הערך, גוררים אותם אל מקום פנוי בלשונית:
+
+![גרירת כרטיס מתוך Add Widget אל הלשונית ב־Elastic](https://2618450072-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FEx5VqM8nP9DEeHJRWNYF%2Fuploads%2FDZIumzb6DjHcsa0U6o47%2Fdialog_dragging.png?alt=media&token=b37598a5-b068-48c0-a186-ad8c2a79b886)
+
+התמונות הן מתוך [התיעוד הרשמי של Elastic](https://frc-elastic.gitbook.io/docs/customizing-your-dashboard/adding-and-customizing-widgets). הנתונים בהן הם דוגמה לממשק; אצלכם חפשו את `Test Mode` ואת `Training Roller`.
 
 ### מוסיפים פקודות ומדידות
 
@@ -168,11 +153,11 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 
 לשם הפקודה בחרו תצוגת טקסט, ולמדידות תצוגה מספרית. אפשר לשנות כותרת דרך לחיצה ימנית ו־**Edit Properties**, למשל ״מתח רולר [V]״. מדידות כאן מיועדות לצפייה; אין לשנות את ערכן דרך שדה עריכה. ההבדל בנתיבים נובע מכך ש־`Inputs` נרשמים ב־`Logger.processInputs`, ושם הפקודה נרשם ב־`Logger.recordOutput` תחת `RealOutputs`. [הוספה והתאמת כרטיסים](https://frc-elastic.gitbook.io/docs/customizing-your-dashboard/adding-and-customizing-widgets) ו[סוגי הכרטיסים](https://frc-elastic.gitbook.io/docs/additional-features-and-references/widgets-list-and-properties-reference).
 
-אם ערך חסר, חפשו תחילה `TrainingRoller` וודאו חיבור להרצה החדשה ואת הקריאה ל־`trainingRoller.ifPresent(TrainingRoller::logTelemetry)` ב־`RobotContainer.logTelemetry()`. אם כרטיסי הפעולות חסרים, בדקו שנכנסתם פעם אחת ל־Test עם הבחירה הנכונה. פרסום המדידות בתבנית מתרחש בכל ארבעה מחזורים, ולכן ייתכן עיכוב קצר, ופקודת העצירה הקצרה יכולה להסתיים בין שתי דגימות.
+אם ערך חסר, חפשו תחילה `TrainingRoller` וודאו חיבור להרצה החדשה ואת הקריאה ל־`trainingRoller.ifPresent(TrainingRoller::logTelemetry)` ב־`RobotContainer.logTelemetry()`. אם כרטיסי הפעולות חסרים, בדקו שבחרתם `TRAINING_ROLLER` ואז ביצעתם Disable ו־Enable מחדש במצב Test. פרסום המדידות בתבנית מתרחש בכל ארבעה מחזורים, ולכן ייתכן עיכוב קצר, ופקודת העצירה הקצרה יכולה להסתיים בין שתי דגימות.
 
 ## 5. ניסוי: בקשה, פקודה ומדידה
 
-בכל ניסוי כתבו תחזית, הפעילו, צפו ורשמו הסבר קצר. אחרי שהכרטיסים מוכנים, חזרו לרצף **Disabled → בחירת `TRAINING_ROLLER` → Test → Enable**.
+בכל ניסוי כתבו תחזית, הפעילו, צפו ורשמו הסבר קצר. אחרי שהכרטיסים מוכנים, ודאו ש־`TRAINING_ROLLER` נבחרת, ואז עשו Enable במצב Test. אם שיניתם בחירה בזמן הפעלה, עשו Disable ו־Enable מחדש לפני הפעלת פקודות.
 
 | פעולה                         | מה בודקים?                                                           |
 | ----------------------------- | -------------------------------------------------------------------- |
@@ -201,27 +186,21 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 ### תרגיל: הפעלה חוזרת והחלפת בדיקה
 
 1. עצרו פעולה באמצעות כרטיס הביטול, ואז הפעילו אותה שוב. בדקו שהמנוע מגיב פעם נוספת.
-2. עברו ל־Disabled, בחרו `NONE`, וחזרו ל־Test. אל תלחצו על כרטיסי הרולר שנשארו. הסבירו למה עצם הופעתם אינה מוכיחה שהרולר הוא הבדיקה שנבחרה.
-3. עברו שוב ל־Disabled, בחרו `TRAINING_ROLLER`, וחזרו ל־Test. הפעילו איסוף פעם אחת ובטלו אותה. ודאו שאינה מתחילה מחדש מעצמה.
-4. הוסיפו לבדיקה גם כרטיס ל־`TimedCollectCommand` מהשיעור הקודם. צרו לו שדה פקודה בבנאי ופרסום ב־`binding()`, עם מפתח חדש `Training Roller/Commands/TimedCollect`. השוו השלמה של שנייה לביטול מוקדם.
+2. עברו ל־Disabled, בחרו `NONE`, ועשו Enable מחדש במצב Test. אל תלחצו על כרטיסי הרולר שנשארו. הסבירו למה עצם הופעתם אינה מוכיחה שהרולר הוא הבדיקה שנבחרה.
+3. עברו שוב ל־Disabled, בחרו `TRAINING_ROLLER`, ועשו Enable מחדש במצב Test. הפעילו איסוף פעם אחת ובטלו אותה. ודאו שאינה מתחילה מחדש מעצמה.
+4. הוסיפו לבדיקה גם כרטיס ל־`TimedCollectCommand` מהשיעור הקודם. הוסיפו קבוע `TIMED_COLLECT_KEY` שערכו `COMMANDS_FOLDER + "TimedCollect"`, וב־`binding()` פרסמו `new TimedCollectCommand(roller)` בעזרת `DashboardUtils.setData`. השוו השלמה של שנייה לביטול מוקדם.
 
 <ExerciseHelp
   hints={[
-    "ה־enum שומר את אובייקט הבדיקה; bind נקראת שוב, אבל הכרטיסים אינם מתנקים אוטומטית.",
-    "לכרטיס החדש צרו Command פעם אחת בבנאי, והשתמשו ב־DashboardUtils.setData ב־binding. שימו לב ל־import של TimedCollectCommand.",
-    "ב־Fade, הסיום בזמן מגיע מ־isFinished; ביטול מוקדם מגיע מבקשת הביטול בכרטיס. בשניהם end צריכה לבטל פלט.",
+    "כרטיסים ישנים יכולים להישאר בדשבורד גם אחרי החלפת הבדיקה. בדקו את הבחירה ואת הכניסה המחודשת ל־Test.",
+    "הוסיפו import של TimedCollectCommand, הגדירו מפתח לצד שאר המפתחות, ופרסמו את הפקודה בתוך binding כמו בדוגמה.",
+    "ב־TimedCollectCommand, הסיום בזמן מגיע מ־isFinished; ביטול מוקדם מגיע מבקשת הביטול בכרטיס. בשניהם end צריכה לבטל פלט.",
   ]}
 />
 
 ## בדיקת סיום
 
-הציגו למנטור את הבורר, את שלוש פקודות הבסיס ואת כרטיס הדעיכה שהוספתם, לצד שם הפקודה, המתח והמהירות. הראו התנגשות, ביטול, השלמה וחזרה ל־Test דרך Disabled. הסבירו בנפרד **בחירת בדיקה**, **בחירת מצב הרובוט** ו־**Enable**, והראו היכן כל אחת מתבצעת.
+הציגו למנטור את הבורר, את שלוש פקודות הבסיס ואת כרטיס האיסוף למשך שנייה שהוספתם, לצד שם הפקודה, המתח והמהירות. הראו התנגשות, ביטול, השלמה וחזרה ל־Test דרך Disabled. הסבירו בנפרד **בחירת בדיקה**, **בחירת מצב הרובוט** ו־**Enable**, והראו היכן כל אחת מתבצעת.
 
 שמרו את פריסת האימון דרך **File → Save As** בתיקיית המאגר האישי, בשם למשל `dashboards/training-roller.json`; צרו את התיקייה אם צריך. שמירת הפריסה אינה משנה קוד או מעבירה את הרובוט למצב אחר. שמרו commit של הקוד ושל הפריסה שבחרתם להוסיף. בשיעור הבא [נשלב את הפעולות להתנהגות אחת](./05-command-composition.mdx), ונבדוק אותה באותו מסלול.
 
-<details>
-<summary>החיבורים שנבדקו בתבנית</summary>
-
-הזרימה מבוססת על [Robot](https://github.com/Desert-Eagles-6104/robot-training-template/blob/79e3babd4735d0bae10f88a5536e067a938a44a3/src/main/java/frc/robot/Robot.java), [BindingsManager](https://github.com/Desert-Eagles-6104/robot-training-template/blob/79e3babd4735d0bae10f88a5536e067a938a44a3/src/main/java/frc/robot/BindingsManager.java), [TestModeBindings](https://github.com/Desert-Eagles-6104/robot-training-template/blob/79e3babd4735d0bae10f88a5536e067a938a44a3/src/main/java/frc/robot/TestModeBindings.java), ועל [Bindings](https://github.com/Desert-Eagles-6104/DELib26/blob/c2f1da1144b7fd30dfcf94f30e850993be5d03aa/bindings/Bindings.java) ו־[DashboardUtils](https://github.com/Desert-Eagles-6104/DELib26/blob/c2f1da1144b7fd30dfcf94f30e850993be5d03aa/util/dashboard/DashboardUtils.java) מהספרייה המוצמדת. שינוי מקומי בתשתית מחייב לבדוק שוב את מסלול ההפעלה.
-
-</details>
