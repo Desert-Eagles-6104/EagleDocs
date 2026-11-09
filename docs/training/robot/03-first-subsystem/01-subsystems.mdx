@@ -82,7 +82,7 @@ this.trainingFlywheel = isSim
 this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
 ```
 
-`ifPresent` מבצעת פעולה אם התיבה מכילה אובייקט. הכתיבה `TrainingFlywheel::logTelemetry` מציינת איזו מתודה להפעיל עליו. השורה מפרסמת את המדידות כדי שנוכל לראות אותן. השאירו את החיבורים של שאר תתי־המערכות במקומם.
+`ifPresent` קוראת ל־`logTelemetry` על גלגל התנופה כשהמופע קיים. `TrainingFlywheel::logTelemetry` היא הפניה למתודה שתפרסם את המדידות. השאירו את החיבורים של שאר תתי־המערכות במקומם. [הפניה למתודה עם `::`](../../java/08-enrichment/02-lambdas.mdx#method-references)
 
 ## 4. רואים את המערכת בלוגים
 

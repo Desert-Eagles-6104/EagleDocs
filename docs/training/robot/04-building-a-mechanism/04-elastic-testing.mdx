@@ -63,7 +63,9 @@ public class TrainingRollerBindings extends Bindings {
 
 ### רושמים ב־TestModeBindings
 
-`TestModeBindings` הוא ה־`enum` שמרכז את הבדיקות הזמינות בבורר. ב־`src/main/java/frc/robot/TestModeBindings.java` הוסיפו את ה־import הבא.
+`TestModeBindings` הוא `enum`, טיפוס שמגדיר את אפשרויות הבחירה בבורר. כל ערך שלו מייצג בדיקה שאפשר לרשום. [ערכים מוגדרים מראש עם `enum`](../../java/08-enrichment/04-enums.mdx)
+
+ב־`src/main/java/frc/robot/TestModeBindings.java` הוסיפו את ה־import הבא.
 
 ```java
 import frc.robot.subsystems.trainingRoller.TrainingRollerBindings;
@@ -80,7 +82,7 @@ TRAINING_ROLLER((RobotContainer container) -> {
 }),
 ```
 
-הרישום בודק אם קיים רולר לפני שהוא יוצר `TrainingRollerBindings`. כשה־`Optional` ריק, `null` מסמן ל־`BindingsManager` להשמיט את הבדיקה מהבורר. לכן `TRAINING_ROLLER` תופיע בסימולציה, שבה יצרנו את הרולר.
+הלמבדה שמסרנו ל־`TRAINING_ROLLER` מקבלת את ה־`RobotContainer` ובודקת אם קיים בו רולר. אם כן, היא מחזירה את הבדיקה. אם ה־`Optional` ריקה, `null` מסמן ל־`BindingsManager` להשמיט את הבדיקה מהבורר. לכן `TRAINING_ROLLER` תופיע בסימולציה, שבה יצרנו את הרולר. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
 
 הסירו מ־`RobotContainer.configureTeleopBindings()` את חיבור North הזמני של הרולר. בנו את הפרויקט והפעילו מחדש את הסימולציה כדי שהאפשרות החדשה תיטען.
 

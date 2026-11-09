@@ -109,7 +109,7 @@ DashboardUtils.setData(CYCLE_KEY, RollerCommands.cycle());
 
 ## 3. סיום לפי תנאי
 
-לפעמים יודעים מתי לסיים לפי ערך שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`: פעולה שמחזירה `true` או `false`, בדומה ל־`DoubleSupplier` שהחזירה מספר. היא בודקת את התנאי לאורך הריצה ומסיימת את השילוב אם הוא מתקיים. הפקודה שבתוכו מקבלת אז `end(true)`.
+לפעמים יודעים מתי לסיים לפי ערך שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`, פעולה שמחזירה `true` או `false`. נעביר לה למבדה שקוראת את התנאי לאורך הריצה. כשהתנאי מתקיים השילוב מסתיים והפקודה שבתוכו מקבלת `end(true)`. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
 
 נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerBindings.java` הוסיפו imports של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard`, של `edu.wpi.first.wpilibj2.command.Command` ושל `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` אם הם חסרים. לצד שאר המפתחות הוסיפו:
 

@@ -1,0 +1,113 @@
+---
+title: "טיפוסים גנריים (Generics)"
+sidebar_position: 3
+description: "משתמשים באותה מחלקה עם טיפוסים שונים ובודקים התאמה כבר בזמן הקומפילציה."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+נרצה מחלקה ששומרת מדידה. לפעמים המדידה היא מספר ולפעמים היא תיאור בטקסט. **טיפוסים גנריים** מאפשרים לכתוב מחלקה אחת ולבחור את טיפוס הערך כשמשתמשים בה.
+
+**בסוף השיעור תוכלו להסביר מה מציינים הסוגריים הזוויתיים, לקרוא `<>` בבנאי ולהבין מגבלה כמו `T extends Number`.**
+
+## 1. כותבים מחלקה עם פרמטר של טיפוס
+
+בתוך `src/enrichment` בפרויקט Java שלכם צרו את `Reading.java`.
+
+```java
+package enrichment;
+
+public class Reading<T> {
+    private final T value;
+
+    public Reading(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+}
+```
+
+`<T>` אחרי שם המחלקה מכריז על **פרמטר של טיפוס**. השם `T` מייצג את הטיפוס שנבחר עבור השדה, הפרמטר בבנאי והערך המוחזר מ־`getValue()`.
+
+## 2. בוחרים טיפוס כשמשתמשים במחלקה
+
+צרו את `GenericsDemo.java` והריצו אותו.
+
+```java
+package enrichment;
+
+public class GenericsDemo {
+    public static void main(String[] args) {
+        Reading<String> status = new Reading<String>("Ready");
+        Reading<Double> voltage = new Reading<>(6.5);
+
+        String message = status.getValue();
+        double volts = voltage.getValue();
+        System.out.println(message);
+        System.out.println(volts);
+    }
+}
+```
+
+| כתיבה | איך קוראים אותה? |
+| --- | --- |
+| `Reading<String>` | מדידה שערכה מסוג `String` |
+| `Reading<Double>` | מדידה שערכה מסוג `Double` |
+| `new Reading<>(6.5)` | יוצרים מדידה ונותנים ל־Java להסיק את הטיפוס לפי ההכרזה והערך שנמסר לבנאי |
+
+`<>` בביטוי `new` נקרא **diamond**. כאן Java מסיקה `Double`. בסוגריים הזוויתיים משתמשים בטיפוס אובייקט. `Double` היא המחלקה שעוטפת ערך `double`, ו־Java ממירה ביניהם אוטומטית בדוגמה. למספרים שלמים יש עטיפה מקבילה בשם `Integer`.
+
+### תרגיל 1: איזו שורה מתקמפלת?
+
+```java
+Reading<Integer> count = new Reading<>(3);
+Reading<String> label = new Reading<>(3);
+```
+
+בדקו את השורות בנפרד. מה הטיפוס שביקשנו לשמור ומה הטיפוס של הערך שנמסר?
+
+<ExerciseHelp
+  hints={["השוו את הטיפוס בסוגריים הזוויתיים לערך שבסוגריים של הבנאי."]}
+  solution={`השורה הראשונה מתקמפלת. Java עוטפת את 3 ב־Integer. השנייה דורשת String, ולכן אפשר לתקן אותה באמצעות \`new Reading<>("3")\`.`}
+  solutionLanguage="text"
+/>
+
+## 3. מגבילים אילו טיפוסים מתאימים
+
+נניח שנרצה לקרוא לכל מדידה כמספר עשרוני. אפשר להגביל את `T` ל־`Number` ולמחלקות שיורשות ממנה, כגון `Integer` ו־`Double`. צרו את `NumericReading.java`.
+
+```java
+package enrichment;
+
+public class NumericReading<T extends Number> {
+    private final T value;
+
+    public NumericReading(T value) {
+        this.value = value;
+    }
+
+    public double asDouble() {
+        return value.doubleValue();
+    }
+}
+```
+
+`T extends Number` מבטיח שכל ערך מהטיפוס `T` יציע את המתודות של `Number`. לכן אפשר לקרוא כאן ל־`doubleValue()`.
+
+## בדיקת סיום
+
+בתוך `GenericsDemo.main` צרו `NumericReading<Integer>` עם הערך `4` והדפיסו את תוצאת `asDouble()`. האם אפשר להגדיר `NumericReading<String>`? הסבירו לפי המגבלה על `T`.
+
+<ExerciseHelp
+  hints={["בדקו מה מחייבת ההכרזה T extends Number."]}
+  solution={`NumericReading<Integer> count = new NumericReading<>(4);
+System.out.println(count.asDouble()); // 4.0
+
+// String אינה יורשת מ־Number ולכן NumericReading<String> לא מתקמפל.`}
+  solutionLanguage="java"
+/>
+
+בספריית הרובוט פוגשים `T extends MotorSubsystemTalon`. כך פקודה אחת יכולה לעבוד עם כמה תתי־מערכות מנוע ועדיין לדעת שפעולות המנוע זמינות לה. [קוראים את פקודת האחוזים בשיעור הרובוט](../../robot/04-building-a-mechanism/03-building-commands.mdx)

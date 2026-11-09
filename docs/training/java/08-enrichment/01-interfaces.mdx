@@ -1,0 +1,101 @@
+---
+title: "ממשקים (interface)"
+sidebar_position: 1
+description: "משתמשים בכמה מימושים דרך אותן מתודות."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+תוכנה שמחליטה אם הרובוט קרוב למכשול צריכה לקבל מרחק. לפעמים המרחק מגיע מחיישן, ולפעמים נרצה לתת לתוכנה ערך קבוע לצורך בדיקה. איך מאפשרים לשני מקורות המרחק לעבוד עם אותו קוד?
+
+**בסוף השיעור תוכלו להגדיר ממשק, לממש אותו במחלקה ולהשתמש באובייקט דרך טיפוס הממשק.**
+
+## 1. מגדירים את הפעולה המשותפת
+
+**ממשק (`interface`)** מגדיר אילו פעולות יהיו זמינות לקוד שמשתמש בו. נתחיל מממשק עם פעולה אחת שמחזירה מרחק בסנטימטרים. בפרויקט Java שלכם צרו את התיקייה `src/enrichment` ואת הקובץ `DistanceSensor.java` בתוכה.
+
+```java
+package enrichment;
+
+public interface DistanceSensor {
+    double readDistanceCm();
+}
+```
+
+ההכרזה קובעת את שם המתודה, את סוג ההחזרה ואת הפרמטרים שלה. כאן המתודה מסתיימת בנקודה־פסיק כי הממשק משאיר את המימוש למחלקה. הפעולה נחשבת `public`, גם כשהמילה אינה כתובה בהכרזה.
+
+## 2. מממשים את הממשק במחלקה
+
+באותה תיקייה צרו את `PracticeDistanceSensor.java`. המילה `implements` אומרת שהמחלקה מספקת את הפעולות שהממשק דורש.
+
+```java
+package enrichment;
+
+public class PracticeDistanceSensor implements DistanceSensor {
+    @Override
+    public double readDistanceCm() {
+        return 42.0;
+    }
+}
+```
+
+`@Override` מאפשרת ל־Java לבדוק שהמתודה אכן מתאימה להכרזה בממשק. המתודה במחלקה היא `public` כדי שקוד שמשתמש בממשק יוכל לקרוא לה.
+
+### תרגיל 1: איזו מתודה מתאימה?
+
+האם מחלקה שמגדירה `public double readDistanceCm(int offset)` מממשת את המתודה של `DistanceSensor`? הסבירו לפי הפרמטרים של שתי המתודות.
+
+<ExerciseHelp
+  hints={["השוו את הסוגריים של שתי ההכרזות."]}
+  solution="הממשק דורש readDistanceCm ללא פרמטרים. המתודה שמקבלת offset היא מתודה אחרת. המחלקה עדיין צריכה לממש את readDistanceCm ללא פרמטרים."
+  solutionLanguage="text"
+/>
+
+## 3. משתמשים בטיפוס הממשק
+
+צרו את `InterfaceDemo.java` והריצו אותו.
+
+```java
+package enrichment;
+
+public class InterfaceDemo {
+    public static void main(String[] args) {
+        DistanceSensor sensor = new PracticeDistanceSensor();
+        printDistance(sensor);
+    }
+
+    static void printDistance(DistanceSensor sensor) {
+        System.out.println(sensor.readDistanceCm());
+    }
+}
+```
+
+`printDistance` יכולה לקבל אובייקט מכל מחלקה שמממשת `DistanceSensor`. הטיפוס `DistanceSensor` קובע איזו מתודה זמינה בקוד. בזמן הריצה Java מפעילה את המימוש של האובייקט שקיבלה בפועל, ולכן כאן יודפס `42.0`.
+
+## בדיקת סיום
+
+צרו `RecordedDistanceSensor.java`. הבנאי יקבל מרחק וישמור אותו בשדה פרטי. ממשו `readDistanceCm()` כך שתחזיר את המרחק השמור. העבירו ל־`printDistance` אובייקט מהמחלקה החדשה עם המרחק `25.5` ובדקו מה יודפס.
+
+<ExerciseHelp
+  hints={["המחלקה החדשה מממשת את אותו ממשק. printDistance כבר מקבלת את טיפוס הממשק."]}
+  solution={`package enrichment;
+
+public class RecordedDistanceSensor implements DistanceSensor {
+    private final double distanceCm;
+
+    public RecordedDistanceSensor(double distanceCm) {
+        this.distanceCm = distanceCm;
+    }
+
+    @Override
+    public double readDistanceCm() {
+        return distanceCm;
+    }
+}
+
+// בתוך InterfaceDemo.main:
+// printDistance(new RecordedDistanceSensor(25.5));`}
+  solutionLanguage="java"
+/>
+
+בקוד הרובוט, `SwerveIO` מאפשר לעבוד מול אותן פעולות של מערכת הנהיגה עם מימושים שונים. ממשקים משמשים גם להעברת פעולות קצרות. [מכירים ביטויי למבדה](./02-lambdas.mdx)

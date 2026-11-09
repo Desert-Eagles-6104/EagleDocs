@@ -47,44 +47,14 @@ this.trainingFlywheel.ifPresent(flywheel -> {
 
 ### קוראים את תחביר ה־lambda
 
-בדוגמה יש שתי lambdas. המבנה שלהן הוא `פרמטרים -> פעולה`:
+למבדה היא פעולה קצרה שמעבירים לקוד אחר. משמאל ל־`->` כותבים את הפרמטרים, ומימין את הפעולה. בדוגמה יש שתיים.
 
-```java
-flywheel -> {
-    // קוד שמשתמש בתת־המערכת שהתקבלה
-}
-```
-
-זו הפעולה שמסרנו ל־`ifPresent`. היא מקבלת פרמטר אחד, שקראנו לו `flywheel`. Java מסיקה שהוא מסוג `TrainingFlywheel` מתוך ה־`Optional<TrainingFlywheel>`. כשיש אובייקט, `ifPresent` מוסרת אותו לפעולה ומריצה את הקוד שבין הסוגריים המסולסלים. לפעולה הזאת אין ערך מוחזר.
-
-ה־lambda השנייה נראית כך:
-
-```java
-() -> TrainingFlywheel.TRAINING_OUTPUT
-```
-
-`()` אומר שאין פרמטרים. אחרי החץ מופיע ביטוי שהערך שלו מוחזר - כאן מספר מסוג `double`. אפשר לכתוב את אותה lambda גם בצורה הארוכה:
-
-```java
-() -> {
-    return TrainingFlywheel.TRAINING_OUTPUT;
-}
-```
-
-הפקודה מצפה ל־`DoubleSupplier`: פעולה שאפשר לקרוא לה כדי לקבל מספר. לכן מוסרים לה את ה־lambda, ולא רק את המספר עצמו. יצירת ה־lambda אינה מפעילה את המנוע; בזמן שהפקודה רצה היא קוראת לפעולה כדי לקבל את אחוז הפלט.
+- `flywheel -> { ... }` מקבלת את המופע מ־`ifPresent` ומחברת לכפתור פקודה עבורו. [המחלקה `Optional`](../../java/08-enrichment/05-optional.mdx)
+- `() -> TrainingFlywheel.TRAINING_OUTPUT` היא הפעולה שהפקודה מקבלת כ־`DoubleSupplier`. היא מקבלת אפס פרמטרים ומחזירה את אחוז הפלט בכל פעם שהפקודה קוראת לה. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
 
 ### מה אומרות הסוגריים הזוויתיות?
 
-`MotorSubsystemSetPercentage` היא מחלקה **גנרית**: היא יכולה לעבוד עם סוגים שונים של תתי־מערכות מנוע שיורשות מ־`MotorSubsystemTalon`. סוג תת־המערכת הוא פרמטר של המחלקה. במקרה שלנו הסוג הוא `TrainingFlywheel`.
-
-אפשר לכתוב את יצירת הפקודה עם הסוג במפורש:
-
-```java
-new MotorSubsystemSetPercentage<TrainingFlywheel>(
-    flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
-```
-
-בכתיבה `new MotorSubsystemSetPercentage<>(...)`, הסימנים `<>` נקראים **diamond**. הם מאפשרים ל־Java להסיק את הסוג מהפרמטרים שהעברנו - כאן מהאובייקט `flywheel`. זו אותה בחירת סוג, בכתיבה קצרה יותר. הסוגריים `(...)` שאחריהם מכילים את הפרמטרים לבנאי: תת־המערכת והפעולה שמספקת את הפלט.
+`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של מערכות מנוע. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-enrichment/03-generics.mdx)
 
 ### בדקו את עצמכם
 

@@ -63,7 +63,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 כדי שהתיאום יעבוד, שתי הפקודות צריכות להשתמש באותו מופע רולר שיצרנו ב־`RobotContainer`. אם יוצרים שני מופעים לאותו CAN ID, המתזמן מתייחס אליהם כשתי מערכות נפרדות. באותו אופן, קריאה ישירה להפעלת מנוע מתוך `teleopPeriodic()` עוקפת את התיאום של המתזמן.
 
-`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהשדה ריק.
+`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהתוצאה ריקה. [בדיקה ושליפה מתוך `Optional`](../../java/08-enrichment/05-optional.mdx)
 
 לפקודות שנכתוב נותנים שם בתבנית `<שם המערכת><מה הפקודה עושה>`. לדוגמה, `TrainingRollerSetPercentage` מתאים לפקודה שקובעת אחוז פלט לרולר.
 
@@ -251,7 +251,9 @@ this.motorSubsystem.setPercentOutput(
     this.valueSupplier.getAsDouble(), ignoreSoftLimits);
 ```
 
-`ignoreSoftLimits` קובע אם לעקוף את מגבלות התנועה שמוגדרות בתוכנה. החיבור שעשינו משתמש בברירת המחדל `false`. שני השדות `motorSubsystem` ו־`valueSupplier` מוגדרים `protected` במחלקת הבסיס, ולכן המחלקה היורשת יכולה להשתמש בהם. הסימון `T extends MotorSubsystemTalon` מאפשר להשתמש בפקודה עם סוגים שונים של מערכות מהמשפחה של `MotorSubsystemTalon`, ובהם `TrainingRoller`.
+`ignoreSoftLimits` קובע אם לעקוף את מגבלות התנועה שמוגדרות בתוכנה. החיבור שעשינו משתמש בברירת המחדל `false`. שני השדות `motorSubsystem` ו־`valueSupplier` מוגדרים `protected` במחלקת הבסיס, ולכן המחלקה היורשת יכולה להשתמש בהם.
+
+הסימון `T extends MotorSubsystemTalon` מגביל את הפקודה לטיפוס `MotorSubsystemTalon` ולמערכות שיורשות ממנו, ובהן `TrainingRoller`. [מגבלות על טיפוס גנרי](../../java/08-enrichment/03-generics.mdx)
 
 את הסיום הפקודה יורשת מ־`MotorDoubleSupplierCommand`:
 
@@ -344,7 +346,7 @@ new MotorSubsystemSetPercentage<>(
         * TrainingRollerConstants.TRAINING_OUTPUT);
 ```
 
-הראשון שומר צילום של הציר בזמן יצירת החיבור; ה־supplier תחזיר שוב את אותו מספר. השני קורא את הציר בזמן הביצוע, ומגביל כאן את בקשת הניסוי באמצעות הכפלה בקבוע. המשתנה המקומי `captured` יכול להילכד ב־lambda כי איננו משנים אותו לאחר ההשמה.
+הראשון שומר את ערך הציר בזמן יצירת החיבור ויחזיר שוב את אותו מספר. השני קורא את הציר בכל הפעלה של הלמבדה ומכפיל את הערך בקבוע. [מתי גוף הלמבדה רץ](../../java/08-enrichment/02-lambdas.mdx)
 
 ענו לפי שתי הדוגמאות. האם עצם השימוש ב־lambda מבטיח קריאה עדכנית מהשלט? איפה צריך להיות הביטוי שקורא את הציר?
 

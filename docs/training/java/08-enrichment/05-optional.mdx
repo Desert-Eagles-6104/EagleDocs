@@ -1,0 +1,90 @@
+---
+title: "ערך שיכול להיות חסר (Optional)"
+sidebar_position: 5
+description: "מייצגים ערך שאולי קיים ובוחרים מה לעשות כשהוא חסר."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+לפעמים המצלמה מזהה מטרה ולפעמים אין מטרה בתמונה. **`Optional`** היא מחלקה מ־`java.util` שמייצגת את שתי האפשרויות במפורש. `Optional<String>` יכולה להכיל טקסט או להיות ריקה.
+
+**בסוף השיעור תוכלו ליצור `Optional`, לפעול כשהערך קיים ולבחור מה לעשות כשהוא חסר.**
+
+## 1. מחזירים ערך קיים או תוצאה ריקה
+
+בתוך `src/enrichment` בפרויקט Java שלכם צרו את `OptionalDemo.java`. התוכנית מדמה שתי קריאות למצלמה.
+
+```java
+package enrichment;
+
+import java.util.Optional;
+
+public class OptionalDemo {
+    public static void main(String[] args) {
+        Optional<String> detected = findTarget(true);
+        Optional<String> missing = findTarget(false);
+
+        detected.ifPresent(target -> System.out.println(target));
+        missing.ifPresent(target -> System.out.println(target));
+        System.out.println(missing.orElse("No target"));
+    }
+
+    static Optional<String> findTarget(boolean visible) {
+        if (visible) {
+            return Optional.of("Tag 7");
+        }
+        return Optional.empty();
+    }
+}
+```
+
+`Optional.of(...)` עוטפת ערך שקיים. `Optional.empty()` מחזירה תוצאה ריקה. כשמקבלים ערך מממשק אחר והוא עשוי להיות `null`, אפשר להשתמש ב־`Optional.ofNullable(...)`, שמחזירה `Optional` ריקה עבור `null`.
+
+`ifPresent(...)` מעבירה את הערך לפעולה אם הוא קיים. בדוגמה היא מדפיסה את `Tag 7` בשורה הראשונה ומדלגת על הפעולה עבור `missing`. `orElse(...)` מחזירה את הערך הקיים או את ברירת המחדל שנתנו לה, ולכן ההדפסה האחרונה היא `No target`. [קוראים את תחביר הלמבדה שב־`ifPresent`](./02-lambdas.mdx)
+
+### תרגיל 1: מה יודפס?
+
+מה יודפס אם תחליפו את שורת ההדפסה האחרונה ב־`System.out.println(detected.orElse("No target"));`? כתבו את הפלט של כל התוכנית.
+
+<ExerciseHelp
+  hints={["ifPresent עדיין מדלגת על הפעולה עבור missing. השורה האחרונה קוראת עכשיו ל־orElse על detected."]}
+  solution={`Tag 7
+Tag 7`}
+  solutionLanguage="text"
+/>
+
+## 2. בוחרים איך להשתמש בתוצאה
+
+| רוצים | משתמשים ב־ |
+| --- | --- |
+| לבצע פעולה כשהערך קיים | `ifPresent(...)` |
+| לקבל ערך או להשתמש בברירת מחדל | `orElse(...)` |
+| לבדוק קיום כחלק מתנאי `if` | `isPresent()` |
+| לקבל ערך שחייב להיות קיים בשלב הזה | `orElseThrow()` |
+
+`orElseThrow()` מחזירה את הערך כשהוא קיים וזורקת `NoSuchElementException` כשה־`Optional` ריקה. השתמשו בה כשקיום הערך כבר נבדק או כשהיעדרו מעיד על שגיאה. למשל, בשיעור הרובוט בודקים שהרולר קיים לפני יצירת פקודה ששולפת אותו.
+
+```java
+if (detected.isPresent()) {
+    String target = detected.orElseThrow();
+    System.out.println("Selected: " + target);
+}
+```
+
+## בדיקת סיום
+
+הוסיפו ל־`OptionalDemo` מתודה `printTarget` שמקבלת `Optional<String>` ומדפיסה בשורה אחת `Target: Tag 7` אם יש זיהוי, או `Target: none` אם אין. בדקו אותה עם `detected` ועם `missing`.
+
+<ExerciseHelp
+  hints={["בחרו מתודה שמחזירה טקסט קיים או ברירת מחדל. חברו את התוצאה לקידומת Target:."]}
+  solution={`static void printTarget(Optional<String> target) {
+    System.out.println("Target: " + target.orElse("none"));
+}
+
+// בתוך main:
+// printTarget(detected);
+// printTarget(missing);`}
+  solutionLanguage="java"
+/>
+
+בתבנית הרובוט משתמשים ב־`Optional` גם למערכות שקיימות רק בסימולציה. [קוראים שדות של מערכות ב־`RobotContainer`](../../robot/02-understanding-robot/04-robot-container.mdx)

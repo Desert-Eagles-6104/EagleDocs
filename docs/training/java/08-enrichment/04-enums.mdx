@@ -1,0 +1,106 @@
+---
+title: "ערכים מוגדרים מראש (enum)"
+sidebar_position: 4
+description: "מייצגים בחירה מתוך רשימה קבועה של מצבים."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+לרובוט יש מצב נהיגה רגיל ומצב נהיגה מדויקת. אם נשמור את המצב כטקסט, שגיאת כתיב עדיין תיתן לנו `String` תקינה. **`enum`** מגדיר טיפוס עם רשימת ערכים קבועה מראש, ו־Java בודקת שהערך שבחרנו שייך לרשימה.
+
+**בסוף השיעור תוכלו להגדיר `enum`, להשוות בין הערכים שלו ולשמור נתון לכל ערך.**
+
+## 1. מגדירים רשימת מצבים
+
+בתוך `src/enrichment` בפרויקט Java שלכם צרו את `DriveMode.java`.
+
+```java
+package enrichment;
+
+public enum DriveMode {
+    NORMAL,
+    PRECISION
+}
+```
+
+`NORMAL` ו־`PRECISION` הם שני ערכים של `DriveMode`. בקוד בוחרים ערך בעזרת שם הטיפוס ונקודה, למשל `DriveMode.PRECISION`.
+
+## 2. משתמשים בערכים בתוכנית
+
+צרו את `EnumDemo.java` והריצו אותו.
+
+```java
+package enrichment;
+
+public class EnumDemo {
+    public static void main(String[] args) {
+        DriveMode mode = DriveMode.PRECISION;
+
+        if (mode == DriveMode.PRECISION) {
+            System.out.println("Precision mode");
+        }
+
+        for (DriveMode availableMode : DriveMode.values()) {
+            System.out.println(availableMode.name());
+        }
+    }
+}
+```
+
+משווים ערכי `enum` באמצעות `==`. המתודה `values()` מחזירה את כל הערכים לפי סדר ההכרזה. הלולאה מפעילה את גוף ההדפסה פעם אחת לכל ערך, ו־`name()` מחזירה את השם כפי שנכתב בקוד.
+
+### תרגיל 1: משנים את הבחירה
+
+מה יודפס אם תבחרו `DriveMode.NORMAL`? אילו שורות בפלט תלויות בערך שבחרתם?
+
+<ExerciseHelp
+  hints={["התנאי בודק את mode. הלולאה מקבלת את כל הערכים של DriveMode."]}
+  solution={`NORMAL
+PRECISION`}
+  solutionLanguage="text"
+/>
+
+## 3. שומרים נתון לכל ערך
+
+לכל מצב נהיגה נוכל לצרף אחוז פלט מרבי. החליפו את התוכן של `DriveMode.java` בגרסה הבאה.
+
+```java
+package enrichment;
+
+public enum DriveMode {
+    NORMAL(0.80),
+    PRECISION(0.30);
+
+    private final double maxOutput;
+
+    DriveMode(double maxOutput) {
+        this.maxOutput = maxOutput;
+    }
+
+    public double getMaxOutput() {
+        return maxOutput;
+    }
+}
+```
+
+המספר בסוגריים של כל ערך מועבר לבנאי. הנקודה־פסיק אחרי הערך האחרון מפרידה בין רשימת הערכים לבין השדה והמתודות. נסו להדפיס את `mode.getMaxOutput()` בתוך `main`.
+
+## בדיקת סיום
+
+הוסיפו מצב `STOPPED` עם פלט מרבי `0.0`. שנו את הלולאה כך שתדפיס כל שם לצד הפלט המרבי שלו.
+
+<ExerciseHelp
+  hints={["הוסיפו את הערך לפני הנקודה־פסיק. בתוך הלולאה אפשר לקרוא ל־getMaxOutput על הערך הנוכחי."]}
+  solution={`// בתחילת DriveMode:
+NORMAL(0.80),
+PRECISION(0.30),
+STOPPED(0.0);
+
+// בתוך EnumDemo.main:
+for (DriveMode availableMode : DriveMode.values()) {
+    System.out.println(availableMode.name() + " = " + availableMode.getMaxOutput());
+}`}
+  solutionLanguage="java"
+/>
+
+בתבנית הרובוט, כל ערך של `TestModeBindings` מייצג בחירה אפשרית בבורר הבדיקות. [רושמים בדיקה חדשה בשיעור Elastic](../../robot/04-building-a-mechanism/04-elastic-testing.mdx)
