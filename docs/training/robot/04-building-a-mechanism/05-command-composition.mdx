@@ -77,21 +77,16 @@ public final class RollerCommands {
 
 ### מחברים לבדיקה הקיימת
 
-ב־`src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.RollerCommands` ושלושה קטעים במקומות הבאים. אלה **תוספות לקובץ הקיים**, לא קובץ חלופי:
+ב־`src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.RollerCommands`. לצד המפתחות הקיימים הוסיפו את המפתח לרצף:
 
 ```java
-// באזור השדות
-private final Command cycle;
+private static final String CYCLE_KEY = COMMANDS_FOLDER + "Cycle";
 ```
 
-```java
-// בתוך הבנאי הקיים
-cycle = RollerCommands.cycle();
-```
+בתוך `binding()` הוסיפו את פרסום הרצף:
 
 ```java
-// בתוך binding()
-DashboardUtils.setData("Training Roller/Commands/Cycle", cycle);
+DashboardUtils.setData(CYCLE_KEY, RollerCommands.cycle());
 ```
 
 בנו והפעילו מחדש. בחרו את הבדיקה דרך Disabled ו־Test כבשיעור הקודם, והוסיפו ב־Elastic כרטיס Command מהטבלה `/SmartDashboard/Training Roller/Commands/Cycle`. בלוג הפקודה הנוכחית יופיע **`Roller Cycle` לאורך הרצף**, גם בזמן ההמתנה; השילוב החיצוני מחזיק ב־requirement. ילדים של שילוב אינם מתוזמנים בפני עצמם, ולכן `isScheduled()` על ילד אינו דרך למדוד איזה שלב רץ.
@@ -116,22 +111,22 @@ DashboardUtils.setData("Training Roller/Commands/Cycle", cycle);
 
 לפעמים יודעים מתי לסיים לפי ערך שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`: פעולה שמחזירה `true` או `false`, בדומה ל־`DoubleSupplier` שהחזירה מספר. היא בודקת את התנאי לאורך הריצה ומסיימת את השילוב אם הוא מתקיים. הפקודה שבתוכו מקבלת אז `end(true)`.
 
-נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerTestBindings.java` הוסיפו import של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard` ושדה `private final Command conditionalCollect;`. בתוך הבנאי הקיים הוסיפו את **קטע האתחול המלא הבא**:
+נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerTestBindings.java` הוסיפו imports של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard`, של `edu.wpi.first.wpilibj2.command.Command` ושל `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` אם הם חסרים. לצד שאר המפתחות הוסיפו:
 
 ```java
-conditionalCollect = new TrainingRollerCollect()
-    .until(() -> SmartDashboard.getBoolean(
-        "Training Roller/Finish Requested", false))
-    .withTimeout(3.0)
-    .withName("Conditional Collect");
+private static final String CONDITIONAL_COLLECT_KEY = COMMANDS_FOLDER + "Conditional Collect";
+private static final String FINISH_REQUEST_KEY = DASHBOARD_FOLDER + "/Finish Requested";
 ```
 
 ובתוך `binding()` הוסיפו:
 
 ```java
-SmartDashboard.putBoolean("Training Roller/Finish Requested", false);
-DashboardUtils.setData(
-    "Training Roller/Commands/Conditional Collect", conditionalCollect);
+SmartDashboard.putBoolean(FINISH_REQUEST_KEY, false);
+Command conditionalCollect = new TrainingRollerCollect()
+    .until(() -> SmartDashboard.getBoolean(FINISH_REQUEST_KEY, false))
+    .withTimeout(3.0)
+    .withName("Conditional Collect");
+DashboardUtils.setData(CONDITIONAL_COLLECT_KEY, conditionalCollect);
 ```
 
 הוסיפו ב־Elastic כרטיס Command לטבלת הפקודה וכרטיס **Boolean Toggle** לערך `/SmartDashboard/Training Roller/Finish Requested`. שלוש השניות מגבילות את משך הניסוי גם אם לא תישלח בקשת סיום. האיפוס ב־`binding()` מתרחש בכל כניסה לבדיקה, **לא בכל הרצת הפקודה**.
@@ -250,17 +245,26 @@ public static Command coordinated(MotorSubsystemTalon partner) {
 
 ## 5. מחברים את התיאום לאותה בדיקה
 
-ב־`TrainingRollerTestBindings.java` הוסיפו import של `MotorSubsystemTalon` מהחבילה שבדוגמה הקודמת. החליפו את **חתימת הבנאי הקיים** בחתימה הזאת, והשאירו את תוכנו:
+ב־`TrainingRollerTestBindings.java` הוסיפו import של `MotorSubsystemTalon` מהחבילה שבדוגמה הקודמת. לצד שאר השדות הוסיפו:
 
 ```java
-public TrainingRollerTestBindings(
-        TrainingRoller roller, MotorSubsystemTalon partner)
+private static final String COORDINATED_KEY = COMMANDS_FOLDER + "Coordinated";
+private final MotorSubsystemTalon partner;
 ```
 
-הוסיפו שדה `private final Command coordinated;`, ואתחלו אותו בגוף הבנאי באמצעות `coordinated = RollerCommands.coordinated(partner);`. בתוך `binding()` הוסיפו:
+החליפו את הבנאי כך שישמור את שני המנגנונים הקיימים:
 
 ```java
-DashboardUtils.setData("Training Roller/Commands/Coordinated", coordinated);
+public TrainingRollerTestBindings(TrainingRoller roller, MotorSubsystemTalon partner) {
+    this.roller = roller;
+    this.partner = partner;
+}
+```
+
+בתוך `binding()` הוסיפו את פרסום הפקודה:
+
+```java
+DashboardUtils.setData(COORDINATED_KEY, RollerCommands.coordinated(partner));
 ```
 
 שינוי החתימה מחייב לעדכן את הקוד הקורא לה. ב־`src/main/java/frc/robot/TestModeBindings.java` החליפו **רק את ערך `TRAINING_ROLLER`** בקטע הבא:
@@ -312,7 +316,7 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 
 כשפקודה נכנסת לשילוב, השילוב מנהל את חייה. **אי אפשר לתזמן את אותו ילד בנפרד או להכניס אותו לשילוב אחר.** זה חל גם על `withTimeout`, `until` ו־`withName`, שבונים עטיפה/שילוב. השתמשו בתוצאה המוחזרת.
 
-השדה `collect` כבר משמש כרטיס עצמאי. `cycle` יוצרת פקודת `TrainingRollerCollect` משלה. שתי פקודות שונות יכולות להחזיק הפניה לאותו רולר, והמתזמן יתאם ביניהן לפי requirements.
+כרטיס Collect והרצף Cycle מקבלים כל אחד מופע משלו של `TrainingRollerCollect`. שתי הפקודות משתמשות באותו רולר, והמתזמן מתאם ביניהן לפי ה־requirements שלהן.
 
 אפשר להריץ שוב **את אותה פקודה חיצונית** אחרי שסיימה או בוטלה, כפי שעושים כרטיסי הבדיקה. היא מאתחלת את ריצתה מחדש. אם צריך שני שילובים נפרדים, קוראים לפונקציית היצירה פעמיים, וכל קריאה יוצרת ילדים חדשים. [כללי בעלות ושילוב ב־WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html#command-instance-reuse).
 
