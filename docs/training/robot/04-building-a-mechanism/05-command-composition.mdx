@@ -1,36 +1,65 @@
 ---
 title: "משלבים פקודות להתנהגות שלמה"
 sidebar_position: 5
-description: "בונים רצף, מתאמים שתי מערכות ובוחרים תנאי סיום וניקוי."
+description: "מתכננים רצף ופעולות במקביל, בוחרים כלל סיום ומממשים את השילוב ב־Java."
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
-בדיקת הרולר כבר מאפשרת איסוף ופליטה בנפרד. עכשיו הדרישה היא: **אספו למשך זמן קבוע, המתינו, פלטו לזמן קצר וסיימו בלי בקשת הנעה.** אחר כך נרצה לתאם רולר עם מנגנון מדומה נוסף. האם צריך לכתוב שוב `execute()` גדול שמנהל את כל השלבים?
+## 1. מה אנחנו רוצים להשיג?
 
-בסיום תוכלו להרכיב התנהגות מפקודות קיימות, לבחור מי קובע את סופה ולנבא מה יקרה בביטול. נבדוק אותה דרך [בדיקת הרולר ו־Elastic](./04-elastic-testing.mdx) שכבר בניתם. כל הדוגמאות נשארות באחוזי פלט.
+ב[בדיקה שבנינו ב־Elastic](./04-elastic-testing.mdx) הפעלנו את האיסוף והפליטה מכרטיסים נפרדים. עכשיו נרצה שכרטיס אחד יפעיל **מחזור שלם ברולר**. נאסוף למשך `1.5` שניות, נחכה `0.5` שניות בלי לבקש הנעה, נפלוט למשך `0.4` שניות ונבטל את הפלט. כל פעולה כבר מוכרת לנו. מה שחסר הוא דרך להעביר את הרולר מפעולה לפעולה בזמן המתאים.
 
-## 1. רצף מתקדם רק כששלב מסתיים
+אחר כך נבדוק משימה אחרת שבה **הרולר וגלגל התנופה שכבר חיברנו** מתחילים יחד. הרולר אוסף עד שנייה וגלגל התנופה מקבל פלט עד שלוש שניות. הפעם צריך להחליט מה יסיים את הבדיקה כולה. האם נחכה לשניהם, נסיים ברגע שהראשון מסיים, או נבחר פעולה שתקבע את הסוף? [גלגל התנופה מהכשרת המערכת הראשונה](../03-first-subsystem/01-subsystems.mdx)
 
-**Composition**, או שילוב פקודות, היא בעצמה פקודה. המתזמן מפעיל את השילוב החיצוני; הוא מפעיל את מחזור החיים של הפקודות שבתוכו. ב־`Commands.sequence(...)` מתחילים את השלב הבא רק אחרי שהשלב הנוכחי הסתיים.
+## 2. איך שילוב פקודות עובד?
 
-`TrainingRollerCollect` ו־`TrainingRollerEject` יורשות `isFinished() == false`. הרצף ״איסוף, המתנה, פליטה״ **ייתקע באיסוף** אם לא נגדיר מתי הוא מסיים. `Commands.waitSeconds(...)` אינה יכולה לעצור שלב שנמצא לפניה.
+**שילוב פקודות (`Composition`)** הוא פקודה שמנהלת כמה פקודות פנימיות. המתזמן מפעיל את השילוב, והשילוב קובע מתי להתחיל, לקדם ולסיים כל פקודה בתוכו. כל פקודה פנימית ממשיכה לבצע את הפעולה שכבר הוגדרה לה, כולל ביטול הפלט בסיום.
 
-### נותנים לפעולה מגבלת זמן
+### רצף (`sequence`)
 
-הביטוי הבא יוצר איסוף עם מגבלת זמן. משתמשים בו אחרי שבדקנו שהרולר קיים:
+ברצף פקודה אחת מתחילה אחרי שהקודמת השלימה את הפעולה שלה. במחזור הרולר, ההמתנה מתחילה כשהאיסוף מסתיים, והפליטה מתחילה אחרי ההמתנה. הרצף מסיים אחרי הפליטה. אם מבטלים את הרצף, הפקודה הפעילה מקבלת `end(true)` ושלבים שטרם התחילו לא יופעלו.
 
-```java
-new TrainingRollerCollect().withTimeout(1.5)
-```
+### פעולות במקביל (`parallel`, `race`, `deadline`)
 
-`withTimeout` מחזירה פקודה משולבת שמסיימת כשהפקודה המקורית מסיימת, או כשהזמן עובר. כאן המקורית אינה מסיימת בעצמה, ולכן אחרי כ־1.5 שניות היא מקבלת `end(true)`: מגבלת הזמן הפריעה לה. השילוב שמסביבה יכול בכל זאת להשלים כרגיל ולהעביר את הרצף לשלב הבא. זה ההבדל בין **השלמת השלב החיצוני** לבין סיבת סיום הפקודה שבתוכו.
+בשלושת השילובים הפקודות מתחילות יחד. ההבדל הוא **מי קובע את רגע הסיום**. נשתמש במשך המתוכנן של הרולר ושל גלגל התנופה כדי להשוות. בגרסת `deadline`, פקודת המתנה בת שתי שניות תהיה הפקודה הקובעת.
 
-`Commands.waitSeconds(0.5)` היא פקודת המתנה: היא בודקת זמן במחזורים ומסיימת אחרי כחצי שנייה. היא אינה חוסמת את תוכנית הרובוט, ואינה שולחת בקשת עצירה למנוע. לא משתמשים ב־`Thread.sleep` בתוך פקודה. [ההמתנה ומגבלות הזמן בתיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html).
+| שילוב | כלל הסיום | מה יקרה בדוגמה? |
+| --- | --- | --- |
+| `parallel` | מחכים שכל הפקודות יסיימו | הרולר מסיים אחרי שנייה, וגלגל התנופה ממשיך עד השנייה השלישית. |
+| `race` | מסיימים כשהפקודה הראשונה מסיימת | הרולר מסיים אחרי שנייה. גלגל התנופה נקטע ומבטל את הפלט שלו. |
+| `deadline` | בוחרים מראש פקודה שקובעת את הסיום | הרולר מסיים אחרי שנייה. כשההמתנה מסיימת אחרי שתי שניות, גלגל התנופה נקטע. |
 
-## 2. בונים מחזור עבודה לרולר
+גם ב־`deadline` פקודה אחרת יכולה לסיים לפני הפקודה הקובעת. ברגע שהפקודה הקובעת מסיימת, כל פקודה שעדיין פעילה מקבלת `end(true)`. אפשר לבחור כל פקודה שמתאימה לקבוע את הסוף. כאן ההמתנה נותנת לנו זמן קבוע שנוח לבדוק.
 
-בתוך `Constants.TrainingRollerConstants`, ב־`src/main/java/frc/robot/constants/Constants.java`, הוסיפו:
+[![ברצף הרולר אוסף, ממתין ופולט. במקביל הרולר וגלגל התנופה מתחילים יחד. השילוב מסיים אחרי שלוש שניות ב־parallel, שנייה אחת ב־race ושתי שניות ב־deadline.](./assets/composition-timing.svg)](./assets/composition-timing.svg)
+
+### מי מקבל שליטה במנגנון?
+
+השילוב מחזיק ב־requirements של כל הפקודות שבתוכו לאורך כל הריצה. ברצף אפשר להשתמש באותו רולר בשלבים שונים כי רק שלב אחד פעיל בכל רגע. WPILib דוחה שילוב מקביל אם שתי פקודות דורשות את אותו מופע. לכן נריץ במקביל פקודה אחת לרולר ופקודה אחת לגלגל התנופה. פקודת ההמתנה מודדת זמן בלי לדרוש מערכת. [סוגי השילובים וה־requirements בתיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html)
+
+## 3. איך כותבים את השילוב ב־Java?
+
+אפשר לקרוא למתודה סטטית של `Commands`, או להתחיל מפקודה קיימת ולקרוא למתודה שלה, כמו `andThen(...)`. בשתי הדרכים מקבלים פקודה חדשה שאפשר לפרסם ב־Elastic או לחבר לכפתור.
+
+בטבלה, `first` ו־`second` הן פקודות שכבר יצרנו. בשורה האחרונה `finisher` היא הפקודה שבחרנו לקבוע את הסוף. שתי העמודות הן דרכים חלופיות לכתוב אותו שילוב.
+
+| שילוב | מתודה סטטית | מתודה על פקודה קיימת |
+| --- | --- | --- |
+| רצף | `Commands.sequence(first, second)` | `first.andThen(second)` |
+| מחכים לכולן | `Commands.parallel(first, second)` | `first.alongWith(second)` |
+| הראשונה שמסיימת | `Commands.race(first, second)` | `first.raceWith(second)` |
+| פקודה קובעת | `Commands.deadline(finisher, first, second)` | `finisher.deadlineFor(first, second)` |
+
+כששילוב מייצג פעולה שחוזרת בפרויקט, נעדיף כאן לתת לה מחלקה עם שם ברור ולרשת מסוג הפקודה המתאים. לרצף נירש מ־`SequentialCommandGroup`, שהיא בעצמה `Command`. הבנאי מוסר לה את השלבים והיא מנהלת את מחזור החיים שלהם. לפעולה עם לוגיקה ומצב משלה נוח לרשת ישירות מ־`Command` ולממש את המתודות שנדרשות לה, כמו שעשינו עם השעון של `TrainingRollerCollectForTime`. [כתיבת מחלקות פקודה ב־WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#writing-command-classes)
+
+כל שילוב מקבל מופעים משלו של הפקודות הפנימיות. למשל, כרטיס Collect והרצף משתמשים באותו רולר, וכל אחד יוצר `new TrainingRollerCollect()` משלו. אחרי שסיימנו או ביטלנו שילוב, אפשר להפעיל שוב את אותו שילוב מהכרטיס. [שימוש חוזר במופעי פקודות](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html#command-instance-reuse)
+
+## 4. מממשים את מחזור הרולר
+
+הרצף יכול לעבור לשלב הבא רק אחרי שהשלב הפעיל מסיים. פקודות האיסוף והפליטה הרגילות מחזירות `false` מ־`isFinished()`, כי הן נועדו להמשיך עד ביטול. כדי להשתמש בהן ברצף עם הזמנים שבחרנו, נעטוף כל אחת ב־`withTimeout(...)`. כשהזמן עובר, הפקודה הפנימית מקבלת `end(true)` ומבטלת את הפלט, והשלב העוטף מסיים כדי שהרצף יוכל להתקדם. בין שתיהן נשים `Commands.waitSeconds(...)`, פקודה שמסיימת אחרי הזמן שקיבלה ובינתיים מאפשרת למתזמן להמשיך לעדכן את הרובוט.
+
+ב־`Constants.java`, בתוך `TrainingRollerConstants`, הוסיפו את זמני השלבים.
 
 ```java
 public static final double COLLECT_SECONDS = 1.5;
@@ -38,293 +67,156 @@ public static final double PAUSE_SECONDS = 0.5;
 public static final double EJECT_SECONDS = 0.4;
 ```
 
-צרו `src/main/java/frc/robot/subsystems/trainingRoller/commands/RollerCommands.java`. זהו **קובץ מלא לשלב הזה**:
+צרו את `src/main/java/frc/robot/subsystems/trainingRoller/commands/TrainingRollerCycle.java`.
 
 ```java
 package frc.robot.subsystems.trainingRoller.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.Constants.TrainingRollerConstants;
 
-public final class RollerCommands {
-    private RollerCommands() {}
-
-    public static Command cycle() {
-        return Commands.sequence(
+public class TrainingRollerCycle extends SequentialCommandGroup {
+    public TrainingRollerCycle() {
+        super(
             new TrainingRollerCollect()
                 .withTimeout(TrainingRollerConstants.COLLECT_SECONDS),
             Commands.waitSeconds(TrainingRollerConstants.PAUSE_SECONDS),
             new TrainingRollerEject()
                 .withTimeout(TrainingRollerConstants.EJECT_SECONDS)
-        ).withName("Roller Cycle");
+        );
+        setName("Roller Cycle");
     }
 }
 ```
 
-זו מחלקת עזר שמחזירה פקודות: `cycle` היא מתודה סטטית, וכל קריאה לה בונה שילוב חדש. הבנאי הפרטי מונע יצירת אובייקט עזר שאין לנו צורך בו. `withName` בוחרת שם לשילוב החיצוני כדי לזהות אותו בלוגים ובדשבורד.
+הסדר בתוך `super(...)` הוא סדר הביצוע. `setName(...)` קובעת את השם של הפקודה החיצונית בלוגים. אם שלושת השלבים כבר נמצאים במשתנים `collect`, `pause` ו־`eject`, אותו רצף יכול להיכתב גם כ־`Commands.sequence(collect, pause, eject)` או כ־`collect.andThen(pause, eject)`.
 
-מה צפוי ביחס לרגע ההתחלה? הזמנים מקורבים לפי מחזורי המתזמן:
+### מפרסמים ובודקים ב־Elastic
 
-| זמן מתחילת המחזור | התנהגות                                     |
-| ----------------- | ------------------------------------------- |
-| 0 עד 1.5 שניות    | איסוף בפלט `TRAINING_OUTPUT`                |
-| 1.5 עד 2.0 שניות  | האיסוף כבר ניקה את הפלט; פקודת ההמתנה פעילה |
-| 2.0 עד 2.4 שניות  | פליטה בפלט `EJECT_OUTPUT`                   |
-| בסיום             | הפליטה מנקה פלט, והשילוב מסתיים             |
-
-אין צורך להוסיף לרצף פקודת עצירה כדי לתקן את סיום שלבי האחוזים: `end()` שלהם כבר מבטלת פלט. **פקודת עצירה בשורה האחרונה אינה תחליף לניקוי** — בביטול באמצע הרצף השורה הזאת כלל לא הייתה מגיעה לביצוע.
-
-### מחברים לבדיקה הקיימת
-
-ב־`src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.RollerCommands`. לצד המפתחות הקיימים הוסיפו את המפתח לרצף:
+ב־`TrainingRollerBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCycle` ואת המפתח הבא ליד שאר המפתחות.
 
 ```java
 private static final String CYCLE_KEY = COMMANDS_FOLDER + "Cycle";
 ```
 
-בתוך `binding()` הוסיפו את פרסום הרצף:
+בתוך `binding()` פרסמו מופע של הרצף.
 
 ```java
-DashboardUtils.setData(CYCLE_KEY, RollerCommands.cycle());
+DashboardUtils.setData(CYCLE_KEY, new TrainingRollerCycle());
 ```
 
-בנו והפעילו מחדש. בחרו את הבדיקה דרך Disabled ו־Test כבשיעור הקודם, והוסיפו ב־Elastic כרטיס Command מהטבלה `/SmartDashboard/Training Roller/Commands/Cycle`. בלוג הפקודה הנוכחית יופיע **`Roller Cycle` לאורך הרצף**, גם בזמן ההמתנה; השילוב החיצוני מחזיק ב־requirement. ילדים של שילוב אינם מתוזמנים בפני עצמם, ולכן `isScheduled()` על ילד אינו דרך למדוד איזה שלב רץ.
+בנו והפעילו מחדש. בחרו `TRAINING_ROLLER` ב־Disabled, עברו ל־Test ועשו Enable. הוסיפו ב־Elastic כרטיס Command מהטבלה `/SmartDashboard/Training Roller/Commands/Cycle`. בלוג הפקודה של הרולר יופיע `Roller Cycle` גם בזמן ההמתנה, כי הרצף עדיין מחזיק ב־requirement של הרולר.
 
-### תרגיל: מנבאים ואז משווים
+| זמן מתחילת הרצף | הפלט הצפוי |
+| --- | --- |
+| עד כ־`1.5` שניות | איסוף ב־`TRAINING_OUTPUT` |
+| מ־`1.5` עד כ־`2.0` שניות | ההנעה מבוטלת בזמן ההמתנה |
+| מ־`2.0` עד כ־`2.4` שניות | פליטה ב־`EJECT_OUTPUT` |
+| בסיום | פלט הפליטה מתבטל |
 
-1. ציירו גרף של הפלט המבוקש לפי טבלת הזמנים, ואז הריצו Cycle ושמרו גרף מתח ומהירות ב־AdvantageScope. האם קטע ההמתנה מוכיח שהרולר כבר במנוחה?
-2. שנו **רק** את `PAUSE_SECONDS` מ־`0.5` ל־`1.0`, בנו והפעילו מחדש. נבאו את זמן הפליטה ואת משך הרצף והשוו למדידה. החזירו את הערך בסיום.
-3. בטלו דרך כרטיס Cycle פעם בזמן איסוף, פעם בהמתנה ופעם בזמן פליטה. האם שלב מאוחר יותר התחיל אחרי הביטול? מי ניקה פלט בכל מקרה?
+### תרגיל — מנבאים ובודקים את הרצף
+
+1. הריצו את Cycle וצפו במתח ובמהירות ב־AdvantageScope. מה קורה למהירות בזמן ההמתנה?
+2. שנו את `PAUSE_SECONDS` ל־`1.0`. מתי הפליטה תתחיל ומתי הרצף יסיים? בנו ובדקו, ואז החזירו את הערך המקורי.
+3. בטלו את Cycle פעם בזמן האיסוף ופעם בזמן ההמתנה. מה קורה לפלט והאם הפליטה מתחילה?
 
 <ExerciseHelp
   hints={[
-    "המתנה אינה מודדת מהירות; ב־Coast המנגנון יכול להמשיך לנוע אחרי ביטול ההנעה.",
-    "הוספנו חצי שנייה רק לשלב האמצעי. זמן תחילת הפליטה יזוז באותה תוספת.",
-    "בביטול, הרצף קורא end(true) לילד שעדיין פעיל. ילדים שהושלמו אינם רצים מחדש, וילדים עתידיים אינם מתחילים.",
+    "ב־Coast גלגל יכול להמשיך להאט אחרי ביטול ההנעה.",
+    "מחשבים את זמן תחילת הפליטה מסכום זמני האיסוף וההמתנה.",
+    "בביטול, רק הפקודה הפעילה מקבלת end(true).",
   ]}
-  solution="בזמן ההמתנה אין בקשת הנעה, אך ייתכן שהמהירות עדיין דועכת. עם הפסקה של שנייה הפליטה מתחילה סביב 2.5 שניות והרצף מסיים סביב 2.9. בביטול בזמן פעולה, הפקודה הפעילה מנקה את פלטה; בהמתנה האיסוף כבר ניקה. אף שלב עתידי אינו מתחיל אחרי ביטול."
+  solution={`1. ההנעה מבוטלת בזמן ההמתנה והמהירות יכולה להמשיך לדעוך.
+2. עם המתנה של שנייה הפליטה מתחילה סביב \`2.5\` שניות והרצף מסיים סביב \`2.9\` שניות.
+3. בביטול בזמן איסוף, פקודת האיסוף מבטלת את הפלט. בביטול בהמתנה, הפלט כבר בוטל בסיום האיסוף. בשני המקרים הפליטה לא מתחילה.`}
   solutionLanguage="text"
 />
 
-## 3. סיום לפי תנאי
+## 5. מתאמים את הרולר וגלגל התנופה
 
-לפעמים יודעים מתי לסיים לפי ערך שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`, פעולה שמחזירה `true` או `false`. נעביר לה למבדה שקוראת את התנאי לאורך הריצה. כשהתנאי מתקיים השילוב מסתיים והפקודה שבתוכו מקבלת `end(true)`. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
+נשתמש ב־`trainingFlywheel` שכבר קיים ב־`RobotContainer`, וב־`TrainingFlywheel.TRAINING_OUTPUT` מהחיבור הראשון לשלט. בדיקת הרולר זמינה כשקיים רולר. בתוך `binding()` נפרסם את הפקודה המשותפת בעזרת `ifPresent(...)` על גלגל התנופה, כך שהכרטיס יופיע כששני המנגנונים זמינים.
 
-נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerBindings.java` הוסיפו imports של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard`, של `edu.wpi.first.wpilibj2.command.Command` ושל `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` אם הם חסרים. לצד שאר המפתחות הוסיפו:
+ב־`TrainingRollerBindings.java` הוסיפו את ה־imports הבאים אם הם חסרים.
+
+```java
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage;
+import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
+```
+
+ליד שאר המפתחות הוסיפו את המפתח לכרטיס.
+
+```java
+private static final String COORDINATED_KEY = COMMANDS_FOLDER + "Coordinated";
+```
+
+בתוך `binding()` הוסיפו את השילוב. הארגומנט הראשון של `Commands.deadline(...)` הוא פקודת ההמתנה, שקובעת מתי הבדיקה תסתיים. שתי פקודות המנוע מתחילות יחד עם ההמתנה.
+
+```java
+RobotContainer.getInstance().trainingFlywheel.ifPresent(flywheel -> {
+    Command coordinated = Commands.deadline(
+        Commands.waitSeconds(2.0),
+        new TrainingRollerCollect().withTimeout(1.0),
+        new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
+            .withTimeout(3.0)
+    );
+    coordinated.setName("Roller and Flywheel");
+    DashboardUtils.setData(COORDINATED_KEY, coordinated);
+});
+```
+
+בנו והפעילו מחדש. הוסיפו את הכרטיס `/SmartDashboard/Training Roller/Commands/Coordinated` ואת מתחי שני המנועים. כדי למצוא את המדידה של גלגל התנופה, חפשו `TrainingFlywheel` ב־AdvantageScope או השתמשו בנתיב `/AdvantageKit/Subsystems/TrainingFlywheel/Inputs/AppliedVoltage` ב־Elastic. [צפייה במדידות של גלגל התנופה](../03-first-subsystem/01-subsystems.mdx#4-רואים-את-המערכת-בלוגים)
+
+### תרגיל — מחליפים את כלל הסיום
+
+הריצו את גרסת ה־`deadline`. אחר כך החליפו את `Commands.deadline(...)` ב־`Commands.parallel(...)`, ואז ב־`Commands.race(...)`. שמרו על אותם שלושה ארגומנטים. לפני כל הרצה ענו מתי הפלט של כל מנוע יתבטל ומתי השילוב כולו יסיים. השוו לגרף והחזירו את גרסת ה־`deadline` בסיום.
+
+<ExerciseHelp
+  hints={["שלושת הענפים יכולים לסיים אחרי שנייה, שתי שניות ושלוש שניות. ב־deadline הארגומנט הראשון קובע את הסוף."]}
+  solution={`- \`deadline\` — הרולר מסיים אחרי שנייה. ההמתנה מסיימת אחרי שתי שניות וקוטעת את גלגל התנופה.
+- \`parallel\` — הרולר מסיים אחרי שנייה, וההמתנה אחרי שתיים. גלגל התנופה פועל כשלוש שניות ואז השילוב מסיים.
+- \`race\` — הרולר מסיים אחרי שנייה, והסיום שלו קוטע את ההמתנה ואת גלגל התנופה.`}
+  solutionLanguage="text"
+/>
+
+### תרגיל — עוצרים את הרולר בזמן התיאום
+
+הפעילו Coordinated, ובמהלך השנייה הראשונה הפעילו את כרטיס Stop של הרולר. לפני ההרצה, ענו מה יקרה לגלגל התנופה. חזרו על הניסוי עם ביטול ישירות מכרטיס Coordinated ועם מעבר ל־Disabled.
+
+<ExerciseHelp
+  hints={["המתזמן מנהל פקודה חיצונית אחת שמחזיקה בשתי המערכות."]}
+  solution="Stop דורשת את הרולר ולכן מבטלת את השילוב כולו. שני הענפים הפעילים מבטלים את הפלט שלהם ב־end(true). כך קורה גם בביטול מכרטיס Coordinated ובמעבר ל־Disabled."
+  solutionLanguage="text"
+/>
+
+## 6. הרחבה — מסיימים לפי בקשה
+
+אפשר לסיים גם לפי תנאי שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`, פעולה שמחזירה `true` או `false`. נשתמש בלמבדה שקוראת בקשת סיום מהדשבורד. כשהבקשה הופכת ל־`true`, השילוב מסיים והאיסוף מקבל `end(true)`. `withTimeout(3.0)` קובעת גבול נוסף למקרה שהבקשה לא תגיע. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
+
+ב־`TrainingRollerBindings.java` הוסיפו import של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard` ואת המפתחות הבאים.
 
 ```java
 private static final String CONDITIONAL_COLLECT_KEY = COMMANDS_FOLDER + "Conditional Collect";
 private static final String FINISH_REQUEST_KEY = DASHBOARD_FOLDER + "/Finish Requested";
 ```
 
-ובתוך `binding()` הוסיפו:
+בתוך `binding()` הוסיפו את הקוד הבא.
 
 ```java
 SmartDashboard.putBoolean(FINISH_REQUEST_KEY, false);
 Command conditionalCollect = new TrainingRollerCollect()
     .until(() -> SmartDashboard.getBoolean(FINISH_REQUEST_KEY, false))
-    .withTimeout(3.0)
-    .withName("Conditional Collect");
+    .withTimeout(3.0);
+conditionalCollect.setName("Conditional Collect");
 DashboardUtils.setData(CONDITIONAL_COLLECT_KEY, conditionalCollect);
 ```
 
-הוסיפו ב־Elastic כרטיס Command לטבלת הפקודה וכרטיס **Boolean Toggle** לערך `/SmartDashboard/Training Roller/Finish Requested`. שלוש השניות מגבילות את משך הניסוי גם אם לא תישלח בקשת סיום. האיפוס ב־`binding()` מתרחש בכל כניסה לבדיקה, **לא בכל הרצת הפקודה**.
-
-### תרגיל: משנים רק את רגע הבקשה
-
-התחילו כל ניסיון עם `Finish Requested = false`. הפעילו Conditional Collect, ואחרי כחצי שנייה שנו את הבקשה ל־`true`. חזרו על הניסוי עם בקשה אחרי כשתי שניות, בלי לשנות את הפלט. לבסוף נסו בלי בקשה, ונבאו איזה תנאי יסיים.
-
-לפני ניסיון נוסף החזירו `false`. אם התנאי כבר `true` בהתחלה, אין להסיק שהפקודה לא תתחיל כלל: `until` הוא תנאי סיום, ובמחזור הראשון ייתכן שכבר יבוצע `execute()`. אין להשתמש בו כתחליף לבדיקת אישור לפני הפעלה.
-
-<ExerciseHelp
-  hints={[
-    "ה־supplier קוראת את הערך שוב בזמן הריצה, ולא שומרת רק את ערכו בבנאי.",
-    "הפעולה מסיימת כשאחד משני הדברים קורה קודם: בקשת סיום או מגבלת שלוש השניות.",
-  ]}
-  solution="בשני הניסויים הראשונים בקשת הסיום קוטעת את האיסוף; בניסוי בלי בקשה מגבלת הזמן קוטעת אותו. בשניהם הפקודה הפנימית מנקה פלט באמצעות end(true), והשילוב החיצוני מסיים. אין כאן מדידה או הוכחה שנאסף חפץ."
-  solutionLanguage="text"
-/>
-
-## 4. עובדים במקביל: מי קובע מתי מסיימים?
-
-ברצף אפשר להשתמש באותו רולר בשלבים שונים. בשילוב מקביל, שתי פקודות אינן יכולות לדרוש בנפרד **את אותו מופע**: לשילוב לא תהיה דרך להעניק לכל אחת שליטה בלעדית. WPILib דוחה שילוב כזה בעת בנייתו. שינוי שמות הפקודות אינו פותר את ההתנגשות.
-
-כדי להתנסות בתיאום, נוסיף **מופע מערכת שני בסימולציה בלבד**. אין צורך במנוע פיזי נוסף או במחלקת subsystem שעוטפת שוב את כל פעולות הבסיס.
-
-### מכינים את המופע השני
-
-ב־`src/main/java/frc/robot/constants/Constants.java` הוסיפו לצד `TrainingRollerConstants` מחלקה פנימית חדשה. זהו **כל תוכן המחלקה החדשה**, בתוך `Constants`:
-
-```java
-public static final class TrainingPartnerConstants {
-    public static final double TRAINING_OUTPUT = 0.12;
-    public static final MotorSubsystemConfiguration CONFIG =
-        new MotorSubsystemConfiguration()
-            .withName("TrainingPartner")
-            .withMaster(new MasterMotorConstants(52, "rio", true,
-                new TalonFXConfiguration().withMotorOutput(
-                    new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast))))
-            .withMechanismType(MotorSubsystemConfiguration.MechanismType.ANGULAR)
-            .withMechanismSimConfig(new DCMotorMechanismSimConfig(0.002, 0.1));
-}
-```
-
-ה־imports הדרושים כבר שימשו בתצורת הרולר; ודאו שקיימים:
-
-```java
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import frc.DELib26.motors.MasterMotorConstants;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemConfiguration;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.mechanismSim.DCMotorMechanismSim.DCMotorMechanismSimConfig;
-```
-
-ל־TrainingFlywheel מזהה `50`, לרולר שבנינו `51`, ולשותף המדומה `52`. שם השותף שונה גם בלוגים. אין לשתף בין המופעים את אובייקט `CONFIG` ולשנות את שמו או את כתובתו: כל תצורה נבנית בנפרד.
-
-ב־`src/main/java/frc/robot/RobotContainer.java` הוסיפו imports של `frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemTalon` ושל `frc.robot.constants.Constants.TrainingPartnerConstants`. הוסיפו את השדה:
-
-```java
-public final Optional<MotorSubsystemTalon> trainingPartner;
-```
-
-בבנאי, ליד יצירת הרולר ולאחר הגדרת `isSim`, הוסיפו:
-
-```java
-this.trainingPartner = isSim
-    ? Optional.of(new MotorSubsystemTalon(TrainingPartnerConstants.CONFIG))
-    : Optional.empty();
-```
-
-ובתוך `logTelemetry()`, ליד לוג הרולר:
-
-```java
-this.trainingPartner.ifPresent(MotorSubsystemTalon::logTelemetry);
-```
-
-### שלוש בחירות סיום
-
-נדמיין פעולה A על הרולר שמסתיימת אחרי שנייה, ופעולה B על השותף שמסתיימת אחרי שלוש. אפשר להתחיל אותן באותו מחזור ולבחור כלל סיום:
-
-| שילוב                                                      | מתי השילוב מסיים?             | מה קורה לפעולות?                   |
-| ---------------------------------------------------------- | ----------------------------- | ---------------------------------- |
-| `Commands.parallel(...)`                                   | כשכולן מסיימות: כ־3 שניות     | A מסיימת קודם; B ממשיכה עד סופה.   |
-| `Commands.race(...)`                                       | כשהראשונה מסיימת: כ־1 שנייה   | B נקטעת.                           |
-| `Commands.deadline(...)` עם המתנה של 2 שניות כפרמטר הראשון | כשה־deadline מסיים: כ־2 שניות | A כבר סיימה; B נקטעת בסיום ההמתנה. |
-
-ה־deadline הוא פקודה רגילה שנבחרה לקבוע את סיום השילוב. הוא לא חייב להיות שעון; כאן המתנה מאפשרת לראות את ההבדל בבירור. שלוש האפשרויות אינן חוסמות את עדכון הרובוט.
-
-[![צירי זמן של שתי פעולות: בהמתנה לכולן הסיום בשנייה 3, במרוץ הסיום בשנייה 1 והפעולה השנייה נקטעת, וב־deadline של שתי שניות הפעולה השנייה נקטעת בשנייה 2](./assets/composition-timing.svg)](./assets/composition-timing.svg)
-
-### מממשים בדיקת תיאום אחת
-
-ב־`RollerCommands.java` הוסיפו imports:
-
-```java
-import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage;
-import frc.DELib26.subsystems.motorSubsystems.motorBase.MotorSubsystemTalon;
-import frc.robot.constants.Constants.TrainingPartnerConstants;
-```
-
-בתוך המחלקה, לצד `cycle`, הוסיפו את **המתודה המלאה**:
-
-```java
-public static Command coordinated(MotorSubsystemTalon partner) {
-    return Commands.deadline(
-        Commands.waitSeconds(2.0),
-        new TrainingRollerCollect().withTimeout(1.0),
-        new MotorSubsystemSetPercentage<>(
-            partner, () -> TrainingPartnerConstants.TRAINING_OUTPUT)
-            .withTimeout(3.0)
-    ).withName("Two Motor Test");
-}
-```
-
-כל ענף דורש מערכת אחרת; פקודת ההמתנה אינה דורשת מערכת. לשילוב החיצוני יש **איחוד ה־requirements**: הוא שומר את שתי המערכות לאורך כל השילוב, גם אחרי שענף הרולר סיים. כך גם רצף שומר requirements של שלבים עתידיים, כולל במהלך המתנה.
-
-## 5. מחברים את התיאום לאותה בדיקה
-
-ב־`TrainingRollerBindings.java` הוסיפו import של `MotorSubsystemTalon` מהחבילה שבדוגמה הקודמת. לצד שאר המפתחות הוסיפו את המפתח לפקודה המשולבת.
-
-```java
-private static final String COORDINATED_KEY = COMMANDS_FOLDER + "Coordinated";
-```
-
-בתוך `binding()` שלפו את השותף מתוך `RobotContainer` ופרסמו את הפקודה.
-
-```java
-MotorSubsystemTalon partner = RobotContainer.getInstance().trainingPartner.orElseThrow();
-DashboardUtils.setData(COORDINATED_KEY, RollerCommands.coordinated(partner));
-```
-
-הבדיקה כוללת עכשיו שני מנגנונים. ב־`src/main/java/frc/robot/TestModeBindings.java` החליפו **רק את ערך `TRAINING_ROLLER`** כך שיבדוק ששניהם קיימים.
-
-```java
-TRAINING_ROLLER((RobotContainer container) -> {
-    if (container.trainingRoller.isPresent() && container.trainingPartner.isPresent()) {
-        return new TrainingRollerBindings();
-    }
-    return null;
-}),
-```
-
-כשהרולר והשותף קיימים, הבדיקה מופיעה בבורר. בכניסה ל־Test המתודה `binding()` משתמשת בשני המופעים שכבר נוצרו ב־`RobotContainer`.
-
-בנו והפעילו מחדש. הוסיפו ב־Elastic כרטיס Command מהטבלה `/SmartDashboard/Training Roller/Commands/Coordinated`. הוסיפו גם את מדידות השותף: באותם נתיבי טלמטריה מהשיעור הקודם החליפו `TrainingRoller` ב־`TrainingPartner`. בשמות הפקודות של שתי המערכות יופיע `Two Motor Test` בזמן שהשילוב מחזיק בהן.
-
-### תרגיל: משווים כללי סיום
-
-הריצו את שלוש הגרסאות הבאות. בכל השוואה שנו **רק את פונקציית השילוב** בתוך `coordinated`, ובנו והפעילו מחדש:
-
-1. `Commands.deadline` כפי שנכתב: נבאו סיום סביב שתי שניות.
-2. `Commands.parallel` עם אותם שלושה ארגומנטים: נבאו מי מחכה למי.
-3. `Commands.race` עם אותם שלושה ארגומנטים: נבאו מי יסיים ראשון ומי ייקטע.
-
-שמרו גרף של מתחי שני המנועים בכל גרסה, והסבירו גם את תפקיד המתנת שתי השניות. החזירו בסיום את גרסת ה־deadline.
-
-<ExerciseHelp
-  hints={[
-    "הענפים מסיימים אחרי 2, 1 ו־3 שניות. רק ב־deadline יש משמעות מיוחדת לארגומנט הראשון.",
-    "parallel מחכה גם לענף הארוך ביותר. race מסיימת כשהענף הקצר ביותר מסיים.",
-  ]}
-  solution="deadline מסיימת סביב 2 שניות וקוטעת את ענף השותף. parallel מסיימת סביב 3 שניות. race מסיימת סביב שנייה וקוטעת גם את ההמתנה וגם את השותף. פקודת האחוזים שבתוך כל timeout מקבלת הפרעה כשהזמן שלה מסתיים; הענף העוטף אותה יכול להיחשב מושלם מבחינת השילוב החיצוני."
-  solutionLanguage="text"
-/>
-
-### תרגיל: בקשת עצירה של מערכת אחת
-
-הפעילו Coordinated ובמהלך השנייה הראשונה הפעילו את כרטיס Stop של הרולר. נבאו תחילה מה יקרה **גם לשותף**, ואז בדקו. חזרו על הניסוי עם ביטול בכרטיס Coordinated עצמו ועם Disable, בכל פעם בהרצה חדשה.
-
-<ExerciseHelp
-  hints={[
-    "למתזמן יש פקודה חיצונית אחת שדורשת את שתי המערכות.",
-    "פקודת Stop מתחרה על הרולר עם כל השילוב. בביטול השילוב, גם ענפים פעילים של מערכות אחרות מקבלים ניקוי.",
-  ]}
-  solution="Stop מבטלת את כל השילוב בגלל requirement משותפת. הענפים שעדיין פועלים מקבלים end(true) ומבטלים את פלט שני המנגנונים. כך גם בביטול השילוב וב־Disabled. פעולות שכבר הסתיימו אינן מתבטלות לאחור."
-  solutionLanguage="text"
-/>
-
-## 6. למי שייך אובייקט הפקודה?
-
-כשפקודה נכנסת לשילוב, השילוב מנהל את חייה. **אי אפשר לתזמן את אותו ילד בנפרד או להכניס אותו לשילוב אחר.** זה חל גם על `withTimeout`, `until` ו־`withName`, שבונים עטיפה/שילוב. השתמשו בתוצאה המוחזרת.
-
-כרטיס Collect והרצף Cycle מקבלים כל אחד מופע משלו של `TrainingRollerCollect`. שתי הפקודות משתמשות באותו רולר, והמתזמן מתאם ביניהן לפי ה־requirements שלהן.
-
-אפשר להריץ שוב **את אותה פקודה חיצונית** אחרי שסיימה או בוטלה, כפי שעושים כרטיסי הבדיקה. היא מאתחלת את ריצתה מחדש. אם צריך שני שילובים נפרדים, קוראים לפונקציית היצירה פעמיים, וכל קריאה יוצרת ילדים חדשים. [כללי בעלות ושילוב ב־WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html#command-instance-reuse).
-
-**עצרו והסבירו:** מה ההבדל בין אותו _מופע רולר_ שמשותף לפקודות, לבין אותו _מופע פקודה_ שמנסים להכניס לשני שילובים? למה יצירת רולר חדש לאותה כתובת אינה מתקנת שימוש חוזר שגוי בפקודה?
-
-<ExerciseHelp
-  hints={[
-    "מערכת היא המשאב; Command היא פעולה עם מצב ומחזור חיים. לשני מנהלים אסור לנהל במקביל את אותו מחזור חיים.",
-  ]}
-  solution="מופע הרולר צריך להיות משותף כדי ש־requirements יזהו התנגשות. לעומת זאת, ילד בשילוב שייך למנהל מחזור החיים שלו ואינו פנוי לשימוש עצמאי נוסף. יוצרים Command חדשה עבור השילוב האחר, ולא subsystem חדשה שמסתירה התנגשות על אותה חומרה."
-  solutionLanguage="text"
-/>
+הוסיפו כרטיס Command ל־`Conditional Collect` וכרטיס Boolean Toggle ל־`/SmartDashboard/Training Roller/Finish Requested`. התחילו כל ניסיון כשהערך `false`. פעם אחת שנו אותו ל־`true` בזמן שהפקודה רצה, ובפעם השנייה השאירו `false` והמתינו. איזה תנאי סיים בכל פעם? שימו לב ש־`binding()` מאפסת את הבקשה בכניסה ל־Test, ולפני הרצה נוספת באותו מצב מאפסים אותה בכרטיס.
 
 ## בדיקת סיום
 
-הציגו Cycle שמסיים, איסוף שמסתיים לפי בקשה, ותיאום של שני מנועים מדומים בעלי כתובות ושמות נפרדים. הראו תחזית מול גרף, ביטול באמצע ועצירה עקב requirement מתחרה. בחרו במילים מתי מתאים רצף, מתי מחכים לכולם ומתי פעולה אחת צריכה לקבוע את הסוף.
+הציגו את רצף הרולר ואת התיאום עם גלגל התנופה. הסבירו מה התחיל כל שלב, מי קבע את הסיום ומי ביטל את הפלט כשעצרתם באמצע. בנו ושמרו commit עם הזמנים המקוריים ועם גרסת ה־`deadline`.
 
-השאירו את ערכי הזמנים המקוריים ואת גרסת ה־deadline, בנו ושמרו commit עם תיאור המדידות. כעת אפשר לעבור מבעיה נתונה להחלטות משלכם: [בונים מערכת עצמאית מדרישות](./06-independent-mechanism.mdx). מהירות, מיקום וכיוונון בקרה אינם דרושים לפרויקט הבא.
+בשיעור הבא תתכננו רצף מתוך דרישות של מנגנון נוסף. [בונים מערכת עצמאית מדרישות](./06-independent-mechanism.mdx)
