@@ -21,11 +21,11 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 | `TrainingRoller` | ייצוג המנגנון והפעולות שהוא מאפשר; יכולות המנוע הבסיסיות מתקבלות בירושה |
 | `RobotContainer` | יצירת מופע אחד, חיבור פקודות לכפתורים וחיבור המדידות |
 
-בתוך המחלקה החדשה יהיה שדה בשם `CONFIG`. זה המבנה שתשלימו, **לא קוד מוכן להדבקה**:
+כך ייראה המקום שבו נשמור את `CONFIG` אחרי שנלמד איך מרכיבים את התצורה:
 
 ```java
 public static final class TrainingRollerConstants {
-    public static final MotorSubsystemConfiguration CONFIG = /* בנו כאן את התצורה */;
+    public static final MotorSubsystemConfiguration CONFIG = /* התצורה שנבנה בסעיף 4 */;
 }
 ```
 
@@ -39,7 +39,7 @@ public static final class TrainingRollerConstants {
 
 ## 2. ממה בונים את CONFIG?
 
-פתחו את `TrainingFlywheel.java` וקראו את `createConfiguration()` כדוגמה. אל תעתיקו אותה בשלמותה: בנו לרולר תצורה משלה, בתוך `Constants`.
+פתחו את `TrainingFlywheel.java` ומצאו את `createConfiguration()` כדי לראות דוגמה לתצורה קיימת. נלמד מה כל חלק בתצורה מגדיר, ובסעיף 4 נשתמש בזה כדי לבנות את תצורת הרולר בתוך `Constants`.
 
 `MotorSubsystemConfiguration` מרכזת שתי קבוצות מידע:
 
@@ -159,7 +159,7 @@ output.NeutralMode = NeutralModeValue.Coast;
 
 ## 4. בונים בעצמנו את התצורה
 
-השלימו את `CONFIG` בתוך `Constants.TrainingRollerConstants`, על פי הדרישות הבאות. **אין כאן פתרון מלא לתצורה: אתם מחברים את האובייקטים והקריאות.**
+פתחו את `Constants.java` והוסיפו בתוך `Constants` את המחלקה `TrainingRollerConstants` לפי המבנה שבסעיף 1. בנו את תצורת הרולר לפי הדרישות הבאות ושמרו אותה בשדה `CONFIG` של המחלקה.
 
 1. שם המערכת יהיה `TrainingRoller` וסוג התנועה יהיה סיבובי.
 2. הגדירו מנוע ראשי אחד. לסימולציה השתמשו במזהה `51` וברשת `"rio"`; אל תשתמשו שוב ב־`50` של `TrainingFlywheel`. הרשת והמזהה כאן הם חלק מהתרגיל בסימולציה.
