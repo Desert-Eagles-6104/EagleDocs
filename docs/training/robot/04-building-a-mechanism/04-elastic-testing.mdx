@@ -31,7 +31,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 ## 2. יוצרים בדיקה לרולר
 
-צרו `src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java`. זהו **הקובץ המלא**; הוא משתמש ב־`CollectCommand` וב־`EjectCommand` שיצרתם, ובפקודת העצירה מהספרייה:
+צרו `src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java`. זהו הקובץ המלא. הוא משתמש ב־`TrainingRollerCollect` וב־`TrainingRollerEject` שיצרתם ובפקודת העצירה מהספרייה:
 
 ```java
 package frc.robot.subsystems.trainingRoller;
@@ -40,8 +40,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.DELib26.bindings.Bindings;
 import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemDisableMotors;
 import frc.DELib26.util.dashboard.DashboardUtils;
-import frc.robot.subsystems.trainingRoller.commands.CollectCommand;
-import frc.robot.subsystems.trainingRoller.commands.EjectCommand;
+import frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect;
+import frc.robot.subsystems.trainingRoller.commands.TrainingRollerEject;
 
 public class TrainingRollerTestBindings extends Bindings {
     private final Command collect;
@@ -49,8 +49,8 @@ public class TrainingRollerTestBindings extends Bindings {
     private final Command stop;
 
     public TrainingRollerTestBindings(TrainingRoller roller) {
-        collect = new CollectCommand(roller);
-        eject = new EjectCommand(roller);
+        collect = new TrainingRollerCollect();
+        eject = new TrainingRollerEject();
         stop = new MotorSubsystemDisableMotors<>(roller);
         stop.setName("Roller Stop");
     }
@@ -64,7 +64,7 @@ public class TrainingRollerTestBindings extends Bindings {
 }
 ```
 
-הבנאי יוצר פקודות, בלי לתזמן אותן ובלי להניע את המנוע. `setName` בוחרת שם לזיהוי פקודת העצירה; היא אינה מפעילה אותה. ה־requirements כבר נמצאות בפקודות. `DashboardUtils.setData` עם `Command` מעבירה אותה ל־`SmartDashboard.putData`, כפי שעושות הבדיקות הקיימות.
+הבנאי יוצר את הפקודות. איסוף ופליטה מקבלות את הרולר מ־`RobotContainer`. פקודת העצירה הכללית מהספרייה מקבלת את הרולר דרך הפרמטר `roller`. `setName` בוחרת שם לזיהוי פקודת העצירה. ה־requirements כבר נמצאות בפקודות. `DashboardUtils.setData` עם `Command` מעבירה אותה ל־`SmartDashboard.putData`, כפי שעושות הבדיקות הקיימות.
 
 אין כאן דריסה של `periodic()`: אין לנו עדכון נוסף. המתזמן כבר מריץ את הפקודות, ופרסום מדידות הרולר כבר מחובר ל־`RobotContainer.logTelemetry()`. אין להוסיף קריאת `setPercentOutput` למחלקת הבדיקה.
 
@@ -99,7 +99,7 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
     "יש שלוש פעולות שונות: new TrainingRoller, יצירת אובייקט Command ופרסום שלו.",
     "חפשו איזו פעולה עדיין חסרה כדי להתחיל את מחזור החיים של Command.",
   ]}
-  solution="RobotContainer יוצר רולר אחד. בנאי TrainingRollerTestBindings מקבל אותו ויוצר פקודות. binding מפרסמת אותן. רק בקשת תזמון שאושרה מתחילה פקודה; בנאים ופרסום אינם בקשת הנעה."
+  solution="RobotContainer יוצר רולר אחד. הבנאי של TrainingRollerTestBindings יוצר את הפקודות ומעביר את הרולר לפקודת העצירה מהספרייה. איסוף ופליטה ניגשות לרולר דרך RobotContainer. המתודה binding מפרסמת את שלוש הפקודות. הפקודה מתחילה כשבקשת תזמון מאושרת."
   solutionLanguage="text"
 />
 
@@ -177,7 +177,7 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 | פעולה                         | מה בודקים?                                                           |
 | ----------------------------- | -------------------------------------------------------------------- |
 | בלי להפעיל Command            | שם הפקודה `None`, ואין בקשת הנעה.                                    |
-| הפעלת Collect                 | הכרטיס מראה שהפקודה רצה; השם `CollectCommand`; המתח והמהירות מגיבים. |
+| הפעלת Collect                 | הכרטיס מראה ש־`TrainingRollerCollect` רצה, והמתח והמהירות מגיבים. |
 | ביטול Collect באותו כרטיס     | הפקודה אינה רצה, השם חוזר ל־`None`, ופלט ההנעה מתבטל.                |
 | התחלת Collect ואז התחלת Eject | איסוף מתבטלת בגלל requirement משותפת; פליטה הופכת לפקודה הנוכחית.    |
 | הפעלת Stop במהלך פליטה        | פליטה מבוטלת והפלט מתבטל. Stop עצמה מסתיימת במהירות.                 |
@@ -194,7 +194,7 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
     "שתי הפקודות קיבלו בבנאי את אותו אובייקט roller.",
     "הבסיס של איסוף קורא disableMotors ב־end(true), ואחריו הפקודה החדשה מתחילה לבקש פלט שלילי ב־execute.",
   ]}
-  solution="במדיניות ברירת המחדל, איסוף מפנה את ה־requirement ומקבלת end(true). הניקוי שלה מבטל פלט, ואז פליטה רצה על אותו רולר. השם הנוכחי הוא EjectCommand. קוד חיצוני ששולח שוב פלט אינו מתואם על ידי requirements ועלול לדרוס את הבקשות."
+  solution="במדיניות ברירת המחדל, איסוף מפנה את ה־requirement ומקבלת end(true). הניקוי שלה מבטל פלט, ואז פליטה רצה על אותו רולר. השם הנוכחי הוא TrainingRollerEject. קוד חיצוני ששולח שוב פלט אינו מתואם על ידי requirements ועלול לדרוס את הבקשות."
   solutionLanguage="text"
 />
 
@@ -203,12 +203,12 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 1. עצרו פעולה באמצעות כרטיס הביטול, ואז הפעילו אותה שוב. בדקו שהמנוע מגיב פעם נוספת.
 2. עברו ל־Disabled, בחרו `NONE`, וחזרו ל־Test. אל תלחצו על כרטיסי הרולר שנשארו. הסבירו למה עצם הופעתם אינה מוכיחה שהרולר הוא הבדיקה שנבחרה.
 3. עברו שוב ל־Disabled, בחרו `TRAINING_ROLLER`, וחזרו ל־Test. הפעילו איסוף פעם אחת ובטלו אותה. ודאו שאינה מתחילה מחדש מעצמה.
-4. הוסיפו לבדיקה גם כרטיס ל־`FadeCollectCommand` מהשיעור הקודם. צרו לו שדה פקודה בבנאי ופרסום ב־`binding()`, עם מפתח חדש `Training Roller/Commands/Fade`. השוו השלמה של שנייה לביטול מוקדם.
+4. הוסיפו לבדיקה גם כרטיס ל־`TrainingRollerFadeCollect` מהשיעור הקודם. הוסיפו שדה, אתחלו אותו בבנאי עם `new TrainingRollerFadeCollect()` ופרסמו ב־`binding()` עם המפתח `Training Roller/Commands/Fade`. השוו השלמה של שנייה לביטול מוקדם.
 
 <ExerciseHelp
   hints={[
     "ה־enum שומר את אובייקט הבדיקה; bind נקראת שוב, אבל הכרטיסים אינם מתנקים אוטומטית.",
-    "לכרטיס החדש צרו Command פעם אחת בבנאי, והשתמשו ב־DashboardUtils.setData ב־binding. שימו לב ל־import של FadeCollectCommand.",
+    "לכרטיס החדש צרו Command פעם אחת בבנאי, והשתמשו ב־DashboardUtils.setData ב־binding. שימו לב ל־import של TrainingRollerFadeCollect.",
     "ב־Fade, הסיום בזמן מגיע מ־isFinished; ביטול מוקדם מגיע מבקשת הביטול בכרטיס. בשניהם end צריכה לבטל פלט.",
   ]}
 />

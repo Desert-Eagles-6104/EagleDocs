@@ -217,7 +217,7 @@ output.NeutralMode = NeutralModeValue.Coast;
 
 בנו את הפרויקט ותקנו שגיאות לפני ההרצה. כעת חזרו לדרך החיבור של `TrainingFlywheel` בפרק הקודם ובצעו בעצמכם את אותם שלבים עבור הרולר:
 
-1. הוסיפו ב־`RobotContainer` שדה `Optional<TrainingRoller>` וצרו בו מופע אחד בבנאי, רק כש־`isSim` הוא `true`; אחרת שמרו `Optional.empty()`.
+1. הוסיפו ב־`RobotContainer` את השדה `public final Optional<TrainingRoller> trainingRoller;`. בבנאי צרו בו מופע אחד כש־`isSim` הוא `true`, ובכל מצב אחר שמרו `Optional.empty()`.
 2. חברו את `logTelemetry()` של אותו מופע ל־`logTelemetry()` של ה־container.
 3. חברו פקודת `MotorSubsystemSetPercentage` מוכנה לכפתור פנוי באמצעות `whileTrue`. השתמשו ב־`TrainingRollerConstants.TRAINING_OUTPUT`. אם משתמשים בכפתור של הגלגל הקודם, הסירו ממנו את החיבור הישן.
 4. אל תוסיפו הפעלה מקבילה מתוך `teleopPeriodic()`.

@@ -14,14 +14,14 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 **Composition**, או שילוב פקודות, היא בעצמה פקודה. המתזמן מפעיל את השילוב החיצוני; הוא מפעיל את מחזור החיים של הפקודות שבתוכו. ב־`Commands.sequence(...)` מתחילים את השלב הבא רק אחרי שהשלב הנוכחי הסתיים.
 
-נזכרים בממצא מהספרייה: `CollectCommand` ו־`EjectCommand` יורשות `isFinished() == false`. הרצף המושגי ״איסוף, המתנה, פליטה״ **ייתקע באיסוף** אם לא נגדיר מתי הוא מסיים. `Commands.waitSeconds(...)` אינה יכולה לעצור שלב שנמצא לפניה.
+`TrainingRollerCollect` ו־`TrainingRollerEject` יורשות `isFinished() == false`. הרצף ״איסוף, המתנה, פליטה״ **ייתקע באיסוף** אם לא נגדיר מתי הוא מסיים. `Commands.waitSeconds(...)` אינה יכולה לעצור שלב שנמצא לפניה.
 
 ### נותנים לפעולה מגבלת זמן
 
-הביטוי הבא הוא **דוגמה חלקית**, במקום שבו `roller` כבר מוגדר:
+הביטוי הבא יוצר איסוף עם מגבלת זמן. משתמשים בו אחרי שבדקנו שהרולר קיים:
 
 ```java
-new CollectCommand(roller).withTimeout(1.5)
+new TrainingRollerCollect().withTimeout(1.5)
 ```
 
 `withTimeout` מחזירה פקודה משולבת שמסיימת כשהפקודה המקורית מסיימת, או כשהזמן עובר. כאן המקורית אינה מסיימת בעצמה, ולכן אחרי כ־1.5 שניות היא מקבלת `end(true)`: מגבלת הזמן הפריעה לה. השילוב שמסביבה יכול בכל זאת להשלים כרגיל ולהעביר את הרצף לשלב הבא. זה ההבדל בין **השלמת השלב החיצוני** לבין סיבת סיום הפקודה שבתוכו.
@@ -46,17 +46,16 @@ package frc.robot.subsystems.trainingRoller.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants.TrainingRollerConstants;
-import frc.robot.subsystems.trainingRoller.TrainingRoller;
 
 public final class RollerCommands {
     private RollerCommands() {}
 
-    public static Command cycle(TrainingRoller roller) {
+    public static Command cycle() {
         return Commands.sequence(
-            new CollectCommand(roller)
+            new TrainingRollerCollect()
                 .withTimeout(TrainingRollerConstants.COLLECT_SECONDS),
             Commands.waitSeconds(TrainingRollerConstants.PAUSE_SECONDS),
-            new EjectCommand(roller)
+            new TrainingRollerEject()
                 .withTimeout(TrainingRollerConstants.EJECT_SECONDS)
         ).withName("Roller Cycle");
     }
@@ -87,7 +86,7 @@ private final Command cycle;
 
 ```java
 // בתוך הבנאי הקיים
-cycle = RollerCommands.cycle(roller);
+cycle = RollerCommands.cycle();
 ```
 
 ```java
@@ -120,7 +119,7 @@ DashboardUtils.setData("Training Roller/Commands/Cycle", cycle);
 נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerTestBindings.java` הוסיפו import של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard` ושדה `private final Command conditionalCollect;`. בתוך הבנאי הקיים הוסיפו את **קטע האתחול המלא הבא**:
 
 ```java
-conditionalCollect = new CollectCommand(roller)
+conditionalCollect = new TrainingRollerCollect()
     .until(() -> SmartDashboard.getBoolean(
         "Training Roller/Finish Requested", false))
     .withTimeout(3.0)
@@ -236,11 +235,10 @@ import frc.robot.constants.Constants.TrainingPartnerConstants;
 בתוך המחלקה, לצד `cycle`, הוסיפו את **המתודה המלאה**:
 
 ```java
-public static Command coordinated(
-        TrainingRoller roller, MotorSubsystemTalon partner) {
+public static Command coordinated(MotorSubsystemTalon partner) {
     return Commands.deadline(
         Commands.waitSeconds(2.0),
-        new CollectCommand(roller).withTimeout(1.0),
+        new TrainingRollerCollect().withTimeout(1.0),
         new MotorSubsystemSetPercentage<>(
             partner, () -> TrainingPartnerConstants.TRAINING_OUTPUT)
             .withTimeout(3.0)
@@ -259,7 +257,7 @@ public TrainingRollerTestBindings(
         TrainingRoller roller, MotorSubsystemTalon partner)
 ```
 
-הוסיפו שדה `private final Command coordinated;`, ואתחלו אותו בגוף הבנאי באמצעות `coordinated = RollerCommands.coordinated(roller, partner);`. בתוך `binding()` הוסיפו:
+הוסיפו שדה `private final Command coordinated;`, ואתחלו אותו בגוף הבנאי באמצעות `coordinated = RollerCommands.coordinated(partner);`. בתוך `binding()` הוסיפו:
 
 ```java
 DashboardUtils.setData("Training Roller/Commands/Coordinated", coordinated);
@@ -314,7 +312,7 @@ TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
 
 כשפקודה נכנסת לשילוב, השילוב מנהל את חייה. **אי אפשר לתזמן את אותו ילד בנפרד או להכניס אותו לשילוב אחר.** זה חל גם על `withTimeout`, `until` ו־`withName`, שבונים עטיפה/שילוב. השתמשו בתוצאה המוחזרת.
 
-אין להכניס ל־`cycle` את השדה `collect` שכבר משמש כרטיס עצמאי. במקום זאת, המתודה שלנו יוצרת `new CollectCommand(roller)` משלה. שתי פקודות שונות יכולות להחזיק הפניה לאותו רולר; המתזמן יתאם ביניהן לפי requirements.
+השדה `collect` כבר משמש כרטיס עצמאי. `cycle` יוצרת פקודת `TrainingRollerCollect` משלה. שתי פקודות שונות יכולות להחזיק הפניה לאותו רולר, והמתזמן יתאם ביניהן לפי requirements.
 
 אפשר להריץ שוב **את אותה פקודה חיצונית** אחרי שסיימה או בוטלה, כפי שעושים כרטיסי הבדיקה. היא מאתחלת את ריצתה מחדש. אם צריך שני שילובים נפרדים, קוראים לפונקציית היצירה פעמיים, וכל קריאה יוצרת ילדים חדשים. [כללי בעלות ושילוב ב־WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html#command-instance-reuse).
 

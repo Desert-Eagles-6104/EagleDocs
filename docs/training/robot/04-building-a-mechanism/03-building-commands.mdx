@@ -1,70 +1,42 @@
 ---
 title: "בונים פקודות למערכת"
 sidebar_position: 3
-description: "בוחרים פקודה קיימת, מתמחים בה או כותבים התנהגות עם מחזור חיים ברור."
+description: "לומדים איך פקודה פועלת, קוראים את פקודת האחוזים מהספרייה וכותבים פקודות לרולר."
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
-הרולר שבניתם כבר מגיב לכפתור. עכשיו נרצה לתת לפעולות שלו משמעות: **איסוף, פליטה וניסוי שבו הפלט יורד בהדרגה.** איך בוחרים מה לכתוב בעצמנו ומה כבר קיים בספרייה?
+בשיעור הקודם בנינו את `TrainingRoller`. עכשיו אנחנו רוצים להפעיל את המערכת כדי לאסוף, לפלוט ולנסות להוריד את הפלט בהדרגה. בפרק «מפעילים מערכת ראשונה» השתמשנו בפקודה המוכנה `MotorSubsystemSetPercentage` מהספרייה כדי להפעיל מנוע בלחיצת כפתור, ובאותה דרך חיברנו גם את הרולר. מה בעצם קורה כשאותה פקודה פועלת? [חיבור ראשון לכפתור](../03-first-subsystem/03-controller-input.mdx) · [בניית הרולר](./02-configure-motor-and-subsystem.mdx)
 
 בסיום תוכלו לבחור פקודה מתאימה, להסביר מתי הקוד שלה רץ ומה עוצר אותה, ולכתוב פקודה כשנדרשת התנהגות נוספת. ממשיכים באותו מאגר ובאחוזי פלט.
 
-## 1. מה כבר יש לנו?
+## 1. מהי פקודה?
 
-התחילו מהתוצאה של [בניית TrainingRoller](./02-configure-motor-and-subsystem.mdx): אתם יצרתם את `TrainingRoller.java`, את `Constants.TrainingRollerConstants.CONFIG`, את `TRAINING_OUTPUT` ואת השדה `Optional<TrainingRoller> trainingRoller` ב־`RobotContainer`. המופע נוצר בסימולציה בלבד, והלוגים שלו מחוברים. הרולר אינו מגיע מוכן בתבנית.
+תת־המערכת `TrainingRoller` נותנת לנו פעולות כמו בקשת פלט באמצעות `setPercentOutput()` וביטול הפלט באמצעות `disableMotors()`. את המתודות האלה היא יורשת מ־`MotorSubsystemTalon`. **פקודה (`Command`) מתארת מה הרובוט עושה בפעולה מסוימת.** למשל, פקודת איסוף יכולה לבקש מהרולר פלט קבוע בזמן שהיא פעילה ולבטל אותו כשהיא מסתיימת.
 
-| חלק                                                                               | מה שייך אליו?                                                        |
-| --------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `TrainingRollerConstants` בתוך `src/main/java/frc/robot/constants/Constants.java` | התצורה וקבועי המנגנון                                                |
-| `TrainingRoller`                                                                  | פעולות ומדידות של המנגנון, שרובן כבר מתקבלות מ־`MotorSubsystemTalon` |
-| פקודה                                                                             | מתי ואיך להשתמש בפעולות האלה, מתי לסיים ומה לעשות בסיום              |
+**מתזמן הפקודות (`CommandScheduler`)** מנהל את ההפעלה. כשכפתור מחובר באמצעות `whileTrue`, הלחיצה מבקשת מהמתזמן להתחיל את הפקודה והשחרור מבקש לבטל אותה. `new` יוצרת את אובייקט הפקודה בזמן חיבור הכפתור. רק בקשת תזמון שאושרה מתחילה את הריצה. למשל, כשהרובוט במצב Disabled, הפקודות שנכתוב בשיעור לא יתחילו.
 
-אין צורך להוסיף לרולר מתודות שעוטפות מחדש את `setPercentOutput`, את `disableMotors` או את מדידות המנוע. חזרו בקצרה ל[הורשה](../../java/07-inheritance-and-polymorphism/inheritance.mdx) אם לא ברור למה הן כבר זמינות.
+## 2. מה קורה מתחילת הפקודה ועד סופה?
 
-## 2. מתחילים מהפקודה הקיימת
+בכל קריאה ל־`Robot.robotPeriodic()` התבנית כבר מריצה מחזור אחד של המתזמן באמצעות `CommandScheduler.getInstance().run()`. המתזמן בודק אם התקבלה בקשה מהכפתורים ומקדם את הפקודות הפעילות. רצף הקריאות שהפקודה מקבלת מהתחלת הריצה ועד סופה נקרא **מחזור החיים של הפקודה**.
 
-ב־VS Code פתחו את `MotorSubsystemSetPercentage.java`, ואז עברו להגדרת מחלקת הבסיס שלה, `MotorDoubleSupplierCommand`. שתיהן נמצאות תחת `src/main/java/frc/DELib26/subsystems/motorSubsystems/commands/`. קוראים את הספרייה; אין לערוך אותה בתרגיל.
+| מקום בפקודה                 | מתי הוא רץ ומה מתאים לשים בו?                                                       |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| הבנאי                       | רץ כשקוראים ל־`new`. כאן מכינים את הנתונים שהפקודה תשתמש בהם.                        |
+| `initialize()`              | רצה פעם אחת בכל התחלה שאושרה. כאן אפשר לאפס מונה או להתחיל מדידת זמן.                |
+| `execute()`                 | מבצעת צעד קצר בכל מחזור עבודה. למשל, היא יכולה לשלוח בקשת פלט לרולר.                 |
+| `isFinished()`              | נבדקת אחרי `execute()` ומחזירה `true` אם הפקודה השלימה את הפעולה.                     |
+| `end(boolean interrupted)` | רצה פעם אחת בסיום. `interrupted` הוא `false` בהשלמה ו־`true` בביטול. כאן מבטלים פלט. |
 
-[![שרשרת ההורשה: Command, אחריה MotorDoubleSupplierCommand, אחריה MotorSubsystemSetPercentage ולבסוף CollectCommand שניצור](./assets/command-inheritance.svg)](./assets/command-inheritance.svg)
+[![הבנאי רץ ביצירה. אחרי תזמון מאושר מגיעים initialize ומחזורי execute ובדיקת isFinished. השלמה מובילה ל־end false וביטול ל־end true](./assets/command-lifecycle.svg)](./assets/command-lifecycle.svg)
 
-הבנאי של `MotorDoubleSupplierCommand` שומר הפניה למערכת ול־`DoubleSupplier`, וקורא ל־`addRequirements(motorSubsystem)`. הוא אינו מפעיל את המנוע. `MotorSubsystemSetPercentage.execute()` עושה את העבודה הבאה; זהו **קטע מתוך הספרייה, לעיון בלבד**:
+את קוד ההפעלה שמים ב־`initialize()` או ב־`execute()`, לפי מתי הוא צריך לרוץ. הבנאי רץ כבר בחיבור הכפתור, ובלחיצה נוספת `initialize()` תרוץ שוב על אותו אובייקט. כל צעד ב־`execute()` צריך לחזור מהר כדי שהמתזמן יוכל לקדם גם את שאר הפקודות. ביטול יכול לקרות מיד אחרי `initialize()`, עוד לפני מחזור העבודה הראשון.
 
-```java
-this.motorSubsystem.setPercentOutput(
-    this.valueSupplier.getAsDouble(), ignoreSoftLimits);
-```
-
-`protected` מאפשרת למחלקה היורשת להשתמש בשדות האלה. הסימון הגנרי `T extends MotorSubsystemTalon` מגביל את סוג המערכת למחלקות שיורשות מבסיס המנוע. כבר פגשנו את `<>` ואת ה־lambda ב[חיבור הראשון לכפתור](../03-first-subsystem/03-controller-input.mdx#קוראים-את-תחביר-הlambda).
-
-שתי התנהגויות נוספות מתקבלות ממחלקת הבסיס:
-
-- `isFinished()` מחזירה תמיד `false`. פקודת האחוזים אינה מסתיימת מעצמה.
-- `end(boolean interrupted)` קוראת ל־`disableMotors()`, גם בסיום רגיל וגם בביטול. היא מפסיקה הנעה; מהירות המנגנון יכולה עדיין לדעוך ב־Coast.
-
-לעומתה, `MotorSubsystemDisableMotors` יורשת מ־`InstantCommand`: היא מבטלת פלט ב־`initialize()` ומסיימת במחזור המתזמן הראשון שלה. גם היא דורשת את תת־המערכת. בקשת עצירה אינה דורשת כתיבת פקודה חדשה.
-
-## 3. יצירה, התחלה, עבודה וסיום
-
-הקריאה ל־`CommandScheduler.getInstance().run()` כבר נמצאת ב־`Robot.robotPeriodic()`. ברמת העבודה שלנו, המתזמן מעדכן את המערכות, בודק triggers ומקדם פקודות פעילות. **`new` יוצרת פקודה; תזמון שלה מבקש להתחיל אותה.** התזמון עשוי להידחות, למשל כשהרובוט Disabled.
-
-[![בנאי בזמן יצירת האובייקט; אחרי תזמון מאושר initialize, אחריו מחזורים של execute ובדיקת isFinished; השלמה מובילה ל־end false וביטול ל־end true](./assets/command-lifecycle.svg)](./assets/command-lifecycle.svg)
-
-| מקום בפקודה                | מתי הוא רץ ומה מתאים לשים בו?                                                     |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| הבנאי                      | ביצירת האובייקט: שמירת הפניות ו־requirements. הוא יכול לרוץ הרבה לפני ההפעלה.     |
-| `initialize()`             | פעם אחת בכל התחלה מאושרת, גם כשהשתמשנו שוב באותו אובייקט: איפוס מצב זמני או שעון. |
-| `execute()`                | עבודה קצרה בכל מחזור שבו הפקודה פעילה. אין להמתין כאן בלולאה או בעזרת `sleep`.    |
-| `isFinished()`             | שאלה: האם הפעולה הושלמה? מחזירה `boolean`, בלי לבצע את פעולת הסיום בעצמה.         |
-| `end(boolean interrupted)` | ניקוי פעם אחת בסיום הריצה: `false` כשהפקודה הושלמה, `true` כשבוטלה או הופרעה.     |
-
-פקודה שבוטלה יכולה לקבל `end(true)` גם בלי שהספיקה להגיע ל־`execute()` הראשון. אין להסתמך על כך שהסיום מגיע רק אחרי עבודה. מימושי ברירת המחדל של `initialize()` ושל `execute()` ב־`Command` ריקים, ו־`isFinished()` מחזירה `false`; דורסים רק מה שנחוץ.
-
-**למה לא להפעיל מנוע בבנאי?** האובייקט יכול להיווצר בעת חיבור כפתורים, בלי שביקשנו לבצע פעולה ובלי שהמתזמן העניק לו את המערכת. בנוסף, בתזמון חוזר הבנאי לא רץ שוב. קוד ההפעלה שייך למחזור החיים.
+במחלקת הבסיס `Command`, המתודות `initialize()` ו־`execute()` ריקות, ו־`isFinished()` מחזירה `false`. בפקודה משלנו דורסים את המתודות הדרושות לפעולה.
 
 ### תרגיל: מנבאים לפני שמריצים
 
-עקבו על נייר אחרי פקודה דמיונית שמסיימת אחרי שלוש קריאות ל־`execute()`. המונה מתאפס ב־`initialize()`. כתבו את סדר הקריאות במקרים הבאים:
+פקודה סופרת את הקריאות ל־`execute()` ומסיימת אחרי שלוש. המונה מתאפס ב־`initialize()`. באיזה סדר נקראות המתודות בכל מקרה?
 
 1. יוצרים אובייקט, אבל לא מתזמנים אותו.
 2. מתזמנים אותו ומאפשרים לו להשלים שלושה מחזורים.
@@ -75,25 +47,49 @@ this.motorSubsystem.setPercentOutput(
     "הפרידו בין חיי האובייקט לבין ריצה אחת של הפקודה.",
     "בכל מחזור עבודה רגיל מגיע execute ואחריו בודקים isFinished. ביטול אינו צריך להמתין לתשובה true.",
   ]}
-  solution="1. רק הבנאי. 2. initialize, ואז execute ובדיקת isFinished שלוש פעמים, ולבסוף end(false). 3. initialize מאפסת את המונה, execute ובדיקה אחת, ואז end(true). הבנאי אינו רץ שוב."
+  solution={`1. רק הבנאי.
+2. הבנאי כבר רץ. המתזמן קורא ל־\`initialize()\`, מריץ \`execute()\` ובודק \`isFinished()\` שלוש פעמים, ואז קורא ל־\`end(false)\`.
+3. \`initialize()\` מאפסת את המונה. המתזמן קורא ל־\`execute()\` ול־\`isFinished()\` פעם אחת, ואז קורא ל־\`end(true)\`.`}
   solutionLanguage="text"
 />
 
-## 4. Requirements: מי משתמש ברולר עכשיו?
+## 3. איך המתזמן מחלק את השליטה במערכת?
 
-Requirement היא הצהרה שהפקודה צריכה שליטה בתת־מערכת מסוימת. המתזמן משווה **מופעי אובייקטים**, לא שמות מחלקות ולא מספרי CAN. פקודת איסוף ופקודת פליטה לא צריכות לשלוח בו־זמנית בקשות לאותו רולר.
+מה יקרה אם פקודת איסוף ופקודת פליטה ינסו לשלוח פלט לאותו רולר? כדי שהמתזמן יוכל לתאם ביניהן, כל פקודה מצהירה על תת־המערכת שהיא צריכה לשלוט בה. הצהרה כזאת נקראת **Requirement**. רושמים אותה באמצעות `addRequirements(...)`, בדרך כלל בבנאי, ומעבירים למתודה את המופע שהפקודה תפעיל.
 
-בפקודות שבהן נשתמש, ברירת המחדל היא שהפקודה הפעילה מפנה את המערכת: כשמתזמנים פקודה מתחרה, הראשונה מקבלת `end(true)` ואחריה השנייה מקבלת `initialize()`. קיימת גם מדיניות שדוחה פקודה נכנסת; איננו משנים אותה כאן.
+המתזמן מזהה התנגשות לפי המופע עצמו. בברירת המחדל, אם מבקשים לתזמן פליטה בזמן שאיסוף פעילה, המתזמן קורא ל־`end(true)` של האיסוף ורק אז ל־`initialize()` של הפליטה.
 
 [![איסוף ופליטה מבקשות את אותו מופע TrainingRoller; במצב הרגיל איסוף מבוטלת ומנקה פלט לפני שפליטה מתחילה](./assets/requirement-conflict.svg)](./assets/requirement-conflict.svg)
 
-ההצהרה אינה עוצרת קוד שמפעיל מנוע ישירות מ־`teleopPeriodic()`. לכן כבר הסרנו את ההפעלה הישנה. גם יצירת שני אובייקטים שפונים לאותו CAN ID אינה פתרון: המתזמן יראה שתי מערכות שונות שאינן מתחרות, אף שהן פונות לאותה חומרה.
+כדי שהתיאום יעבוד, שתי הפקודות צריכות להשתמש באותו מופע רולר שיצרנו ב־`RobotContainer`. אם יוצרים שני מופעים לאותו CAN ID, המתזמן מתייחס אליהם כשתי מערכות נפרדות. באותו אופן, קריאה ישירה להפעלת מנוע מתוך `teleopPeriodic()` עוקפת את התיאום של המתזמן.
+
+## 4. קוראים את פקודת האחוזים מהספרייה
+
+פתחו ב־VS Code את `MotorSubsystemSetPercentage.java` ואת מחלקת הבסיס שלה `MotorDoubleSupplierCommand`. שתיהן נמצאות תחת `src/main/java/frc/DELib26/subsystems/motorSubsystems/commands/`.
+
+בבנאי, `MotorDoubleSupplierCommand` שומרת את המופע שקיבלה ומצהירה עליו באמצעות `addRequirements(motorSubsystem)`. היא שומרת גם `DoubleSupplier`, פעולה שאפשר לקרוא לה כדי לקבל מספר. בחיבור לכפתור השתמשנו ב־lambda שמחזירה את אחוז הפלט הרצוי.
+
+בכל מחזור עבודה, `MotorSubsystemSetPercentage` קוראת לספק הערך ומעבירה את התוצאה למערכת. זהו קטע מ־`execute()` בספרייה:
+
+```java
+this.motorSubsystem.setPercentOutput(
+    this.valueSupplier.getAsDouble(), ignoreSoftLimits);
+```
+
+`ignoreSoftLimits` קובע אם לעקוף את מגבלות התנועה שמוגדרות בתוכנה. החיבור שעשינו משתמש בברירת המחדל `false`. שני השדות `motorSubsystem` ו־`valueSupplier` מוגדרים `protected` במחלקת הבסיס, ולכן המחלקה היורשת יכולה להשתמש בהם. הסימון `T extends MotorSubsystemTalon` מאפשר להשתמש בפקודה עם סוגים שונים של מערכות מהמשפחה של `MotorSubsystemTalon`, ובהם `TrainingRoller`.
+
+את הסיום הפקודה יורשת מ־`MotorDoubleSupplierCommand`:
+
+- `isFinished()` מחזירה תמיד `false`. בחיבור שלנו הכפתור מבטל את הפקודה בשחרור.
+- `end(boolean interrupted)` קוראת ל־`disableMotors()` בכל סיום. במצב `Coast` ההנעה נפסקת והרולר יכול להמשיך להסתובב עד שיאט.
+
+לעצירה יש בספרייה את `MotorSubsystemDisableMotors`. זו פעולה חד־פעמית מסוג `InstantCommand`. היא דורשת את המערכת, מבטלת את הפלט ב־`initialize()` ומסתיימת במחזור המתזמן הראשון שלה.
 
 ## 5. שלוש דרכים לממש פעולה
 
 ### משתמשים ישירות בפקודה מוכנה
 
-אם כל הדרישה היא להפעיל אחוז פלט בזמן החזקה, החיבור הבא מספיק. זהו **קטע מלא להחלפת חיבור הרולר הקודם בתוך `RobotContainer.configureTeleopBindings()`**, ולא מתודה או קובץ שלמים:
+כדי להפעיל אחוז פלט בזמן החזקת כפתור, אפשר להמשיך להשתמש בפקודה מהספרייה. היא כללית, ולכן מקבלת את המערכת שעליה תפעל ואת הפעולה שמספקת את אחוז הפלט. כך נראה חיבור הרולר לכפתור North בתוך `RobotContainer.configureTeleopBindings()`:
 
 ```java
 this.trainingRoller.ifPresent(roller -> {
@@ -103,44 +99,60 @@ this.trainingRoller.ifPresent(roller -> {
 });
 ```
 
-ה־imports הם `frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage` ו־`frc.robot.constants.Constants.TrainingRollerConstants`. השלט והמופע כבר קיימים. **לא כל פעולה בעלת שם מחייבת מחלקה חדשה.**
+ה־imports הם `frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage` ו־`frc.robot.constants.Constants.TrainingRollerConstants`. הקריאה ל־`ifPresent` מחברת את הכפתור רק אם נוצר רולר, כלומר בסימולציה.
 
 ### מתמחים בפקודה קיימת
 
-אם ״איסוף״ היא פעולה שחוזרת בכמה מקומות, מחלקה קצרה יכולה לבחור עבורם את הסוג והקבוע. צרו `src/main/java/frc/robot/subsystems/trainingRoller/commands/CollectCommand.java`. זהו **הקובץ המלא**:
+אם ״איסוף״ היא פעולה שחוזרת בכמה מקומות, אפשר לתת לה שם משלה ולקבוע פעם אחת באיזה פלט היא משתמשת. לפקודות שנכתוב נותנים שם בתבנית `<שם המערכת><מה הפקודה עושה>`. לדוגמה, `TrainingRollerSetPercentage` מתאים לפקודה שקובעת אחוז פלט. כאן הפקודה מייצגת את פעולת האיסוף, ולכן נקרא לה `TrainingRollerCollect`.
+
+`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהשדה ריק.
+
+[![שרשרת ההורשה מ־Command דרך שתי מחלקות הספרייה ועד TrainingRollerCollect](./assets/command-inheritance.svg)](./assets/command-inheritance.svg)
+
+צרו את הקובץ `src/main/java/frc/robot/subsystems/trainingRoller/commands/TrainingRollerCollect.java`:
 
 ```java
 package frc.robot.subsystems.trainingRoller.commands;
 
 import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants.TrainingRollerConstants;
 import frc.robot.subsystems.trainingRoller.TrainingRoller;
 
-public class CollectCommand extends MotorSubsystemSetPercentage<TrainingRoller> {
-    public CollectCommand(TrainingRoller roller) {
-        super(roller, () -> TrainingRollerConstants.TRAINING_OUTPUT);
+public class TrainingRollerCollect extends MotorSubsystemSetPercentage<TrainingRoller> {
+    public TrainingRollerCollect() {
+        super(RobotContainer.getInstance().trainingRoller.orElseThrow(),
+            () -> TrainingRollerConstants.TRAINING_OUTPUT);
     }
 }
 ```
 
-המחלקה בוחרת מדיניות של פעולה, ומשאירה לבסיס את הביצוע, ה־requirement והניקוי. אין צורך לדרוס כאן `end()`. דריסה שתשכח את `super.end(interrupted)` עלולה להסיר את הניקוי שקיבלנו.
+הקריאה ל־`super(...)` מעבירה לבנאי של הספרייה את הרולר ואת קבוע האיסוף באמצעות ה־lambda. הפקודה מקבלת בירושה את הביצוע, את רישום ה־requirement ואת ביטול הפלט בסיום.
 
-לבדיקה, החליפו **רק את יצירת הפקודה** בחיבור הקודם ב־`new CollectCommand(roller)` והוסיפו import של המחלקה החדשה. אחרי בנייה והפעלה מחדש, לחיצה ושחרור צריכים להפיק אותה התנהגות. בלוג `Subsystems/TrainingRoller/Command` יופיע עכשיו `CollectCommand`.
+ב־`RobotContainer` ייבאו את `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` והחליפו את החיבור הקודם בקטע הבא. `isPresent()` בודקת שהרולר קיים לפני יצירת הפקודה, ואת המופע עצמו הפקודה מקבלת מה־container.
+
+```java
+if (this.trainingRoller.isPresent()) {
+    this.driverController.northButton().whileTrue(new TrainingRollerCollect());
+}
+```
+
+בנו והפעילו מחדש. בדקו לחיצה ושחרור. בזמן שהפקודה רצה, בלוג `Subsystems/TrainingRoller/Command` יופיע `TrainingRollerCollect`.
 
 ### תרגיל: כותבים את פעולת הפליטה
 
-בתוך `Constants.TrainingRollerConstants` הוסיפו `public static final double EJECT_OUTPUT = -0.10;`, ערך לניסוי בסימולציה. צרו באותה תיקיית פקודות את `EjectCommand.java`. השתמשו באותה פקודת ספרייה, אבל בחרו את קבוע הפליטה.
+בתוך `Constants.TrainingRollerConstants` הוסיפו `public static final double EJECT_OUTPUT = -0.10;` לניסוי בסימולציה. צרו באותה תיקיית פקודות את `TrainingRollerEject.java`. התמחו באותה פקודה מהספרייה והשתמשו בקבוע הפליטה.
 
-החליפו זמנית את `CollectCommand` בכפתור ב־`EjectCommand`, בנו והריצו. שנו רק את בחירת הפקודה: השאירו את `whileTrue` ואת תצורת הרולר. נבאו את סימן המתח והמהירות, בדקו לחיצה ושחרור והסבירו מה קיבלתם בירושה. בסיום החזירו את האיסוף לכפתור ושמרו את שתי המחלקות.
+החליפו זמנית את `new TrainingRollerCollect()` בכפתור ב־`new TrainingRollerEject()` והוסיפו import מתאים. נבאו את סימן המתח והמהירות, ואז בנו והריצו כדי לבדוק לחיצה ושחרור. מה קיבלתם בירושה? בסיום החזירו את האיסוף לכפתור ושמרו את שתי המחלקות.
 
 <ExerciseHelp
   hints={[
     "לפקודה כבר יש מימוש ששולח אחוז פלט ומנקה אותו בסיום.",
-    "המחלקה החדשה יורשת מ־MotorSubsystemSetPercentage<TrainingRoller>; הבנאי מעביר roller ו־supplier ל־super.",
-    "ה־supplier מחזירה TrainingRollerConstants.EJECT_OUTPUT. אין צורך לשמור שדה roller נוסף או לכתוב execute ו־end מחדש.",
+    "המחלקה החדשה יורשת מ־MotorSubsystemSetPercentage<TrainingRoller>. הבנאי ניגש לרולר דרך RobotContainer כמו בבנאי של TrainingRollerCollect.",
+    "ה־lambda מחזירה TrainingRollerConstants.EJECT_OUTPUT. את execute ואת end מקבלים בירושה.",
   ]}
   solutionLanguage="text"
-  solution="בדקו שם קובץ ומחלקה זהים, package של תיקיית commands, בנאי שמקבל את הרולר הקיים ושימוש בקבוע הפליטה. בזמן החזקה מתקבלת בקשה שלילית; בשחרור whileTrue מבטלת את הפקודה והבסיס מבטל פלט."
+  solution="בבנאי TrainingRollerEject() קוראים ל־super עם RobotContainer.getInstance().trainingRoller.orElseThrow() ועם lambda שמחזירה את TrainingRollerConstants.EJECT_OUTPUT. בזמן החזקה execute שולחת בקשת פלט שלילית. בשחרור whileTrue מבטלת את הפקודה ו־end מבטלת את הפלט."
 />
 
 ## 6. מתי ה־supplier קוראת את הערך?
@@ -163,11 +175,11 @@ new MotorSubsystemSetPercentage<>(
 
 הראשון שומר צילום של הציר בזמן יצירת החיבור; ה־supplier תחזיר שוב את אותו מספר. השני קורא את הציר בזמן הביצוע, ומגביל כאן את בקשת הניסוי באמצעות הכפלה בקבוע. המשתנה המקומי `captured` יכול להילכד ב־lambda כי איננו משנים אותו לאחר ההשמה.
 
-**עצרו והסבירו:** האם עצם קיומה של lambda מבטיח קריאה עדכנית מהשלט? איפה צריך להיות הביטוי שקורא את הציר? אין להריץ את שתי החלופות יחד; זהו תרגיל מעקב קוד.
+ענו לפי שתי הדוגמאות. האם עצם השימוש ב־lambda מבטיח קריאה עדכנית מהשלט? איפה צריך להיות הביטוי שקורא את הציר?
 
 <ExerciseHelp
   hints={[
-    "ה־lambda יכולה לקרוא משתנה שכבר מכיל תוצאה ישנה. עקבו אחר המקום שבו getRightY עצמה נקראת.",
+    "ה־lambda יכולה לקרוא משתנה שכבר מכיל תוצאה ישנה. חפשו איפה מופיעה הקריאה ל־getRightY בכל חלופה.",
   ]}
   solution="לא. בחלופה הראשונה getRightY נקראת פעם אחת לפני יצירת הפקודה. בשנייה היא בתוך גוף ה־supplier, ולכן נקראת מחדש מתוך execute. הבנאי של הספרייה דורש DoubleSupplier; העברת מספר double ישירות לא תתקמפל."
   solutionLanguage="text"
@@ -183,22 +195,25 @@ new MotorSubsystemSetPercentage<>(
 public static final double FADE_SECONDS = 1.0;
 ```
 
-צרו `src/main/java/frc/robot/subsystems/trainingRoller/commands/FadeCollectCommand.java`. זהו **קובץ מלא**, שנועד לתרגול מחזור החיים וגם מממש את ניסוי הפלט המשתנה:
+נשתמש ב־`Timer` כדי למדוד כמה שניות עברו מתחילת הריצה. `restart()` מאפסת ומתחילה את המדידה, `get()` מחזירה את הזמן שעבר ו־`hasElapsed(...)` בודקת אם הגענו למשך הרצוי. נחשב איזה חלק מהזמן נשאר ונכפיל בו את הפלט ההתחלתי. `Math.max(0.0, ...)` משאירה את הפלט באפס אם מחזור העבודה הגיע מעט אחרי סוף השנייה.
+
+צרו את הקובץ `src/main/java/frc/robot/subsystems/trainingRoller/commands/TrainingRollerFadeCollect.java`:
 
 ```java
 package frc.robot.subsystems.trainingRoller.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants.TrainingRollerConstants;
 import frc.robot.subsystems.trainingRoller.TrainingRoller;
 
-public class FadeCollectCommand extends Command {
+public class TrainingRollerFadeCollect extends Command {
     private final TrainingRoller roller;
     private final Timer timer = new Timer();
 
-    public FadeCollectCommand(TrainingRoller roller) {
-        this.roller = roller;
+    public TrainingRollerFadeCollect() {
+        this.roller = RobotContainer.getInstance().trainingRoller.orElseThrow();
         addRequirements(roller);
     }
 
@@ -228,29 +243,37 @@ public class FadeCollectCommand extends Command {
 }
 ```
 
-`Timer` מודדת שניות. `restart()` מאפסת ומתחילה מדידה, `get()` קוראת זמן שעבר ו־`hasElapsed(...)` מחזירה אם הגענו למשך הנתון. `Math.max` בוחרת את הגדול מבין שני מספרים, וכאן מונעת פלט שלילי אם המחזור הגיע מעט אחרי סוף השנייה. השאירו משך חיובי. לא מממשים כאן מחדש פעולות מנוע, אלא משתמשים בפעולות שכבר קיימות.
+הבנאי שומר את הרולר מה־`RobotContainer` ומצהיר על אותו מופע באמצעות `addRequirements(roller)`. בסיום, `end(...)` עוצרת את השעון ומבטלת את הפלט גם אם הפקודה בוטלה לפני תום השנייה.
 
-החליפו זמנית את הפקודה ב־North ב־`new FadeCollectCommand(roller)`, עם import מתאים, והשאירו `whileTrue`. בנו והפעילו מחדש. לפני ההרצה כתבו תחזית לשני ניסויים:
+החליפו זמנית את הפקודה ב־North ב־`new TrainingRollerFadeCollect()` והוסיפו import מתאים. לפני הבדיקה, ענו מה יקרה לפלט ומתי תיקרא `end(...)` בכל מצב:
 
-1. החזקה של יותר משנייה: הפקודה משלימה ומקבלת `end(false)`. היא אינה מתחילה שוב רק מפני שהכפתור עדיין לחוץ; שחררו ולחצו מחדש.
-2. שחרור אחרי כחצי שנייה: הפקודה מבוטלת ומקבלת `end(true)`. גם הפעם הפלט מתבטל.
+1. מחזיקים את הכפתור יותר משנייה, בלי לשחרר.
+2. משחררים את הכפתור אחרי כחצי שנייה.
 
-הציגו מתח ומהירות ב־AdvantageScope. כדי לראות את ערך `interrupted` בפועל אפשר להוסיף זמנית בתוך `end` את `System.out.println("Fade interrupted=" + interrupted);`. אל תדפיסו בכל `execute()`. הריצו שוב את שני הניסויים, ואז הסירו את ההדפסה והחזירו `CollectCommand` לחיבור הבסיסי.
+בנו והריצו את שני הניסויים עם מתח ומהירות ב־AdvantageScope. כדי לבדוק את ערך `interrupted` אפשר להוסיף זמנית בתוך `end(...)` את `System.out.println("Fade interrupted=" + interrupted);`.
+
+<ExerciseHelp
+  solution={`1. בהחזקה הפלט יורד בהדרגה. אחרי שנייה הפקודה מסיימת עם \`end(false)\` ונשארת לא פעילה עד לחיצה חדשה.
+2. בשחרור מוקדם הפקודה מקבלת \`end(true)\` והפלט מתבטל מיד.`}
+  solutionLanguage="text"
+/>
 
 ### תרגיל: משלימים בלי להעתיק את כל הקובץ
 
-כתבו לעצמכם ארבע דרישות לניקוי ולאתחול של `FadeCollectCommand`, ואז הסתירו את הקוד וכתבו מחדש רק את `initialize()`, את `isFinished()` ואת `end(...)`. בדקו בנייה והרצה שנייה של **אותו חיבור**: האם הניסוי באמת מתחיל שוב משנייה אפס? הסבירו למה שעון שהופעל בבנאי היה נכשל בבדיקה הזאת.
+כתבו מחדש את `initialize()`, את `isFinished()` ואת `end(...)` של `TrainingRollerFadeCollect`. בנו והפעילו את הסימולציה. לחצו פעמיים, עם שחרור בין הלחיצות, כדי לבדוק שתי ריצות של אותו אובייקט פקודה. האם הפלט מתחיל שוב מהערך ההתחלתי בלחיצה השנייה? הסבירו מה היה קורה אילו השעון היה מתחיל בבנאי.
 
 <ExerciseHelp
   hints={[
     "השעון שייך לריצה, אבל שדה השעון שייך לאובייקט שנוצר פעם אחת.",
-    "בהתחלה מאפסים ומתחילים; תנאי הסיום רק שואל על הזמן; בסיום עוצרים את השעון ומבטלים פלט בכל ערך של interrupted.",
+    "בהתחלה מאפסים ומתחילים. תנאי הסיום בודק כמה זמן עבר. בסיום עוצרים את השעון ומבטלים את הפלט בכל ערך של interrupted.",
   ]}
 />
 
+בסיום הסירו את ההדפסה אם הוספתם אותה והחזירו את `TrainingRollerCollect` לכפתור.
+
 ### בוחרים כמה קוד באמת צריך
 
-איזו דרך תבחרו לכל דרישה: פקודה מוכנה, התמחות או `Command` חדשה?
+לכל פעולה, בחרו דרך מימוש. אפשר להשתמש בפקודה מוכנה, להתמחות בה או לכתוב `Command` חדשה.
 
 - הפעלת הרולר ב־15% כל עוד מחזיקים כפתור.
 - פעולת פליטה בעלת קבוע ושם משותפים לכמה חיבורים.
@@ -261,7 +284,10 @@ public class FadeCollectCommand extends Command {
   hints={[
     "חפשו קודם מימוש קיים. שם פעולה לבדו אינו מחייב מחלקה, וגם מדידת מנוע שכבר קיימת אינה סיבה לממש אותה מחדש.",
   ]}
-  solution="להחזקה מספיקה MotorSubsystemSetPercentage ישירות. פליטה יכולה להשתמש ב־EjectCommand כהתמחות קצרה, או ישירות בספרייה אם יש רק מקום שימוש אחד. לניסוי הפלט והשעון כתבנו FadeCollectCommand. לעצירה קיימת MotorSubsystemDisableMotors. בשיעור השילובים נראה שגם פעולה מוגבלת בזמן אינה מחייבת פקודה חדשה."
+  solution={`- **החזקה** — משתמשים ישירות ב־\`MotorSubsystemSetPercentage\`.
+- **פליטה** — \`TrainingRollerEject\` נותנת לפעולה שם ופלט משותפים לכמה חיבורים.
+- **דעיכה** — \`TrainingRollerFadeCollect\` מודדת זמן ומחשבת פלט בכל מחזור.
+- **עצירה** — משתמשים ב־\`MotorSubsystemDisableMotors\` מהספרייה.`}
   solutionLanguage="text"
   multipleSolutions={true}
 />
@@ -270,7 +296,7 @@ public class FadeCollectCommand extends Command {
 
 הראו הרצת איסוף ופליטה, הרצת דעיכה שהושלמה והרצה שבוטלה. הסבירו במילים שלכם את ההבדל בין בנאי ל־`initialize()`, היכן קוראים את ה־supplier, מי מצהיר על הרולר כ־requirement, ולמה אותו ניקוי דרוש בשני מסלולי הסיום.
 
-השאירו את `CollectCommand`, את `EjectCommand` ואת `FadeCollectCommand` בפרויקט, עם קבועיהן ב־`Constants`, ובכפתור North השאירו רק איסוף ב־`whileTrue`. שמרו commit. בשיעור הבא [נרכז את הבדיקות במצב Test ונפעיל אותן דרך Elastic](./04-elastic-testing.mdx).
+השאירו את `TrainingRollerCollect`, את `TrainingRollerEject` ואת `TrainingRollerFadeCollect` בפרויקט, עם הקבועים שלהן ב־`Constants`. חברו את `TrainingRollerCollect` לכפתור North באמצעות `whileTrue` ושמרו commit. בשיעור הבא [נרכז את הבדיקות במצב Test ונפעיל אותן דרך Elastic](./04-elastic-testing.mdx).
 
 <details>
 <summary>מקורות להעמקה</summary>
