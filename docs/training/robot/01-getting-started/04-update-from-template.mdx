@@ -1,0 +1,31 @@
+---
+title: "מעדכנים את המאגר האישי מהתבנית"
+sidebar_position: 4
+---
+
+אם המנטור עדכן את `robot-training-template` אחרי שיצרתם את המאגר האישי, העדכון לא מגיע אליכם אוטומטית. כך מחילים את הקומיט האחרון מהתבנית ישירות על `main` במאגר האישי.
+
+## מביאים את העדכון
+
+פתחו [טרמינל ב־VS Code](../../getting-started/working-in-vscode.mdx#terminal) מתוך תיקיית המאגר האישי. הריצו `git remote -v` ובדקו שהכתובת של `origin` שייכת למאגר האישי שלכם ב־GitHub. הריצו `git status` ושמרו בקומיט שינויים שעדיין לא שמרתם.
+
+הריצו כל פקודה בנפרד. אם מתקבלת שגיאה, עצרו לפני הפקודה הבאה.
+
+```bash
+git switch main
+git pull --ff-only origin main
+git fetch https://github.com/Desert-Eagles-6104/robot-training-template.git main
+git cherry-pick -x -m 1 FETCH_HEAD
+```
+
+`FETCH_HEAD` מצביע לקומיט האחרון שהבאתם מהתבנית. `git cherry-pick` מחילה את השינויים של אותו קומיט על העבודה שכבר יש לכם ב־`main`. האפשרות `-m 1` מטפלת גם בקומיט שנוצר ממיזוג Pull Request לתוך `main` של התבנית. אם פספסתם כמה עדכונים, בקשו מהמנטור את מזהי הקומיטים הדרושים כדי להחיל אותם מהישן לחדש.
+
+אם Git מדווחת על התנגשות, פנו למנטור לפני שתמשיכו. אפשר לבטל `cherry-pick` שנעצר באמצע בעזרת `git cherry-pick --abort`.
+
+## בודקים ושולחים ל־GitHub
+
+אם העדכון שינה את גרסת ספריית הקבוצה, הריצו `git submodule update --init --recursive`. בדקו שהפרויקט [נבנה בהצלחה](./02-template-repository.mdx#first-build), ואז שלחו את העדכון למאגר האישי.
+
+```bash
+git push origin main
+```
