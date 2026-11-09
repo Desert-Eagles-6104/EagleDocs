@@ -77,7 +77,7 @@ public final class RollerCommands {
 
 ### מחברים לבדיקה הקיימת
 
-ב־`src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerTestBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.RollerCommands`. לצד המפתחות הקיימים הוסיפו את המפתח לרצף:
+ב־`src/main/java/frc/robot/subsystems/trainingRoller/TrainingRollerBindings.java` הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.RollerCommands`. לצד המפתחות הקיימים הוסיפו את המפתח לרצף:
 
 ```java
 private static final String CYCLE_KEY = COMMANDS_FOLDER + "Cycle";
@@ -111,7 +111,7 @@ DashboardUtils.setData(CYCLE_KEY, RollerCommands.cycle());
 
 לפעמים יודעים מתי לסיים לפי ערך שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`: פעולה שמחזירה `true` או `false`, בדומה ל־`DoubleSupplier` שהחזירה מספר. היא בודקת את התנאי לאורך הריצה ומסיימת את השילוב אם הוא מתקיים. הפקודה שבתוכו מקבלת אז `end(true)`.
 
-נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerTestBindings.java` הוסיפו imports של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard`, של `edu.wpi.first.wpilibj2.command.Command` ושל `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` אם הם חסרים. לצד שאר המפתחות הוסיפו:
+נשתמש ב**בקשת סיום ידנית בדשבורד**, בלי חיישן חדש. ב־`TrainingRollerBindings.java` הוסיפו imports של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard`, של `edu.wpi.first.wpilibj2.command.Command` ושל `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` אם הם חסרים. לצד שאר המפתחות הוסיפו:
 
 ```java
 private static final String CONDITIONAL_COLLECT_KEY = COMMANDS_FOLDER + "Conditional Collect";
@@ -245,38 +245,31 @@ public static Command coordinated(MotorSubsystemTalon partner) {
 
 ## 5. מחברים את התיאום לאותה בדיקה
 
-ב־`TrainingRollerTestBindings.java` הוסיפו import של `MotorSubsystemTalon` מהחבילה שבדוגמה הקודמת. לצד שאר השדות הוסיפו:
+ב־`TrainingRollerBindings.java` הוסיפו import של `MotorSubsystemTalon` מהחבילה שבדוגמה הקודמת. לצד שאר המפתחות הוסיפו את המפתח לפקודה המשולבת.
 
 ```java
 private static final String COORDINATED_KEY = COMMANDS_FOLDER + "Coordinated";
-private final MotorSubsystemTalon partner;
 ```
 
-החליפו את הבנאי כך שישמור את שני המנגנונים הקיימים:
+בתוך `binding()` שלפו את השותף מתוך `RobotContainer` ופרסמו את הפקודה.
 
 ```java
-public TrainingRollerTestBindings(TrainingRoller roller, MotorSubsystemTalon partner) {
-    this.roller = roller;
-    this.partner = partner;
-}
-```
-
-בתוך `binding()` הוסיפו את פרסום הפקודה:
-
-```java
+MotorSubsystemTalon partner = RobotContainer.getInstance().trainingPartner.orElseThrow();
 DashboardUtils.setData(COORDINATED_KEY, RollerCommands.coordinated(partner));
 ```
 
-שינוי החתימה מחייב לעדכן את הקוד הקורא לה. ב־`src/main/java/frc/robot/TestModeBindings.java` החליפו **רק את ערך `TRAINING_ROLLER`** בקטע הבא:
+הבדיקה כוללת עכשיו שני מנגנונים. ב־`src/main/java/frc/robot/TestModeBindings.java` החליפו **רק את ערך `TRAINING_ROLLER`** כך שיבדוק ששניהם קיימים.
 
 ```java
-TRAINING_ROLLER((RobotContainer container) -> container.trainingRoller
-    .flatMap(roller -> container.trainingPartner.map(partner ->
-        new TrainingRollerTestBindings(roller, partner)))
-    .orElse(null)),
+TRAINING_ROLLER((RobotContainer container) -> {
+    if (container.trainingRoller.isPresent() && container.trainingPartner.isPresent()) {
+        return new TrainingRollerBindings();
+    }
+    return null;
+}),
 ```
 
-`flatMap` מחברת כאן שתי בדיקות קיום: אם חסר רולר או שותף, אין בדיקה זמינה. אם שניהם קיימים, מעבירים לבדיקה את שני המופעים שכבר נוצרו. לא יוצרים מנועים במחלקת ה־bindings.
+כשהרולר והשותף קיימים, הבדיקה מופיעה בבורר. בכניסה ל־Test המתודה `binding()` משתמשת בשני המופעים שכבר נוצרו ב־`RobotContainer`.
 
 בנו והפעילו מחדש. הוסיפו ב־Elastic כרטיס Command מהטבלה `/SmartDashboard/Training Roller/Commands/Coordinated`. הוסיפו גם את מדידות השותף: באותם נתיבי טלמטריה מהשיעור הקודם החליפו `TrainingRoller` ב־`TrainingPartner`. בשמות הפקודות של שתי המערכות יופיע `Two Motor Test` בזמן שהשילוב מחזיק בהן.
 

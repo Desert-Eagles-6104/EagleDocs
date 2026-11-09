@@ -92,7 +92,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 | `src/main/java/frc/robot/constants/Constants.java`                                  | מחלקה פנימית `TrainingFeederConstants`, שדה `CONFIG` מטיפוס `MotorSubsystemConfiguration`, וקבועים בעלי שמות לפלטים ולזמנים |
 | `src/main/java/frc/robot/subsystems/trainingFeeder/TrainingFeeder.java`             | מערכת שיורשת מבסיס המנוע ומקבלת בבנאי הבסיס את ה־`CONFIG` שלה                                                               |
 | `src/main/java/frc/robot/subsystems/trainingFeeder/commands/`                       | רק מחלקות/פונקציות יצירה שיש בהן צורך לפי הבחירה שלכם                                                                       |
-| `src/main/java/frc/robot/subsystems/trainingFeeder/TrainingFeederTestBindings.java` | בדיקת `Bindings` שמקבלת את המופע הקיים ומפרסמת את פעולותיו                                                                  |
+| `src/main/java/frc/robot/subsystems/trainingFeeder/TrainingFeederBindings.java` | בדיקת `Bindings` ששולפת את המופע הקיים דרך `RobotContainer.getInstance()` ומפרסמת את הפקודות שלו |
 | `src/main/java/frc/robot/RobotContainer.java`                                       | יצירת מופע אחד בסימולציה, שמירתו וקריאה ללוגים שלו                                                                          |
 | `src/main/java/frc/robot/TestModeBindings.java`                                     | אפשרות `TRAINING_FEEDER`, זמינה רק כשקיים המנגנון                                                                           |
 | `dashboards/training-feeder.json` במאגר האישי                                       | פריסת הבדיקה שתשמרו מ־Elastic                                                                                               |
