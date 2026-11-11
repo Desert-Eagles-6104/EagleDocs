@@ -4,7 +4,9 @@ sidebar_position: 3
 description: "לומדים איך פקודה פועלת, קוראים את פקודת האחוזים מהספרייה וכותבים פקודות לרולר."
 ---
 
+import CommandLifecycleDemo from "@site/src/components/CommandLifecycleDemo";
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
+import { rollerLifecycleDemo } from "./demos/roller-lifecycle";
 
 בשיעור הקודם בנינו את `TrainingRoller`. עכשיו אנחנו רוצים להפעיל את המערכת כדי לאסוף, לפלוט ולנסות איסוף שמסתיים אחרי שנייה. בפרק «מפעילים מערכת ראשונה» השתמשנו בפקודה המוכנה `MotorSubsystemSetPercentage` מהספרייה כדי להפעיל מנוע בלחיצת כפתור, ובאותה דרך חיברנו גם את הרולר. מה בעצם קורה כשאותה פקודה פועלת? [חיבור ראשון לכפתור](../03-first-subsystem/03-controller-input.mdx) · [בניית הרולר](./02-configure-motor-and-subsystem.mdx)
 
@@ -33,6 +35,12 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 את קוד ההפעלה שמים ב־`initialize()` או ב־`execute()`, לפי מתי הוא צריך לרוץ. הבנאי רץ כבר בחיבור הכפתור, ובלחיצה נוספת `initialize()` תרוץ שוב על אותו אובייקט. כל צעד ב־`execute()` צריך לחזור מהר כדי שהמתזמן יוכל לקדם גם את שאר הפקודות. ביטול יכול לקרות מיד אחרי `initialize()`, עוד לפני מחזור העבודה הראשון.
 
 במחלקת הבסיס `Command`, המתודות `initialize()` ו־`execute()` ריקות, ו־`isFinished()` מחזירה `false`. פקודה שנכתוב היא מחלקת Java שיורשת מ־`Command`. דורסים את המתודות הדרושות למשימה ומסמנים אותן ב־`@Override`.
+
+`MotorSubsystemSetPercentage` היא הפקודה שהפעלנו בלחיצה כדי לסובב את הרולר. גם פקודת האיסוף בהדגמה מתחילה בלחיצה, ויש לה מגבלת זמן של שנייה.
+
+בחרו אם להחזיק את כפתור האיסוף לשתי שניות או לשחרר אחרי חצי שנייה. לחצו על **צעד הבא** כדי לראות מה קורה לפקודה ולרולר.
+
+<CommandLifecycleDemo {...rollerLifecycleDemo} />
 
 ### תרגיל: מנבאים לפני שמריצים
 

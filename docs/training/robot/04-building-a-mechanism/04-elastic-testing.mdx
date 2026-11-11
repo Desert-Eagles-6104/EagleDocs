@@ -4,7 +4,9 @@ sidebar_position: 4
 description: "מחברים בדיקת רולר לתשתית Test הקיימת ומפעילים וצופים בה בדשבורד."
 ---
 
+import CommandLifecycleDemo from "@site/src/components/CommandLifecycleDemo";
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
+import { rollerHandoffDemo } from "./demos/roller-handoff";
 
 בשיעור הקודם כתבנו פקודות לרולר ובדקנו אותן בעזרת השלט. עכשיו נרכז אותן בבדיקה אחת ונפעיל איסוף, פליטה ועצירה מתוך Elastic.
 
@@ -168,6 +170,10 @@ TRAINING_ROLLER((RobotContainer container) -> {
 | התחלת Collect ואז Disable     | פקודת האיסוף מבוטלת; המדידות ממשיכות להתעדכן.                        |
 
 מהירות אינה חייבת להתאפס מיד בסיום. Elastic עוזרת לזהות את המצב הנוכחי; כדי לראות **מתי** המתח בוטל ואיך המהירות דעכה, הוסיפו אותם לגרף ב־AdvantageScope בדרך שכבר למדתם. שם מקור AdvantageKit עשוי להציג את העץ בלי התחילית המלאה של NetworkTables. חפשו את אותם שמות שדות, והציגו מתח ומהירות בצירים נפרדים.
+
+לפני הניסוי, נבאו מה יקרה לפלט של Collect כשמבקשים להפעיל Eject. עברו על סדר הקריאות בהדגמה, ואז חפשו בניסוי את שינוי שם הפקודה ואת היפוך כיוון הפלט.
+
+<CommandLifecycleDemo {...rollerHandoffDemo} />
 
 ### תרגיל: מי ניצח בהתנגשות?
 
