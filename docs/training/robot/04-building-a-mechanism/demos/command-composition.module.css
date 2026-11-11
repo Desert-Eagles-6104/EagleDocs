@@ -1,0 +1,75 @@
+.timeline {
+  display: grid;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  padding-inline: 0.25rem;
+}
+
+.time,
+.axis {
+  font-variant-numeric: tabular-nums;
+}
+
+.row {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.rowLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 0.5rem;
+}
+
+.status {
+  font-size: 0.875em;
+  color: var(--ifm-color-content-secondary);
+}
+
+.track {
+  position: relative;
+  block-size: 0.625rem;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.planned,
+.elapsed,
+.cursor {
+  position: absolute;
+  inset-block: 0;
+}
+
+.planned {
+  background: var(--ifm-color-emphasis-300);
+}
+
+.elapsed {
+  background: var(--ifm-color-primary);
+}
+
+.row[data-status="running"] .status,
+.row[data-status="interrupted"] .status {
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+
+.row[data-status="interrupted"] .elapsed {
+  background: var(--ifm-color-warning-dark);
+}
+
+.cursor {
+  inset-block: -0.15rem;
+  inline-size: 2px;
+  margin-inline-start: -1px;
+  background: var(--ifm-color-content-secondary);
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: -0.5rem;
+  font-size: 0.875em;
+  color: var(--ifm-color-content-secondary);
+}

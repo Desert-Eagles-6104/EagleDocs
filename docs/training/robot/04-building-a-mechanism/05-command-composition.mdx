@@ -4,7 +4,9 @@ sidebar_position: 5
 description: "מתכננים רצף ופעולות במקביל, בוחרים כלל סיום ומממשים את השילוב ב־Java."
 ---
 
+import CommandLifecycleDemo from "@site/src/components/CommandLifecycleDemo";
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
+import { commandCompositionDemo } from "./demos/command-composition";
 
 ## 1. מה אנחנו רוצים להשיג?
 
@@ -33,6 +35,10 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 גם ב־`deadline` פקודה אחרת יכולה לסיים לפני הפקודה הקובעת. ברגע שהפקודה הקובעת מסיימת, כל פקודה שעדיין פעילה מקבלת `end(true)`. אפשר לבחור כל פקודה שמתאימה לקבוע את הסוף. כאן ההמתנה נותנת לנו זמן קבוע שנוח לבדוק.
 
 [![ברצף הרולר אוסף, ממתין ופולט. במקביל הרולר וגלגל התנופה מתחילים יחד. השילוב מסיים אחרי שלוש שניות ב־parallel, שנייה אחת ב־race ושתי שניות ב־deadline.](./assets/composition-timing.svg)](./assets/composition-timing.svg)
+
+בחרו שילוב והתקדמו צעד־צעד כדי לראות אילו פקודות פעילות ומתי השילוב מסתיים.
+
+<CommandLifecycleDemo {...commandCompositionDemo} />
 
 ### מי מקבל שליטה במנגנון?
 

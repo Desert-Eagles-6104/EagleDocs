@@ -1,41 +1,7 @@
 import React from "react";
+import ControlIcon from "../../../ControlIcon";
 import { DT, PLAYBACK_SPEEDS } from "../../model/constants";
 import styles from "../../styles.module.css";
-
-type IconName = "play" | "pause" | "reset" | "step" | "disturbance";
-
-function ControlIcon({ name }: { name: IconName }) {
-  const paths: Record<IconName, React.ReactNode> = {
-    play: <path d="m8 5 11 7-11 7Z" />,
-    pause: <path d="M9 5v14M15 5v14" />,
-    reset: (
-      <>
-        <path d="M4 10a8 8 0 1 1 1 7M4 4v6h6" />
-      </>
-    ),
-    step: (
-      <>
-        <path d="m5 5 10 7-10 7ZM19 5v14" />
-      </>
-    ),
-    disturbance: <path d="m13 2-9 12h7l-1 8 10-12h-7Z" />,
-  };
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {paths[name]}
-    </svg>
-  );
-}
 
 export function SimulationControls({
   running,

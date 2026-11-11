@@ -31,6 +31,14 @@
   margin-block-end: 1.25rem;
 }
 
+.actions .iconButton {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding: 0;
+}
+
 .scenario {
   display: grid;
   gap: 0.25rem;

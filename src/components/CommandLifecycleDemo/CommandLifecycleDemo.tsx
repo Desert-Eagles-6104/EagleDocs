@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import ControlIcon from "../ControlIcon";
 import styles from "./styles.module.css";
 
 export type DemoStep = {
@@ -50,6 +51,7 @@ export default function CommandLifecycleDemo<Step extends DemoStep>({
   const index = Math.min(stepIndex, lastIndex);
   const step = scenario.steps[index];
   const finished = index === lastIndex;
+  const playbackLabel = playing ? "השהיה" : finished ? "הפעל שוב" : "הפעל";
 
   useEffect(() => {
     if (!playing || finished) return;
@@ -67,6 +69,11 @@ export default function CommandLifecycleDemo<Step extends DemoStep>({
     setStepIndex(Math.max(0, Math.min(index + offset, lastIndex)));
   }
 
+  function resetPlayback() {
+    setPlaying(false);
+    setStepIndex(0);
+  }
+
   function togglePlayback() {
     if (finished) setStepIndex(0);
     setPlaying(!playing);
@@ -82,8 +89,7 @@ export default function CommandLifecycleDemo<Step extends DemoStep>({
             <select
               value={scenario.id}
               onChange={(event) => {
-                setPlaying(false);
-                setStepIndex(0);
+                resetPlayback();
                 setScenarioId(event.target.value);
               }}
             >
@@ -95,30 +101,46 @@ export default function CommandLifecycleDemo<Step extends DemoStep>({
             </select>
           </label>
         )}
-        <div className={styles.actions}>
+        <div className={styles.actions} role="group" aria-label="פקדי ההדגמה">
           <button
-            className="button button--primary"
+            className={`button button--primary ${styles.iconButton}`}
             type="button"
             onClick={togglePlayback}
             disabled={lastIndex === 0}
+            aria-label={playbackLabel}
+            title={playbackLabel}
           >
-            {playing ? "עצור הרצה" : finished ? "הפעל שוב" : "הפעל"}
+            <ControlIcon name={playing ? "pause" : "play"} />
           </button>
           <button
-            className="button button--secondary"
+            className={`button button--secondary ${styles.iconButton}`}
             type="button"
-            onClick={() => stepBy(-1)}
-            disabled={index === 0}
+            onClick={resetPlayback}
+            disabled={index === 0 && !playing}
+            aria-label="איפוס"
+            title="איפוס"
           >
-            צעד קודם
+            <ControlIcon name="reset" />
           </button>
           <button
-            className="button button--secondary"
+            className={`button button--secondary ${styles.iconButton}`}
             type="button"
             onClick={() => stepBy(1)}
             disabled={finished}
+            aria-label="צעד הבא"
+            title="צעד הבא"
           >
-            צעד הבא
+            <ControlIcon name="step" />
+          </button>
+          <button
+            className={`button button--secondary ${styles.iconButton}`}
+            type="button"
+            onClick={() => stepBy(-1)}
+            disabled={index === 0}
+            aria-label="צעד קודם"
+            title="צעד קודם"
+          >
+            <ControlIcon name="stepBack" />
           </button>
         </div>
       </div>
