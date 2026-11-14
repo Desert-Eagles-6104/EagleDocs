@@ -1,0 +1,151 @@
+---
+title: "טיפוסים גנריים (Generics)"
+sidebar_position: 8
+slug: /java/enrichment/generics
+description: "משתמשים באותה מחלקה עם טיפוסים שונים ובודקים התאמה כבר בזמן הקומפילציה."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+## 1. שומרים תיאור של מדידה
+
+נתחיל ממחלקה רגילה בשם `Reading`. כמו במחלקות שכבר כתבנו, הבנאי מקבל ערך ושומר אותו בשדה, ומתודה מאפשרת לקרוא אותו. כאן הערך הוא תיאור של מדידה, למשל `"Ready"`.
+
+באותו פרויקט Java, צרו את התיקייה `src/generics` ואת הקובץ `Reading.java` בתוכה.
+
+```java
+package generics;
+
+public class Reading {
+    private final String value;
+
+    public Reading(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+}
+```
+
+באותה תיקייה צרו את `GenericsDemo.java`. לחצו על Run מעל `main`. התוכנית תדפיס `Ready`.
+
+```java
+package generics;
+
+public class GenericsDemo {
+    public static void main(String[] args) {
+        Reading status = new Reading("Ready");
+        String message = status.getValue();
+        System.out.println(message);
+    }
+}
+```
+
+### תרגיל 1: מה תלוי בטיפוס?
+
+נניח שנרצה להשתמש באותו מבנה כדי לשמור קריאת מתח כמו `6.5` כערך מספרי מסוג `double`. סמנו את שלושת המקומות ב־`Reading.java` שבהם צריך לשנות את הטיפוס. אילו שורות בבנאי ובמתודה יכולות להישאר בדיוק כמו שהן?
+
+<ExerciseHelp
+  hints={["עקבו אחרי הערך מהפרמטר בבנאי, דרך השדה, ועד לתוצאה של getValue()."]}
+  solution="צריך לשנות את טיפוס השדה value, את טיפוס הפרמטר בבנאי ואת טיפוס ההחזרה של getValue(). ההשמה this.value = value וההחזרה return value נשארות כפי שהן."
+  solutionLanguage="text"
+/>
+
+## 2. בוחרים טיפוס כשמשתמשים במחלקה
+
+נרצה שאותה מחלקה תתאים גם לטקסט וגם לקריאת מתח. החליפו את התוכן של `Reading.java` בגרסה הבאה.
+
+```java
+package generics;
+
+public class Reading<T> {
+    private final T value;
+
+    public Reading(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+}
+```
+
+| חלק במחלקה | לפני השינוי | אחרי השינוי |
+| --- | --- | --- |
+| השדה | `private final String value;` | `private final T value;` |
+| הפרמטר בבנאי | `public Reading(String value)` | `public Reading(T value)` |
+| טיפוס ההחזרה | `public String getValue()` | `public T getValue()` |
+
+`<T>` אחרי שם המחלקה מציג **פרמטר של טיפוס**. `T` הוא שם לטיפוס שנבחר כשמשתמשים במחלקה. אותה בחירה חלה בכל מקום שבו מופיע `T` בהגדרה.
+
+החליפו את התוכן של `GenericsDemo.java` והריצו שוב.
+
+```java
+package generics;
+
+public class GenericsDemo {
+    public static void main(String[] args) {
+        Reading<String> status = new Reading<String>("Ready");
+        String message = status.getValue();
+        System.out.println(message);
+    }
+}
+```
+
+ב־`Reading<String>` בחרנו ב־`String`. הבנאי מקבל את `"Ready"` כ־`String` ושומר אותו בשדה. כשקוראים ל־`status.getValue()`, המתודה מחזירה את הערך מהשדה כ־`String`, ולכן אפשר לשמור אותו ב־`message`. הפלט נשאר `Ready`.
+
+### תרגיל 2: איזו שורה מתקמפלת?
+
+הוסיפו את השורות הבאות ל־`main` ובדקו אותן אחת בכל פעם. אחת מהן שגויה. לפני הבדיקה, הסבירו איזה טיפוס הבנאי מצפה לקבל בכל שורה. תקנו את השורה השגויה כך שתשמור את הערך כטקסט, ואז הסירו את שתי שורות הניסוי.
+
+```java
+Reading<String> label = new Reading<String>("Driving");
+Reading<String> code = new Reading<String>(7);
+```
+
+<ExerciseHelp
+  hints={["בשתי השורות בחרנו באותו טיפוס. בדקו איזה ערך מוקף במירכאות."]}
+  solution={`השורה הראשונה מתקמפלת כי "Driving" הוא String. בשורה השנייה 7 הוא מספר שלם, והבנאי מצפה ל־String. התיקון הוא:
+Reading<String> code = new Reading<String>("7");`}
+  solutionLanguage="text"
+/>
+
+## 3. משתמשים באותה מחלקה לקריאת מתח
+
+הוסיפו בסוף `main` את השורות הבאות והריצו. אחרי `Ready` יודפס `6.5`.
+
+```java
+Reading<Double> voltage = new Reading<Double>(6.5);
+Double volts = voltage.getValue();
+System.out.println(volts);
+```
+
+בסוגריים הזוויתיים בוחרים טיפוס של אובייקט. `Double` היא המחלקה שעוטפת ערך מטיפוס `double`. כשמוסרים לבנאי את `6.5`, Java עוטפת אותו אוטומטית ב־`Double`. לכן גם `voltage.getValue()` מחזירה `Double`.
+
+אפשר לקצר את שורת היצירה של `status` לכתיבה הבאה. החליפו רק את השורה הזאת והריצו שוב. עם `<>`, Java מסיקה את `String` לפי הטיפוס משמאל, והפלט נשאר זהה.
+
+```java
+Reading<String> status = new Reading<>("Ready");
+```
+
+## בדיקת סיום
+
+החליפו את גוף `GenericsDemo.main`. צרו אובייקט `Reading` ששומר את הטקסט `"Calibrated"` ועוד אובייקט מאותה מחלקה ששומר את המתח `12.4`. קראו ל־`getValue()` על כל אחד ושמרו כל תוצאה במשתנה מהטיפוס המתאים. הדפיסו את שני המשתנים והריצו. הסבירו איך ידעתם איזה טיפוס לבחור לכל משתנה.
+
+<ExerciseHelp
+  hints={["בחרו String לתיאור ו־Double למתח בסוגריים הזוויתיים.", "הטיפוס שבחרתם עבור Reading הוא גם הטיפוס ש־getValue() מחזירה."]}
+  solution={`Reading<String> status = new Reading<String>("Calibrated");
+Reading<Double> voltage = new Reading<Double>(12.4);
+String message = status.getValue();
+Double volts = voltage.getValue();
+System.out.println(message); // Calibrated
+System.out.println(volts);   // 12.4`}
+  solutionLanguage="java"
+/>
+
+## להמשך: מגבילים את בחירת הטיפוס {#type-bounds}
+
+לפעמים המחלקה צריכה פעולות שמוגדרות בטיפוס מסוים. למשל, `T extends Number` מגביל את הבחירה ל־`Number` ולמחלקות שיורשות ממנה. בקוד הרובוט, `T extends MotorSubsystemTalon` מאפשר לפקודה לעבוד עם תתי־מערכות מנוע שונות ולקרוא לפעולות המנוע המשותפות להן. [קוראים את פקודת האחוזים בשיעור הרובוט](../../robot/04-building-a-mechanism/03-building-commands.mdx)

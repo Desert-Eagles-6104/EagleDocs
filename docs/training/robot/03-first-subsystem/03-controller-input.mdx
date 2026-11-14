@@ -49,12 +49,12 @@ this.trainingFlywheel.ifPresent(flywheel -> {
 
 למבדה היא פעולה קצרה שמעבירים לקוד אחר. משמאל ל־`->` כותבים את הפרמטרים, ומימין את הפעולה. בדוגמה יש שתיים.
 
-- `flywheel -> { ... }` מקבלת את המופע מ־`ifPresent` ומחברת לכפתור פקודה עבורו. [המחלקה `Optional`](../../java/08-enrichment/05-optional.mdx)
-- `() -> TrainingFlywheel.TRAINING_OUTPUT` היא הפעולה שהפקודה מקבלת כ־`DoubleSupplier`. היא מקבלת אפס פרמטרים ומחזירה את אחוז הפלט בכל פעם שהפקודה קוראת לה. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
+- `flywheel -> { ... }` מקבלת את המופע מ־`ifPresent` ומחברת לכפתור פקודה עבורו. [המחלקה `Optional`](../../java/10-enrichment/01-optional.mdx)
+- `() -> TrainingFlywheel.TRAINING_OUTPUT` היא הפעולה שהפקודה מקבלת כ־`DoubleSupplier`. היא מקבלת אפס פרמטרים ומחזירה את אחוז הפלט בכל פעם שהפקודה קוראת לה. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
 
 ### מה אומרות הסוגריים הזוויתיות?
 
-`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של מערכות מנוע. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-enrichment/03-generics.mdx)
+`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של מערכות מנוע. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-generics/index.mdx)
 
 ### בדקו את עצמכם
 

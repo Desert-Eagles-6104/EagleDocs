@@ -31,7 +31,7 @@ final SwerveIO swerveIO = isSim
 
 קוראים כך: אם `isSim` היא true, משתמשים בערך שאחרי `?`; אחרת משתמשים בערך שאחרי `:`. כאן בוחרים חיבור לסביבת האימון או לחומרה. רק הצד שנבחר מתבצע. זו כתיבה קצרה של בחירה שאפשר לבטא גם בעזרת `if` ו־`else`.
 
-`SwerveIO` הוא ממשק שמגדיר את הפעולות המשותפות למימושים של מערכת הנהיגה. לכן המשתנה `swerveIO` יכול להחזיק את המימוש שנבחר לפי סביבת ההרצה. [ממשקים ב־Java](../../java/08-enrichment/01-interfaces.mdx)
+`SwerveIO` הוא ממשק שמגדיר את הפעולות המשותפות למימושים של מערכת הנהיגה. לכן המשתנה `swerveIO` יכול להחזיק את המימוש שנבחר לפי סביבת ההרצה. [ממשקים ב־Java](../../java/10-enrichment/03-interfaces.mdx)
 
 ### Optional: יכול להיות שיש אובייקט, ויכול להיות שאין
 
@@ -39,7 +39,7 @@ final SwerveIO swerveIO = isSim
 public final Optional<SimCoordinator> simCoordinator;
 ```
 
-`Optional<SimCoordinator>` מציינת שהשדה יכול להכיל `SimCoordinator` או להיות ריק. `Optional.of(...)` עוטפת את האובייקט כשיצרנו אותו, ו־`Optional.empty()` מייצגת הרצה שבה הוא חסר. [המחלקה `Optional` ב־Java](../../java/08-enrichment/05-optional.mdx)
+`Optional<SimCoordinator>` מציינת שהשדה יכול להכיל `SimCoordinator` או להיות ריק. `Optional.of(...)` עוטפת את האובייקט כשיצרנו אותו, ו־`Optional.empty()` מייצגת הרצה שבה הוא חסר. [המחלקה `Optional` ב־Java](../../java/10-enrichment/01-optional.mdx)
 
 ## 1. יוצרים פעם אחת, ומשתמשים לאורך הריצה
 
@@ -69,7 +69,7 @@ Robot מחליטה מתי לבקש את הפעולות האלה. בנפרד, ה�
 
 **טלמטריה** היא המידע שהתוכנית מפרסמת על מצבה ועל מצב המערכות. אפשר לצפות בו בזמן אמת, ואם הוגדרה שמירה לקובץ לוג - לפתוח אותו גם אחרי שההרצה הסתיימה. **AdvantageKit** היא תשתית הרישום שבתוכנית; **AdvantageScope** היא התוכנה שבה מציגים ומנתחים את הנתונים.
 
-ב־RobotContainer, המתודה `logTelemetry()` מבקשת מהמערכות לפרסם את המידע שלהן. `LoggingMode` הוא `enum` שמגדיר את רמות הפירוט האפשריות. [ערכים מוגדרים מראש עם `enum`](../../java/08-enrichment/04-enums.mdx)
+ב־RobotContainer, המתודה `logTelemetry()` מבקשת מהמערכות לפרסם את המידע שלהן. `LoggingMode` הוא `enum` שמגדיר את רמות הפירוט האפשריות. [ערכים מוגדרים מראש עם `enum`](../../java/10-enrichment/02-enums.mdx)
 
 - `BASIC` קוראת למתודות התיעוד הבסיסיות של הנהיגה והראייה.
 - `EXTENDED` קוראת למתודות התיעוד המורחבות שלהן.

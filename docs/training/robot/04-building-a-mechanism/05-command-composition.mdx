@@ -199,7 +199,7 @@ RobotContainer.getInstance().trainingFlywheel.ifPresent(flywheel -> {
 
 ## 6. הרחבה — מסיימים לפי בקשה
 
-אפשר לסיים גם לפי תנאי שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`, פעולה שמחזירה `true` או `false`. נשתמש בלמבדה שקוראת בקשת סיום מהדשבורד. כשהבקשה הופכת ל־`true`, השילוב מסיים והאיסוף מקבל `end(true)`. `withTimeout(3.0)` קובעת גבול נוסף למקרה שהבקשה לא תגיע. [ביטויי למבדה ב־Java](../../java/08-enrichment/02-lambdas.mdx)
+אפשר לסיים גם לפי תנאי שמשתנה בזמן הריצה. `until(...)` מקבלת `BooleanSupplier`, פעולה שמחזירה `true` או `false`. נשתמש בלמבדה שקוראת בקשת סיום מהדשבורד. כשהבקשה הופכת ל־`true`, השילוב מסיים והאיסוף מקבל `end(true)`. `withTimeout(3.0)` קובעת גבול נוסף למקרה שהבקשה לא תגיע. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
 
 ב־`TrainingRollerBindings.java` הוסיפו import של `edu.wpi.first.wpilibj.smartdashboard.SmartDashboard` ואת המפתחות הבאים.
 

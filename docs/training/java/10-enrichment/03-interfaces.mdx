@@ -1,6 +1,6 @@
 ---
 title: "ממשקים (interface)"
-sidebar_position: 1
+sidebar_position: 3
 description: "משתמשים בכמה מימושים דרך אותן מתודות."
 ---
 
@@ -12,7 +12,7 @@ import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
 ## 1. מגדירים את הפעולה המשותפת
 
-**ממשק (`interface`)** מגדיר אילו פעולות יהיו זמינות לקוד שמשתמש בו. נתחיל מממשק עם פעולה אחת שמחזירה מרחק בסנטימטרים. בפרויקט Java שלכם צרו את התיקייה `src/enrichment` ואת הקובץ `DistanceSensor.java` בתוכה.
+**ממשק (`interface`)** מגדיר אילו פעולות יהיו זמינות לקוד שמשתמש בו. נתחיל מממשק עם פעולה אחת שמחזירה מרחק בסנטימטרים. בפרויקט Java שלכם צרו את התיקייה `src/enrichment` אם היא עדיין לא קיימת, ואת הקובץ `DistanceSensor.java` בתוכה.
 
 ```java
 package enrichment;
@@ -98,4 +98,4 @@ public class RecordedDistanceSensor implements DistanceSensor {
   solutionLanguage="java"
 />
 
-בקוד הרובוט, `SwerveIO` מאפשר לעבוד מול אותן פעולות של מערכת הנהיגה עם מימושים שונים. ממשקים משמשים גם להעברת פעולות קצרות. [מכירים ביטויי למבדה](./02-lambdas.mdx)
+בקוד הרובוט, `SwerveIO` מאפשר לעבוד מול אותן פעולות של מערכת הנהיגה עם מימושים שונים. בשיעור Lambda כבר השתמשנו בממשק `Supplier<T>` כדי להעביר פעולה שמחזירה ערך. [חוזרים לביטויי למבדה](../09-lambdas/index.mdx)

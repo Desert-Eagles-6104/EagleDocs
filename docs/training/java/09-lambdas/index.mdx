@@ -1,0 +1,165 @@
+---
+title: "ביטויי למבדה (Lambda)"
+sidebar_position: 9
+slug: /java/enrichment/lambdas
+description: "כותבים פעולה קצרה שאפשר להעביר לקוד אחר ולהפעיל בזמן המתאים."
+---
+
+import ExerciseHelp from '@site/src/components/ExerciseHelp';
+
+## 1. מפעילים מתודה עכשיו או שומרים פעולה להמשך
+
+באותו פרויקט Java, צרו את התיקייה `src/lambdas` ואת הקובץ `LambdaDemo.java` בתוכה. כאן `printStatus()` היא מתודה רגילה שמדפיסה הודעה, כמו המתודות שכבר כתבנו.
+
+לפני שתלחצו על Run מעל `main`, כתבו כמה פעמים תופיע ההודעה `Robot ready` והיכן תופיע `Before run`.
+
+```java
+package lambdas;
+
+public class LambdaDemo {
+    public static void main(String[] args) {
+        printStatus();
+
+        Runnable printLater = () -> printStatus();
+        System.out.println("Before run");
+        printLater.run();
+    }
+
+    static void printStatus() {
+        System.out.println("Robot ready");
+    }
+}
+```
+
+```text
+Robot ready
+Before run
+Robot ready
+```
+
+הקריאה הראשונה ל־`printStatus()` מדפיסה מיד. השורה שמגדירה את `printLater` שומרת פעולה שאפשר להפעיל בהמשך. אחרי `Before run`, הקריאה ל־`printLater.run()` מפעילה את הפעולה ומדפיסה שוב.
+
+`() -> printStatus()` הוא **ביטוי למבדה**. הסוגריים `()` מציינים שאין לפעולה פרמטרים, והקוד שאחרי `->` הוא הגוף שירוץ בכל קריאה ל־`run()`. `Runnable` הוא **ממשק פונקציונלי**. בדוגמה הזאת Java מצפה שביטוי הלמבדה יספק את גוף המתודה `run()`, שאינה מקבלת פרמטרים וטיפוס ההחזרה שלה הוא `void`.
+
+### תרגיל 1: מזיזים את הקריאה
+
+בתוך `main` העבירו את `printLater.run()` לשורה שמיד מעל ההדפסה של `Before run`. נחשו מה ישתנה בפלט, הריצו והסבירו איזו שורה גרמה להדפסה השנייה של `Robot ready`. אחר כך החזירו את הקריאה למקום המקורי.
+
+<ExerciseHelp
+  hints={["עקבו אחרי שתי השורות שמפעילות את printStatus(), ישירות או דרך run()."]}
+  solution={`Robot ready
+Robot ready
+Before run
+
+ההדפסה השנייה מופיעה כשמגיעים ל־printLater.run(), שעכשיו נמצאת לפני ההדפסה של Before run.`}
+  solutionLanguage="text"
+/>
+
+## 2. מפעילים פעולה שמחזירה טקסט
+
+במתודה כמו `readStatus()`, טיפוס ההחזרה `String` אומר שהתוצאה היא טקסט. כששומרים פעולה ב־`Supplier<String>`, קוראים ל־`get()` כדי להפעיל אותה ולקבל את התוצאה. כמו ב[שיעור Generics](../08-generics/index.mdx), הבחירה ב־`<String>` קובעת את הטיפוס שנקבל בחזרה. גוף הלמבדה כאן הוא ביטוי אחד, ולכן התוצאה של `readStatus()` היא גם התוצאה של `get()`.
+
+צרו באותה תיקייה את `StatusDemo.java`. לפני ההרצה עקבו אחרי השדה `status`. איזה ערך תדפיס כל אחת משתי השורות?
+
+```java
+package lambdas;
+
+import java.util.function.Supplier;
+
+public class StatusDemo {
+    private static String status = "Ready";
+
+    public static void main(String[] args) {
+        String savedStatus = readStatus();
+        Supplier<String> readLater = () -> readStatus();
+
+        status = "Driving";
+        System.out.println(savedStatus);
+        System.out.println(readLater.get());
+    }
+
+    static String readStatus() {
+        return status;
+    }
+}
+```
+
+```text
+Ready
+Driving
+```
+
+`savedStatus` מכיל את הטקסט שהתקבל בקריאה הראשונה ל־`readStatus()`. הקריאה ל־`readLater.get()` מפעילה את הלמבדה אחרי שהשדה השתנה, ולכן `readStatus()` קוראת את הערך החדש. הסבירו לפי סדר השורות מתי כל קריאה התבצעה.
+
+### תרגיל 2: קוראים שוב
+
+בסוף `StatusDemo.main` שנו את `status` ל־`"Stopped"` והדפיסו שוב את `savedStatus` ואת התוצאה של `readLater.get()`. מה יופיע בשתי השורות החדשות? הריצו כדי לבדוק.
+
+<ExerciseHelp
+  hints={["איפה שוב קוראים ל־readStatus()? בדקו אם יש השמה חדשה ל־savedStatus."]}
+  solution={`status = "Stopped";
+System.out.println(savedStatus);      // Ready
+System.out.println(readLater.get()); // Stopped`}
+  solutionLanguage="java"
+/>
+
+## 3. מעבירים פעולה למתודה אחרת
+
+כמו שמעבירים מספר או טקסט בפרמטר, אפשר להעביר גם פעולה. בתוכנית הבאה `report` מקבלת `Supplier<String>` בפרמטר `readMessage`. עקבו אחרי הקריאה ל־`report` ומצאו את השורה שבה היא מפעילה את הלמבדה.
+
+צרו באותה תיקייה את `ReportDemo.java` והריצו אותו.
+
+```java
+package lambdas;
+
+import java.util.function.Supplier;
+
+public class ReportDemo {
+    public static void main(String[] args) {
+        Supplier<String> readMessage = () -> "Robot ready";
+        report(readMessage);
+    }
+
+    static void report(Supplier<String> readMessage) {
+        System.out.println("Reading status");
+        String message = readMessage.get();
+        System.out.println(message);
+    }
+}
+```
+
+```text
+Reading status
+Robot ready
+```
+
+בקריאה ל־`report(readMessage)`, הפרמטר מקבל את הפעולה. הגוף שלה רץ בתוך `report`, בשורה `String message = readMessage.get();`.
+
+## בדיקת סיום
+
+ב־`ReportDemo.main` כתבו למבדה חדשה שמדפיסה `Drive checked`, ושמרו אותה במשתנה מטיפוס `Runnable`. הוסיפו למחלקה מתודה `static void runCheck(Runnable check)` מחוץ ל־`main`. המתודה תדפיס `Starting check`, תפעיל את הפעולה שקיבלה, ואז תדפיס `Check finished`.
+
+בתוך `main`, אחרי הקריאה ל־`report`, העבירו את הפעולה החדשה ל־`runCheck`. חזו את שלוש שורות הפלט החדשות, הריצו והצביעו על השורה שבה גוף הלמבדה רץ.
+
+<ExerciseHelp
+  hints={["הדפיסו מתוך גוף הלמבדה בעזרת System.out.println.", "בדוגמה הקודמת report השתמשה ב־get(). כאן הפרמטר הוא Runnable ומפעילים אותו בעזרת run()."]}
+  solution={`// בסוף main
+Runnable driveCheck = () -> System.out.println("Drive checked");
+runCheck(driveCheck);
+
+// מחוץ ל־main, בתוך ReportDemo
+static void runCheck(Runnable check) {
+    System.out.println("Starting check");
+    check.run(); // כאן גוף הלמבדה רץ
+    System.out.println("Check finished");
+}`}
+  solutionLanguage="java"
+/>
+
+## להמשך: הפניה למתודה קיימת {#method-references}
+
+כשהפעולה כולה היא קריאה למתודה קיימת, לפעמים אפשר לכתוב **הפניה למתודה** עם `::`. למשל, ב־`LambdaDemo` אפשר לכתוב `Runnable printLater = LambdaDemo::printStatus;` במקום הלמבדה. הקריאה ל־`printLater.run()` תפעיל את אותה מתודה.
+
+בקוד הרובוט נפגוש גם למבדות שמקבלות פרמטר. למשל, ב־`target -> System.out.println(target)`, השם `target` מופיע משמאל לחץ ומשמש בגוף הפעולה. כשהפעולה מופעלת עם ערך עבור `target`, היא מדפיסה אותו.
+
+בהכשרת הרובוט נשתמש באותו רעיון כדי לקרוא ערך מהשלט בזמן שצריך אותו.
