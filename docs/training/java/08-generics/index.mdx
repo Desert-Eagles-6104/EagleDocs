@@ -2,24 +2,34 @@
 title: "טיפוסים גנריים (Generics)"
 sidebar_position: 8
 slug: /java/enrichment/generics
-description: "משתמשים באותה מחלקה עם טיפוסים שונים ובודקים התאמה כבר בזמן הקומפילציה."
+description: "משתמשים באותה מחלקה עם טיפוסים (סוגי נתונים) שונים ובודקים התאמה כבר בזמן הקומפילציה."
 ---
 
 import ExerciseHelp from '@site/src/components/ExerciseHelp';
 
-## 1. שומרים תיאור של מדידה
+## 1. למה צריך מחלקה גנרית?
 
-נתחיל ממחלקה רגילה בשם `Reading`. כמו במחלקות שכבר כתבנו, הבנאי מקבל ערך ושומר אותו בשדה, ומתודה מאפשרת לקרוא אותו. כאן הערך הוא תיאור של מדידה, למשל `"Ready"`.
+נניח שאנחנו כותבים תוכנית שמתעדת תוצאות מניסוי. כל קריאה שומרת ערך אחד, ואפשר לקרוא אותו בהמשך דרך `getValue()`. מהירות נרצה לשמור כמספר עשרוני (`double`), למשל `2.5` מטר לשנייה, ואת מצב הניסוי נרצה לשמור כטקסט (`String`), למשל `"Ready"`. כך נוכל לחשב ממוצע מהירויות ולהציג את מצב הניסוי במילים.
 
-באותו פרויקט Java, צרו את התיקייה `src/generics` ואת הקובץ `Reading.java` בתוכה.
+אם נקבע את טיפוס השדה (סוג הנתון שהוא שומר) בתוך המחלקה, נצטרך מחלקה לכל סוג נתון שנרצה לשמור. כך ייראו המחלקות לקריאת מהירות ולקריאת מצב הניסוי.
 
 ```java
-package generics;
+class SpeedReading {
+    private final double value;
 
-public class Reading {
+    public SpeedReading(double value) {
+        this.value = value;
+    }
+
+    public double getValue() {
+        return value;
+    }
+}
+
+class StatusReading {
     private final String value;
 
-    public Reading(String value) {
+    public StatusReading(String value) {
         this.value = value;
     }
 
@@ -29,33 +39,33 @@ public class Reading {
 }
 ```
 
-באותה תיקייה צרו את `GenericsDemo.java`. לחצו על Run מעל `main`. התוכנית תדפיס `Ready`.
+בשתי המחלקות הבנאי שומר את הערך באותה דרך, ו־`getValue()` מחזירה אותו באותה דרך. אם נרצה לשמור גם תוצאה של בדיקה כ־`boolean`, נצטרך לשכפל את המבנה פעם שלישית. אם נוסיף לכל קריאה שדה של תאריך המדידה, נצטרך לעדכן את שלוש המחלקות.
 
-```java
-package generics;
+### תרגיל 1 — מה משתנה בין המחלקות?
 
-public class GenericsDemo {
-    public static void main(String[] args) {
-        Reading status = new Reading("Ready");
-        String message = status.getValue();
-        System.out.println(message);
-    }
-}
-```
-
-### תרגיל 1: מה תלוי בטיפוס?
-
-נניח שנרצה להשתמש באותו מבנה כדי לשמור קריאת מתח כמו `6.5` כערך מספרי מסוג `double`. סמנו את שלושת המקומות ב־`Reading.java` שבהם צריך לשנות את הטיפוס. אילו שורות בבנאי ובמתודה יכולות להישאר בדיוק כמו שהן?
+דמיינו שאתם מוסיפים מחלקה בשם `TargetReading` ששומרת אם המצלמה זיהתה מטרה (`boolean`). סמנו בדוגמה את שלושת המקומות שבהם תצטרכו לכתוב `boolean`. אילו שורות יישארו זהות גם במחלקה החדשה?
 
 <ExerciseHelp
   hints={["עקבו אחרי הערך מהפרמטר בבנאי, דרך השדה, ועד לתוצאה של getValue()."]}
-  solution="צריך לשנות את טיפוס השדה value, את טיפוס הפרמטר בבנאי ואת טיפוס ההחזרה של getValue(). ההשמה this.value = value וההחזרה return value נשארות כפי שהן."
+  solution="boolean יופיע בטיפוס של השדה, בטיפוס הפרמטר של הבנאי ובטיפוס ההחזרה של getValue(). השורות this.value = value ו־return value יישארו זהות."
   solutionLanguage="text"
 />
 
-## 2. בוחרים טיפוס כשמשתמשים במחלקה
+## 2. בוחרים את טיפוס השדה כשיוצרים אובייקט
 
-נרצה שאותה מחלקה תתאים גם לטקסט וגם לקריאת מתח. החליפו את התוכן של `Reading.java` בגרסה הבאה.
+בשיעור על משתנים ראינו שלמשתנה יש **שם**, **טיפוס (סוג)** ו**ערך**. כשכותבים `double speed = 2.5;`, השם הוא `speed`, הטיפוס הוא `double` והערך הוא `2.5`.
+
+גם שדה הוא משתנה. במחלקה רגילה כמו `SpeedReading`, לכל אובייקט יש עותק משלו של `value`, ולכן אובייקט אחד יכול לשמור `2.5` ואחר יכול לשמור `3.0`. הטיפוס של השדה נקבע במחלקה, אז בשני האובייקטים הוא `double`.
+
+במחלקה גנרית נשאיר גם את **הבחירה בטיפוס** פתוחה. נכתוב את המחלקה פעם אחת, ונשתמש בשם `T` במקום הטיפוס הקבוע. כשיוצרים קריאה, בוחרים איזה טיפוס ישמש בתור `T` ומעבירים לבנאי ערך שמתאים לו. כך אובייקט אחד יכול לשמור טקסט ואובייקט אחר מאותה מחלקה יכול לשמור מספר. הבחירה קובעת את טיפוס השדה עבור אותה קריאה לאורך השימוש בה.
+
+![מאותה מחלקה גנרית יוצרים שתי קריאות. בקריאת המצב השדה value הוא מסוג String ושומר את "Ready". בקריאת המהירות השדה value הוא מסוג Double ושומר את 2.5.](./assets/reading-type-and-value.png)
+
+בסוגריים הזוויתיים כותבים טיפוס של אובייקט. לכן לקריאת המהירות נבחר במחלקה `Double`, שעוטפת ערך מסוג `double`. בדוגמה הבאה נוסיף גם קריאת זמן באלפיות שנייה ונבחר ב־`Integer`, שעוטפת ערך מסוג `int`. כשנעביר לבנאי את `2.5` או את `1200`, Java תעטוף את המספר אוטומטית בטיפוס המתאים.
+
+## 3. מממשים את המחלקה ומשתמשים בה
+
+באותו פרויקט Java, צרו את התיקייה `src/generics` ואת הקובץ `Reading.java` בתוכה.
 
 ```java
 package generics;
@@ -73,15 +83,9 @@ public class Reading<T> {
 }
 ```
 
-| חלק במחלקה | לפני השינוי | אחרי השינוי |
-| --- | --- | --- |
-| השדה | `private final String value;` | `private final T value;` |
-| הפרמטר בבנאי | `public Reading(String value)` | `public Reading(T value)` |
-| טיפוס ההחזרה | `public String getValue()` | `public T getValue()` |
+הסימון `<T>` אחרי שם המחלקה מגדיר **פרמטר של טיפוס**. אותה בחירה ב־`T` חלה על שלושת המקומות שמצאתם בתרגיל הראשון. למשל, עבור `Reading<String>` הבנאי מקבל `String`, השדה שומר `String` ו־`getValue()` מחזירה `String`.
 
-`<T>` אחרי שם המחלקה מציג **פרמטר של טיפוס**. `T` הוא שם לטיפוס שנבחר כשמשתמשים במחלקה. אותה בחירה חלה בכל מקום שבו מופיע `T` בהגדרה.
-
-החליפו את התוכן של `GenericsDemo.java` והריצו שוב.
+באותה תיקייה צרו את `GenericsDemo.java`. לחצו על Run מעל `main`. הפלט יהיה `Ready`, אחריו `2.5` ואז `1200`, כל אחד בשורה משלו.
 
 ```java
 package generics;
@@ -89,63 +93,85 @@ package generics;
 public class GenericsDemo {
     public static void main(String[] args) {
         Reading<String> status = new Reading<String>("Ready");
+        Reading<Double> speed = new Reading<Double>(2.5);
+        Reading<Integer> elapsed = new Reading<Integer>(1200);
+
         String message = status.getValue();
+        Double metersPerSecond = speed.getValue();
+        Integer milliseconds = elapsed.getValue();
+
         System.out.println(message);
+        System.out.println(metersPerSecond);
+        System.out.println(milliseconds);
     }
 }
 ```
 
-ב־`Reading<String>` בחרנו ב־`String`. הבנאי מקבל את `"Ready"` כ־`String` ושומר אותו בשדה. כשקוראים ל־`status.getValue()`, המתודה מחזירה את הערך מהשדה כ־`String`, ולכן אפשר לשמור אותו ב־`message`. הפלט נשאר `Ready`.
+בצד שמאל, `Reading<Double> speed` מגדיר את טיפוס המשתנה. בצד ימין, `new Reading<Double>(2.5)` יוצר את האובייקט. בתוך `<>` מופיע טיפוס השדה ובתוך `()` מופיע הערך שיישמר בו. אפשר לקצר ל־`new Reading<>(2.5)`, כי Java מסיקה את הטיפוס מההכרזה על המשתנה.
 
-### תרגיל 2: איזו שורה מתקמפלת?
+### תרגיל 2 — בודקים התאמה בין טיפוס לערך
 
-הוסיפו את השורות הבאות ל־`main` ובדקו אותן אחת בכל פעם. אחת מהן שגויה. לפני הבדיקה, הסבירו איזה טיפוס הבנאי מצפה לקבל בכל שורה. תקנו את השורה השגויה כך שתשמור את הערך כטקסט, ואז הסירו את שתי שורות הניסוי.
+הוסיפו ל־`main` קריאת מהירות נוספת ששומרת `3.0` והדפיסו את שתי המהירויות. אחר כך נסו כל אחת מהשורות הבאות בנפרד. לפני שתריצו, הסבירו איזה טיפוס Java מצפה לקבל ואיזה טיפוס ניתן בפועל. תקנו את השורות כך שהזמן יישאר מספר שלם והמהירות תישאר מספר עשרוני.
 
 ```java
-Reading<String> label = new Reading<String>("Driving");
-Reading<String> code = new Reading<String>(7);
+Reading<Integer> lapTime = new Reading<>("850");
+Integer currentSpeed = speed.getValue();
 ```
 
 <ExerciseHelp
-  hints={["בשתי השורות בחרנו באותו טיפוס. בדקו איזה ערך מוקף במירכאות."]}
-  solution={`השורה הראשונה מתקמפלת כי "Driving" הוא String. בשורה השנייה 7 הוא מספר שלם, והבנאי מצפה ל־String. התיקון הוא:
-Reading<String> code = new Reading<String>("7");`}
-  solutionLanguage="text"
-/>
-
-## 3. משתמשים באותה מחלקה לקריאת מתח
-
-הוסיפו בסוף `main` את השורות הבאות והריצו. אחרי `Ready` יודפס `6.5`.
-
-```java
-Reading<Double> voltage = new Reading<Double>(6.5);
-Double volts = voltage.getValue();
-System.out.println(volts);
-```
-
-בסוגריים הזוויתיים בוחרים טיפוס של אובייקט. `Double` היא המחלקה שעוטפת ערך מטיפוס `double`. כשמוסרים לבנאי את `6.5`, Java עוטפת אותו אוטומטית ב־`Double`. לכן גם `voltage.getValue()` מחזירה `Double`.
-
-אפשר לקצר את שורת היצירה של `status` לכתיבה הבאה. החליפו רק את השורה הזאת והריצו שוב. עם `<>`, Java מסיקה את `String` לפי הטיפוס משמאל, והפלט נשאר זהה.
-
-```java
-Reading<String> status = new Reading<>("Ready");
-```
-
-## בדיקת סיום
-
-החליפו את גוף `GenericsDemo.main`. צרו אובייקט `Reading` ששומר את הטקסט `"Calibrated"` ועוד אובייקט מאותה מחלקה ששומר את המתח `12.4`. קראו ל־`getValue()` על כל אחד ושמרו כל תוצאה במשתנה מהטיפוס המתאים. הדפיסו את שני המשתנים והריצו. הסבירו איך ידעתם איזה טיפוס לבחור לכל משתנה.
-
-<ExerciseHelp
-  hints={["בחרו String לתיאור ו־Double למתח בסוגריים הזוויתיים.", "הטיפוס שבחרתם עבור Reading הוא גם הטיפוס ש־getValue() מחזירה."]}
-  solution={`Reading<String> status = new Reading<String>("Calibrated");
-Reading<Double> voltage = new Reading<Double>(12.4);
-String message = status.getValue();
-Double volts = voltage.getValue();
-System.out.println(message); // Calibrated
-System.out.println(volts);   // 12.4`}
+  hints={["ערך במירכאות הוא String.", "הטיפוס בתוך Reading קובע גם את טיפוס ההחזרה של getValue()."]}
+  solution={`Reading<Double> secondSpeed = new Reading<>(3.0);
+System.out.println(speed.getValue());
+System.out.println(secondSpeed.getValue());
+Reading<Integer> lapTime = new Reading<>(850);
+Double currentSpeed = speed.getValue();`}
   solutionLanguage="java"
 />
 
-## להמשך: מגבילים את בחירת הטיפוס {#type-bounds}
+## 4. מגבילים את בחירת הטיפוס {#type-bounds}
 
-לפעמים המחלקה צריכה פעולות שמוגדרות בטיפוס מסוים. למשל, `T extends Number` מגביל את הבחירה ל־`Number` ולמחלקות שיורשות ממנה. בקוד הרובוט, `T extends MotorSubsystemTalon` מאפשר לפקודה לעבוד עם תתי־מערכות מנוע שונות ולקרוא לפעולות המנוע המשותפות להן. [קוראים את פקודת האחוזים בשיעור הרובוט](../../robot/04-building-a-mechanism/03-building-commands.mdx)
+נרצה לחשב ממוצע של שתי מדידות מאותו טיפוס. כדי לחלק ולקבל תוצאה עשרונית, צריך להמיר כל ערך ל־`double`. בתוך `Reading<T>` הקומפיילר יודע רק שהערך הוא מטיפוס `T`. גם `String` מותר כאן, ולכן Java לא מאפשרת לקרוא ל־`doubleValue()` על הערך.
+
+בשיעור על הורשה ראינו שמחלקה יורשת מקבלת פעולות ממחלקת הבסיס שלה. `Integer` ו־`Double` שתיהן יורשות מ־`Number`, שמגדירה את המתודה `doubleValue()`. כשכותבים `T extends Number`, Java מאפשרת לבחור ב־`Number` או במחלקה שיורשת ממנה. כך הקומפיילר יודע שלכל ערך מטיפוס `T` יש את המתודה הזאת.
+
+צרו קובץ נוסף בשם `NumericReading.java` באותה תיקייה. `NumericReading<T>` יורשת מ־`Reading<T>`, כך שהיא משתמשת בבנאי של מחלקת הבסיס לשמירת הערך וב־`getValue()` לקריאתו.
+
+```java
+package generics;
+
+public class NumericReading<T extends Number> extends Reading<T> {
+    public NumericReading(T value) {
+        super(value);
+    }
+
+    public double averageWith(NumericReading<T> other) {
+        return (getValue().doubleValue() + other.getValue().doubleValue()) / 2.0;
+    }
+}
+```
+
+למילה `extends` יש כאן שני תפקידים. בתוך הסוגריים הזוויתיים היא מגבילה את הבחירה ב־`T` למשפחת `Number`. אחרי הסוגריים היא מציינת ש־`NumericReading` יורשת מ־`Reading` ומשתמשת באותה בחירה של `T`. הפרמטר `other` משתמש גם הוא באותו `T`, ולכן קריאת זמן שנוצרה כ־`NumericReading<Integer>` תוכל לקבל ב־`averageWith()` קריאה נוספת מסוג `NumericReading<Integer>`.
+
+הוסיפו את השורות הבאות ל־`main` והריצו. הממוצע שיודפס הוא `1200.5` אלפיות שנייה.
+
+```java
+NumericReading<Integer> firstTime = new NumericReading<>(1000);
+NumericReading<Integer> secondTime = new NumericReading<>(1401);
+System.out.println(firstTime.averageWith(secondTime));
+```
+
+### תרגיל 3 — מחשבים ממוצע מהירויות
+
+1. צרו שתי קריאות `NumericReading` למהירויות `2.5` ו־`3.0` מטר לשנייה. השתמשו ב־`averageWith()` כדי להדפיס את הממוצע, ובדקו שקיבלתם `2.75`.
+2. נסו ליצור `NumericReading<String>` עם הערך `"Ready"`. קראו את הודעת הקומפיילר והסבירו איזו מגבלה הופרה. תקנו את השורה כך שהטקסט יישמר בקריאה שמתאימה לו.
+
+<ExerciseHelp
+  hints={["למהירות עשרונית בחרו ב־Double. בדקו איזו מחלקה עדיין מקבלת String."]}
+  solution={`NumericReading<Double> firstSpeed = new NumericReading<>(2.5);
+NumericReading<Double> secondSpeed = new NumericReading<>(3.0);
+System.out.println(firstSpeed.averageWith(secondSpeed)); // 2.75
+Reading<String> experimentStatus = new Reading<>("Ready");`}
+  solutionLanguage="java"
+/>
+
+הקומפיילר דוחה את `NumericReading<String>` כי `String` לא יורשת מ־`Number`. ב־`Reading<String>` הבחירה ב־`String` תקינה, ולכן אפשר להשתמש באותה מחלקת בסיס גם לקריאות טקסט וגם לקריאות מספריות.
