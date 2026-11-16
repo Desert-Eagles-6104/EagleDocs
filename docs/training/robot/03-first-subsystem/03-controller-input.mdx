@@ -54,7 +54,7 @@ this.trainingFlywheel.ifPresent(flywheel -> {
 
 ### מה אומרות הסוגריים הזוויתיות?
 
-`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של מערכות מנוע. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-generics/index.mdx)
+`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של תתי־מערכות שיורשות מ־`MotorSubsystemTalon`. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-generics/index.mdx)
 
 ### בדקו את עצמכם
 
@@ -82,7 +82,7 @@ this.trainingFlywheel.ifPresent(flywheel -> {
   solutionLanguage="text"
 />
 
-הפקודה מצהירה שהיא משתמשת בתת־המערכת הזאת. כך המתזמן יכול לתאם בינה לבין פקודות נוספות שמשתמשות באותו מנגנון. נלמד בהמשך מה קורה כששתי פקודות מבקשות אותו משאב.
+הפקודה מצהירה שהיא משתמשת בתת־המערכת הזאת. כך המתזמן יכול לתאם בינה לבין פקודות נוספות שמצהירות על אותה תת־מערכת. נלמד בהמשך מה קורה כששתי פקודות מבקשות אותו משאב.
 
 
 ## 3. בודקים את ההתנהגות החדשה

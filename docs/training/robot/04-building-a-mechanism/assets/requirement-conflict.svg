@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="430" viewBox="0 0 640 430" role="img" aria-labelledby="title desc">
   <title id="title">שתי פקודות, רולר אחד</title>
-  <desc id="desc">שתי פקודות דורשות את אותו מופע רולר. בברירת המחדל, תזמון פליטה מפריע לאיסוף: קודם end(true) של איסוף, ואז initialize של פליטה. שם המערכת או כתובת CAN אינם מה שהמתזמן משווה.</desc>
+  <desc id="desc">שתי פקודות דורשות את אותו מופע של TrainingRoller. בברירת המחדל, תזמון פליטה מפריע לאיסוף: קודם end(true) של איסוף, ואז initialize של פליטה. שם תת־המערכת או כתובת CAN אינם מה שהמתזמן משווה.</desc>
   <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#2369aa"/></marker></defs>
   <style>text{paint-order:stroke;stroke:#f2f6fc;stroke-width:3px;stroke-linejoin:round}</style>
   <g font-family="Arial, sans-serif" text-anchor="middle" fill="#172d48">
@@ -15,7 +15,7 @@
     <rect x="100" y="250" width="440" height="86" rx="16" fill="#dfeefa" stroke="#2369aa" stroke-width="2"/>
     <text x="320" y="285" font-size="27" direction="ltr">TrainingRoller</text>
     <text x="320" y="318" font-size="24" direction="rtl">אותו מופע בשתי דרישות המשאב</text>
-    <text x="320" y="377" font-size="25" direction="rtl">1. איסוף מפנה את המערכת ומנקה</text>
+    <text x="320" y="377" font-size="25" direction="rtl">1. איסוף מבטלת את פלט המנוע</text>
     <text x="320" y="413" font-size="25" direction="rtl">2. פליטה מתחילה ומקבלת שליטה</text>
   </g>
 </svg>

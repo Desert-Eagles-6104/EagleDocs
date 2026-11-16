@@ -1,5 +1,5 @@
 ---
-title: "בונים פקודות למערכת"
+title: "בונים פקודות לתת־מערכת"
 sidebar_position: 3
 description: "לומדים איך פקודה פועלת, קוראים את פקודת האחוזים מהספרייה וכותבים פקודות לרולר."
 ---
@@ -8,7 +8,7 @@ import CommandLifecycleDemo from "@site/src/components/CommandLifecycleDemo";
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
 import { rollerLifecycleDemo } from "./demos/roller-lifecycle";
 
-בשיעור הקודם בנינו את `TrainingRoller`. עכשיו אנחנו רוצים להפעיל את המערכת כדי לאסוף, לפלוט ולנסות איסוף שמסתיים אחרי שנייה. בפרק «מפעילים מערכת ראשונה» השתמשנו בפקודה המוכנה `MotorSubsystemSetPercentage` מהספרייה כדי להפעיל מנוע בלחיצת כפתור, ובאותה דרך חיברנו גם את הרולר. מה בעצם קורה כשאותה פקודה פועלת? [חיבור ראשון לכפתור](../03-first-subsystem/03-controller-input.mdx) · [בניית הרולר](./02-configure-motor-and-subsystem.mdx)
+בשיעור הקודם בנינו את `TrainingRoller`. עכשיו אנחנו רוצים להפעיל את הרולר כדי לאסוף, לפלוט ולנסות איסוף שמסתיים אחרי שנייה. בפרק «מפעילים מנגנון ראשון» השתמשנו בפקודה המוכנה `MotorSubsystemSetPercentage` מהספרייה כדי להפעיל מנוע בלחיצת כפתור, ובאותה דרך חיברנו גם את הרולר. מה בעצם קורה כשאותה פקודה פועלת? [חיבור ראשון לכפתור](../03-first-subsystem/03-controller-input.mdx) · [בניית הרולר](./02-configure-motor-and-subsystem.mdx)
 
 בסיום תוכלו לבחור פקודה מתאימה, להסביר מתי הקוד שלה רץ ומה עוצר אותה, ולכתוב פקודה כשנדרשת התנהגות נוספת. ממשיכים באותו מאגר ובאחוזי פלט.
 
@@ -61,7 +61,7 @@ import { rollerLifecycleDemo } from "./demos/roller-lifecycle";
   solutionLanguage="text"
 />
 
-## 3. איך המתזמן מחלק את השליטה במערכת?
+## 3. איך המתזמן מחלק את השליטה בתת־מערכת? {#3-איך-המתזמן-מחלק-את-השליטה-במערכת}
 
 מה יקרה אם פקודת איסוף ופקודת פליטה ינסו לשלוח פלט לאותו רולר? כדי שהמתזמן יוכל לתאם ביניהן, כל פקודה מצהירה על תת־המערכת שהיא צריכה לשלוט בה. הצהרה כזאת נקראת **Requirement**. רושמים אותה באמצעות `addRequirements(...)`, בדרך כלל בבנאי, ומעבירים למתודה את המופע שהפקודה תפעיל.
 
@@ -69,11 +69,11 @@ import { rollerLifecycleDemo } from "./demos/roller-lifecycle";
 
 [![איסוף ופליטה מבקשות את אותו מופע TrainingRoller; במצב הרגיל איסוף מבוטלת ומנקה פלט לפני שפליטה מתחילה](./assets/requirement-conflict.svg)](./assets/requirement-conflict.svg)
 
-כדי שהתיאום יעבוד, שתי הפקודות צריכות להשתמש באותו מופע רולר שיצרנו ב־`RobotContainer`. אם יוצרים שני מופעים לאותו CAN ID, המתזמן מתייחס אליהם כשתי מערכות נפרדות. באותו אופן, קריאה ישירה להפעלת מנוע מתוך `teleopPeriodic()` עוקפת את התיאום של המתזמן.
+כדי שהתיאום יעבוד, שתי הפקודות צריכות להשתמש באותו מופע של `TrainingRoller` שיצרנו ב־`RobotContainer`. אם יוצרים שני מופעים לאותו CAN ID, המתזמן מתייחס אליהם כשתי תתי־מערכות נפרדות. באותו אופן, קריאה ישירה להפעלת מנוע מתוך `teleopPeriodic()` עוקפת את התיאום של המתזמן.
 
-`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהתוצאה ריקה. [בדיקה ושליפה מתוך `Optional`](../../java/10-enrichment/01-optional.mdx)
+`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את תתי־המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהתוצאה ריקה. [בדיקה ושליפה מתוך `Optional`](../../java/10-enrichment/01-optional.mdx)
 
-לפקודות שנכתוב נותנים שם בתבנית `<שם המערכת><מה הפקודה עושה>`. לדוגמה, `TrainingRollerSetPercentage` מתאים לפקודה שקובעת אחוז פלט לרולר.
+לפקודות שנכתוב נותנים שם בתבנית `<שם תת־המערכת><מה הפקודה עושה>`. לדוגמה, `TrainingRollerSetPercentage` מתאים לפקודה שקובעת אחוז פלט לרולר.
 
 ## 4. כותבים פקודה ראשונה: איסוף כל עוד הפקודה פעילה
 
@@ -252,7 +252,7 @@ public class TrainingRollerCollectForTime extends Command {
 
 בבנאי, `MotorDoubleSupplierCommand` שומרת את המופע שקיבלה ומצהירה עליו באמצעות `addRequirements(motorSubsystem)`. היא שומרת גם `DoubleSupplier`, פעולה שאפשר לקרוא לה כדי לקבל מספר. בחיבור לכפתור השתמשנו ב־lambda שמחזירה את אחוז הפלט הרצוי.
 
-בכל מחזור עבודה, `MotorSubsystemSetPercentage` קוראת לספק הערך ומעבירה את התוצאה למערכת. זהו קטע מ־`execute()` בספרייה:
+בכל מחזור עבודה, `MotorSubsystemSetPercentage` קוראת לספק הערך ומעבירה את התוצאה לתת־המערכת. זהו קטע מ־`execute()` בספרייה:
 
 ```java
 this.motorSubsystem.setPercentOutput(
@@ -261,18 +261,18 @@ this.motorSubsystem.setPercentOutput(
 
 `ignoreSoftLimits` קובע אם לעקוף את מגבלות התנועה שמוגדרות בתוכנה. החיבור שעשינו משתמש בברירת המחדל `false`. שני השדות `motorSubsystem` ו־`valueSupplier` מוגדרים `protected` במחלקת הבסיס, ולכן המחלקה היורשת יכולה להשתמש בהם.
 
-הסימון `T extends MotorSubsystemTalon` מגביל את הפקודה לטיפוס `MotorSubsystemTalon` ולמערכות שיורשות ממנו, ובהן `TrainingRoller`. [מגבלות על טיפוס גנרי](../../java/08-generics/index.mdx#type-bounds)
+הסימון `T extends MotorSubsystemTalon` מגביל את הפקודה לטיפוס `MotorSubsystemTalon` ולתתי־מערכות שיורשות ממנו, ובהן `TrainingRoller`. [מגבלות על טיפוס גנרי](../../java/08-generics/index.mdx#type-bounds)
 
 את הסיום הפקודה יורשת מ־`MotorDoubleSupplierCommand`:
 
 - `isFinished()` מחזירה תמיד `false`. בחיבור שלנו הכפתור מבטל את הפקודה בשחרור.
 - `end(boolean interrupted)` קוראת ל־`disableMotors()` בכל סיום. במצב `Coast` ההנעה נפסקת והרולר יכול להמשיך להסתובב עד שיאט.
 
-לעצירה יש בספרייה את `MotorSubsystemDisableMotors`. זו פעולה חד־פעמית מסוג `InstantCommand`. היא דורשת את המערכת, מבטלת את הפלט ב־`initialize()` ומסתיימת במחזור המתזמן הראשון שלה.
+לעצירה יש בספרייה את `MotorSubsystemDisableMotors`. זו פעולה חד־פעמית מסוג `InstantCommand`. היא דורשת את תת־המערכת, מבטלת את הפלט ב־`initialize()` ומסתיימת במחזור המתזמן הראשון שלה.
 
 ### משתמשים ישירות בפקודה מוכנה
 
-כדי להפעיל אחוז פלט בזמן החזקת כפתור, אפשר להמשיך להשתמש בפקודה מהספרייה. היא כללית, ולכן מקבלת את המערכת שעליה תפעל ואת הפעולה שמספקת את אחוז הפלט. כדי להשוות לפקודה שכתבתם, החליפו את חיבור הרולר לכפתור North בתוך `RobotContainer.configureTeleopBindings()` בקטע הבא:
+כדי להפעיל אחוז פלט בזמן החזקת כפתור, אפשר להמשיך להשתמש בפקודה מהספרייה. היא כללית, ולכן מקבלת את תת־המערכת שתפעיל ואת הפעולה שמספקת את אחוז הפלט. כדי להשוות לפקודה שכתבתם, החליפו את חיבור הרולר לכפתור North בתוך `RobotContainer.configureTeleopBindings()` בקטע הבא:
 
 ```java
 this.trainingRoller.ifPresent(roller -> {
