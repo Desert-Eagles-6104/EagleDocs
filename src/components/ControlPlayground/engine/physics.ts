@@ -1,6 +1,6 @@
 import { MechanismType, ControlRequest } from "../model/constants";
 import { DT } from "../model/constants";
-import { bounds, clamp } from "../model/semantics";
+import { bounds, clamp, hasGravity } from "../model/semantics";
 import { type Config, type State } from "../model/types";
 export function advanceMechanism(
   state: State,
@@ -10,10 +10,9 @@ export function advanceMechanism(
 ) {
   const torque = config.request === ControlRequest.Torque;
   // Voltage model: generalized drive force = voltage; torque model: force = 0.25 * current.
-  const gravity =
-    config.mechanism === MechanismType.Wheel
-      ? 0
-      : 2 * (config.mechanism === MechanismType.Arm ? Math.cos(state.x) : 1);
+  const gravity = hasGravity(config.mechanism)
+    ? 2 * (config.mechanism === MechanismType.Arm ? Math.cos(state.x) : 1)
+    : 0;
   const force =
     (torque ? output * 0.25 : output) -
     config.damping * state.v -

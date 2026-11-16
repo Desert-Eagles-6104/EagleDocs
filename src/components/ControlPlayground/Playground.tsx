@@ -94,6 +94,7 @@ export default function ControlPlayground() {
               }
             >
               <option value="elevator">מעלית</option>
+              <option value="slide">קופסה על משטח אופקי</option>
               <option value="arm">זרוע</option>
               <option value="wheel">גלגל ירי</option>
             </select>

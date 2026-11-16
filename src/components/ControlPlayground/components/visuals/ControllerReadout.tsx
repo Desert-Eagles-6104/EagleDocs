@@ -43,23 +43,7 @@ export function ControllerReadout({
         </span>
         {Math.abs(state.raw - state.output) > 0.01 ? " • רוויה" : ""}
       </div>
-      {!isDirect(cfg) && (
-        <p className={styles.readout}>
-          זמן התייצבות{" "}
-          <Help
-            label="זמן התייצבות"
-            text={`הזמן מתחילת הניסוי לכניסה לתחום סביב היעד הסופי, לאחר שהייה רצופה של ${cfg.dwell} שניות גם בתחום קצב השינוי. אם המערכת יוצאת שוב מהתחום, התוצאה מתבטלת. זהו אומדן לפי התנועה שנצפתה עד עכשיו.`}
-          />
-          :{" "}
-          <strong>
-            {state.settledAt >= 0
-              ? `${state.settledAt.toFixed(2)} שניות`
-              : time >= cfg.duration - DT / 2
-                ? "לא התייצב במהלך הניסוי"
-                : "טרם התייצב"}
-          </strong>
-        </p>
-      )}
+      <SettlingReadout cfg={cfg} state={state} time={time} />
       {state.stoppedAt >= 0 && (
         <p className={styles.readout}>
           הפלט נותק אחרי {state.stoppedAt.toFixed(2)} שניות; המנגנון ממשיך לנוע
@@ -67,5 +51,35 @@ export function ControllerReadout({
         </p>
       )}
     </>
+  );
+}
+
+export function SettlingReadout({
+  cfg,
+  state,
+  time,
+  label = "זמן התייצבות",
+}: {
+  cfg: Config;
+  state: State;
+  time: number;
+  label?: string;
+}) {
+  if (isDirect(cfg)) return null;
+  return (
+    <p className={styles.readout}>
+      {label}{" "}
+      <Help
+        label="זמן התייצבות"
+        text={`הזמן מתחילת הניסוי לכניסה לתחום סביב היעד הסופי, לאחר שהייה רצופה של ${cfg.dwell} שניות גם בתחום קצב השינוי. אם המערכת יוצאת שוב מהתחום, התוצאה מתבטלת. זהו אומדן לפי התנועה שנצפתה עד עכשיו.`}
+      />{" "}
+      <strong>
+        {state.settledAt >= 0
+          ? `${state.settledAt.toFixed(2)} שניות`
+          : time >= cfg.duration - DT / 2
+            ? "לא התייצב במהלך הניסוי"
+            : "טרם התייצב"}
+      </strong>
+    </p>
   );
 }

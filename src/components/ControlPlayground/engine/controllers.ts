@@ -3,7 +3,7 @@ import {
   ControlMethod,
   StopCondition,
 } from "../model/constants";
-import { isVelocity, isDirect } from "../model/semantics";
+import { hasGravity, isVelocity, isDirect } from "../model/semantics";
 import type { Config, State, PidTerms } from "../model/types";
 import { DT, type Mechanism } from "../model/constants";
 import { type Controller } from "../model/types";
@@ -18,9 +18,9 @@ export function feedforward(
     controllerSettings.ks * Math.sign(v) +
     controllerSettings.kv * v +
     controllerSettings.ka * a +
-    (m === MechanismType.Wheel
-      ? 0
-      : controllerSettings.kg * (m === MechanismType.Arm ? Math.cos(angle) : 1))
+    (hasGravity(m)
+      ? controllerSettings.kg * (m === MechanismType.Arm ? Math.cos(angle) : 1)
+      : 0)
   );
 }
 export function pid(

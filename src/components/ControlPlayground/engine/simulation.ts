@@ -2,8 +2,9 @@ import { DT, SAMPLE_TICKS, MAX_FRAME_TICKS } from "../model/constants";
 import { initial, step } from "./step";
 import { supports } from "../model/semantics";
 import { type Config, type Sample, type Simulation } from "../model/types";
-export function createSimulation(): Simulation {
-  return { a: initial(), b: initial(), ticks: 0, disturbanceUntil: 0 };
+export function createSimulation(initialVelocity = 0): Simulation {
+  const start = { ...initial(), v: initialVelocity };
+  return { a: start, b: { ...start }, ticks: 0, disturbanceUntil: 0 };
 }
 
 export function advanceSimulation(

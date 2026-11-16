@@ -11,4 +11,5 @@ export interface GraphModel {
   max: number;
   unit: string;
   suffix: string;
+  toleranceBand?: { low: number; high: number };
 }

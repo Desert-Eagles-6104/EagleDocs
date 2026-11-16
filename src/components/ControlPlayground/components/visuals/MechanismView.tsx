@@ -5,6 +5,7 @@ import {
   targetBounds,
   clamp,
   isVelocity,
+  targetUnit,
 } from "../../model/semantics";
 import { type Config, type State } from "../../model/types";
 import styles from "../../styles.module.css";
@@ -24,6 +25,8 @@ export function MechanismView({
   const [lo, hi] = bounds(cfg.mechanism),
     y = 170 - ((state.x - lo) / (hi - lo)) * 140,
     ty = 170 - ((cfg.target - lo) / (hi - lo)) * 140;
+  const slideX = (position: number) => 30 + ((position - lo) / (hi - lo)) * 240;
+  const showPositionTarget = !isDirect(cfg) && !isVelocity(cfg);
   const angle = state.x;
   const point = (a: number) => ({
     x: 150 + 85 * Math.cos(a),
@@ -55,7 +58,9 @@ export function MechanismView({
             clamp(
               cfg.mechanism === "arm" && !isVelocity(cfg)
                 ? Math.atan2(110 - y, x - 150)
-                : targetBounds(cfg)[0] +
+                : cfg.mechanism === "slide" && !isVelocity(cfg)
+                  ? lo + ((x - 30) / 240) * (hi - lo)
+                  : targetBounds(cfg)[0] +
                     ((170 - y) / 140) *
                       (targetBounds(cfg)[1] - targetBounds(cfg)[0]),
               targetBounds(cfg)[0],
@@ -80,7 +85,7 @@ export function MechanismView({
               rx="6"
               fill="var(--ifm-color-primary)"
             />
-            {!isDirect(cfg) && !isVelocity(cfg) && (
+            {showPositionTarget && (
               <path
                 d={`M65 ${ty} H235`}
                 stroke="#d97706"
@@ -88,6 +93,26 @@ export function MechanismView({
                 strokeWidth="3"
               />
             )}
+          </>
+        ) : cfg.mechanism === "slide" ? (
+          <>
+            <path d="M14 122 H286" stroke="currentColor" strokeWidth="4" />
+            {showPositionTarget && (
+              <path
+                d={`M${slideX(cfg.target)} 60 V145`}
+                stroke="#d97706"
+                strokeDasharray="5 4"
+                strokeWidth="3"
+              />
+            )}
+            <rect
+              x={slideX(state.x) - 14}
+              y="94"
+              width="28"
+              height="26"
+              rx="3"
+              fill="var(--ifm-color-primary)"
+            />
           </>
         ) : (
           <>
@@ -104,7 +129,7 @@ export function MechanismView({
               stroke="var(--ifm-color-primary)"
               strokeWidth="10"
             />
-            {cfg.mechanism === "arm" && !isDirect(cfg) && !isVelocity(cfg) && (
+            {cfg.mechanism === "arm" && showPositionTarget && (
               <path
                 d={`M150 110 L${target.x} ${target.y}`}
                 stroke="#d97706"
@@ -133,7 +158,7 @@ export function MechanismView({
           ? "בניסוי הזה קובעים את הפלט ובודקים את התנועה שמתקבלת."
           : interactive
             ? "גררו ושחררו לקביעת יעד; אפשר גם להשתמש במחוון היעד."
-            : `יעד קבוע: ${cfg.target} ${(cfg.mechanism === "elevator" ? "m" : "rad") + (isVelocity(cfg) ? "/s" : "")}`}
+            : `יעד קבוע: ${cfg.target} ${targetUnit(cfg)}`}
       </small>
     </div>
   );

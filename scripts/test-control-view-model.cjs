@@ -36,3 +36,13 @@ test("empty charts remain renderable and torque goals use current units and limi
   assert.equal(input.unit, "A");
   assert.deepEqual([input.min, input.max, input.value], [-40, 40, 5]);
 });
+
+test("a position tolerance band appears only on the requested response graph", () => {
+  const cfg = { ...defaults, mechanism: "slide", target: 1.5, tolerance: 0.05 };
+  const graph = graphModel([], "response", cfg, true);
+  assert.equal(graph.unit, "m");
+  assert.deepEqual(graph.toleranceBand, { low: 1.45, high: 1.55 });
+  assert.ok(graph.min < 1.45 && graph.max > 1.55);
+  assert.equal(graphModel([], "response", cfg).toleranceBand, undefined);
+  assert.equal(graphModel([], "output", cfg, true).toleranceBand, undefined);
+});

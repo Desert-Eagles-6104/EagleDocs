@@ -10,8 +10,8 @@ export function useSimulation(config: Config) {
   const [history, setHistory] = useState<Sample[]>([]);
   const [error, setError] = useState("");
 
-  const reset = useCallback(() => {
-    simulation.current = createSimulation();
+  const reset = useCallback((initialVelocity = 0) => {
+    simulation.current = createSimulation(initialVelocity);
     setHistory([]);
     setError("");
   }, []);

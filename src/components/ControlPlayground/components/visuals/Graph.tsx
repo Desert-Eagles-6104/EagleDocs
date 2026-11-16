@@ -29,12 +29,20 @@ export const Graph = memo(function Graph({
   history,
   kind,
   cfg,
+  showTolerance,
 }: {
   history: Sample[];
   kind: GraphKind;
   cfg: Config;
+  showTolerance?: boolean;
 }) {
-  const { series, min, max, unit, suffix } = graphModel(history, kind, cfg);
+  const { series, min, max, unit, suffix, toleranceBand } = graphModel(
+    history,
+    kind,
+    cfg,
+    showTolerance,
+  );
+  const plotY = (value: number) => 15 + ((max - value) / (max - min)) * 130;
   return (
     <figure className={styles.graph}>
       <figcaption>
@@ -50,6 +58,16 @@ export const Graph = memo(function Graph({
         role="img"
         aria-label={`${graphNames[kind]}, טווח ${min.toFixed(1)} עד ${max.toFixed(1)}`}
       >
+        {toleranceBand && (
+          <rect
+            x="48"
+            y={plotY(toleranceBand.high)}
+            width="497"
+            height={plotY(toleranceBand.low) - plotY(toleranceBand.high)}
+            fill="#d97706"
+            fillOpacity="0.25"
+          />
+        )}
         {[0, 0.5, 1].map((f) => (
           <g key={f}>
             <path
@@ -78,7 +96,7 @@ export const Graph = memo(function Graph({
             points={s.values
               .map(
                 (v, i) =>
-                  `${48 + (i / Math.max(1, history.length - 1)) * 497},${15 + ((max - v) / (max - min)) * 130}`,
+                  `${48 + (i / Math.max(1, history.length - 1)) * 497},${plotY(v)}`,
               )
               .join(" ")}
           />
@@ -97,6 +115,15 @@ export const Graph = memo(function Graph({
         </text>
       </svg>
       <div className={styles.legend}>
+        {toleranceBand && (
+          <span style={{ borderBottom: "3px solid #d9770640" }}>
+            תחום סבילות{" "}
+            <bdi>
+              ±{cfg.tolerance} {unit}
+              {suffix}
+            </bdi>
+          </span>
+        )}
         {series.map((s) => (
           <span
             key={s.label}

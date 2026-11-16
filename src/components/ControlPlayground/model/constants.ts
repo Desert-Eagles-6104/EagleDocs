@@ -2,6 +2,7 @@
 export const MechanismType = {
   Wheel: "wheel",
   Elevator: "elevator",
+  Slide: "slide",
   Arm: "arm",
 } as const;
 export type Mechanism = (typeof MechanismType)[keyof typeof MechanismType];

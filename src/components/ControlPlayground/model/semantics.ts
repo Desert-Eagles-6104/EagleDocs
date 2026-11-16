@@ -73,12 +73,18 @@ export const isGraphAvailable = (config: Config, kind: GraphKind) =>
   ![GraphType.Response, GraphType.Error, GraphType.Terms].some(
     (hidden) => hidden === kind,
   );
+export const isLinear = (mechanism: Mechanism) =>
+  mechanism === MechanismType.Elevator || mechanism === MechanismType.Slide;
+export const hasGravity = (mechanism: Mechanism) =>
+  mechanism === MechanismType.Elevator || mechanism === MechanismType.Arm;
 export const bounds = (mechanism: Mechanism): NumericRange =>
   mechanism === MechanismType.Elevator
     ? [0, 3]
-    : mechanism === MechanismType.Arm
-      ? [-1.4, 1.4]
-      : [0, 20];
+    : mechanism === MechanismType.Slide
+      ? [-1, 4]
+      : mechanism === MechanismType.Arm
+        ? [-1.4, 1.4]
+        : [0, 20];
 export const targetBounds = (config: Config): NumericRange =>
   isVelocity(config) ? [-20, 20] : bounds(config.mechanism);
 export const demandBounds = (config: Config): NumericRange =>
@@ -88,7 +94,7 @@ export const demandBounds = (config: Config): NumericRange =>
       ? [-40, 40]
       : [-12, 12];
 export const positionUnit = (config: Config) =>
-  config.mechanism === MechanismType.Elevator ? "m" : "rad";
+  isLinear(config.mechanism) ? "m" : "rad";
 export const targetUnit = (config: Config) =>
   positionUnit(config) + (isVelocity(config) ? "/s" : "");
 export const outputUnit = (config: Config) =>

@@ -4,6 +4,8 @@ import {
   supportedMethods,
   isDirect,
   isVelocity,
+  hasGravity,
+  positionUnit,
 } from "../../model/semantics";
 import { type Config, type Controller } from "../../model/types";
 import { goals, methods } from "../../config/labels";
@@ -28,8 +30,8 @@ export function ControllerPanel({
   const compatible = supports(cfg, value);
   const hasPid = ["pid", "combined", "profile"].includes(method),
     hasFeedforward = ["ff", "combined", "profile"].includes(method);
-  const positionUnit = cfg.mechanism === "elevator" ? "m" : "rad";
-  const errorUnit = isVelocity(cfg) ? positionUnit + "/s" : positionUnit;
+  const unit = positionUnit(cfg);
+  const errorUnit = isVelocity(cfg) ? unit + "/s" : unit;
   return (
     <fieldset className={styles.card}>
       <legend>{label}</legend>
@@ -128,11 +130,11 @@ export function ControllerPanel({
       )}
       {hasFeedforward &&
         (["ks", "kv", "ka", "kg"] as const)
-          .filter((k) => k !== "kg" || cfg.mechanism !== "wheel")
+          .filter((k) => k !== "kg" || hasGravity(cfg.mechanism))
           .map((k, i) => (
             <Slider
               key={k}
-              label={`${{ ks: "kS", kv: "kV", ka: "kA", kg: "kG" }[k]} (${["V", `V·s/${positionUnit}`, `V·s²/${positionUnit}`, "V"][i]})`}
+              label={`${{ ks: "kS", kv: "kV", ka: "kA", kg: "kG" }[k]} (${["V", `V·s/${unit}`, `V·s²/${unit}`, "V"][i]})`}
               value={value[k]}
               max={k === "kg" ? 6 : 4}
               onChange={(n) => set({ [k]: n })}
@@ -180,14 +182,14 @@ export function ControllerPanel({
             </select>
           </label>
           <Slider
-            label={`מהירות מרבית (${positionUnit}/s)`}
+            label={`מהירות מרבית (${unit}/s)`}
             min={0.1}
             max={5}
             value={value.vmax}
             onChange={(n) => set({ vmax: n })}
           />
           <Slider
-            label={`תאוצה מרבית (${positionUnit}/s²)`}
+            label={`תאוצה מרבית (${unit}/s²)`}
             min={0.1}
             max={10}
             value={value.amax}
@@ -195,7 +197,7 @@ export function ControllerPanel({
           />
           {value.profile === "scurve" && (
             <Slider
-              label={`jerk מרבי (${positionUnit}/s³)`}
+              label={`jerk מרבי (${unit}/s³)`}
               min={0.1}
               max={40}
               value={value.jmax}

@@ -1,5 +1,6 @@
 import React from "react";
 import { type Config } from "../../model/types";
+import { isLinear } from "../../model/semantics";
 import { Slider } from "../controls/Slider";
 import styles from "../../styles.module.css";
 
@@ -61,9 +62,7 @@ export function ExperimentSettings({
       />
       <Slider
         label={
-          cfg.mechanism === "elevator"
-            ? "מסה שקולה (kg)"
-            : "אינרציה שקולה (kg·m²)"
+          isLinear(cfg.mechanism) ? "מסה שקולה (kg)" : "אינרציה שקולה (kg·m²)"
         }
         min={0.2}
         max={4}

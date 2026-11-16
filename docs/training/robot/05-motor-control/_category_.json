@@ -1,0 +1,8 @@
+{
+  "label": "בקרת מנועים",
+  "position": 5,
+  "link": {
+    "type": "doc",
+    "id": "robot/motor-control/index"
+  }
+}

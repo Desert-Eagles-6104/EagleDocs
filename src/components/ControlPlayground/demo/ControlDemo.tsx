@@ -12,8 +12,10 @@ import { useExperiment } from "../hooks/useExperiment";
 import { targetModel } from "../view-model/target";
 import { SimulationControls } from "../components/controls/SimulationControls";
 import { MechanismView } from "../components/visuals/MechanismView";
+import { SettlingReadout } from "../components/visuals/ControllerReadout";
 import { Graph } from "../components/visuals/Graph";
 import { Slider } from "../components/controls/Slider";
+import { positionUnit } from "../model/semantics";
 import styles from "../styles.module.css";
 
 export interface ControlDemoProps {
@@ -28,6 +30,9 @@ export interface ControlDemoProps {
   showStep?: boolean;
   showSpeed?: boolean;
   disturbance?: boolean;
+  showTolerance?: boolean;
+  showSettlingTime?: boolean;
+  adjustInitialVelocity?: boolean;
 }
 
 /** Focused MDX simulation. Each instance owns its state and never reads the URL. */
@@ -59,6 +64,9 @@ function DemoSession({
   showStep = true,
   showSpeed = false,
   disturbance = false,
+  showTolerance = false,
+  showSettlingTime = false,
+  adjustInitialVelocity = false,
 }: ControlDemoProps & { initialConfig: Config }) {
   const id = useId();
   const {
@@ -75,6 +83,8 @@ function DemoSession({
     advanceSample,
     disturb,
     setSpeed,
+    initialVelocity,
+    changeInitialVelocity,
   } = useExperiment(initialConfig);
   const target = targetModel(cfg);
   return (
@@ -109,6 +119,16 @@ function DemoSession({
           ה־MDX.
         </p>
       )}
+      {adjustInitialVelocity && (
+        <Slider
+          label={`מהירות התחלתית (${positionUnit(cfg)}/s)`}
+          min={0}
+          max={6}
+          step={0.1}
+          value={initialVelocity}
+          onChange={changeInitialVelocity}
+        />
+      )}
       {adjustTarget && (
         <Slider
           label={
@@ -128,26 +148,47 @@ function DemoSession({
           }
         />
       )}
-      {showMechanism && (
+      {(showMechanism || showSettlingTime) && (
         <div className={cfg.compare ? styles.columns : styles.single}>
           {keys.map((key, index) => (
-            <MechanismView
-              key={key}
-              label={`בקר ${index + 1} - ${methods[cfg[key].method]}`}
-              state={current[key]}
-              cfg={cfg}
-              interactive={adjustTarget}
-              onTarget={(target) => update({ ...cfg, target })}
-            />
+            <div key={key}>
+              {showSettlingTime && (
+                <SettlingReadout
+                  cfg={cfg}
+                  state={current[key]}
+                  time={current.a.t}
+                  label={
+                    cfg.compare ? `זמן התייצבות של בקר ${index + 1}` : undefined
+                  }
+                />
+              )}
+              {showMechanism && (
+                <MechanismView
+                  label={`בקר ${index + 1} - ${methods[cfg[key].method]}`}
+                  state={current[key]}
+                  cfg={cfg}
+                  interactive={adjustTarget}
+                  onTarget={(target) => update({ ...cfg, target })}
+                />
+              )}
+            </div>
           ))}
         </div>
       )}
       <DemoTuning cfg={cfg} keys={keys} tune={tune} update={update} />
-      <div className={cfg.graphs.length > 1 ? styles.columns : undefined}>
-        {cfg.graphs.map((kind) => (
-          <Graph key={kind} kind={kind} cfg={cfg} history={history} />
-        ))}
-      </div>
+      {cfg.graphs.length > 0 && (
+        <div className={cfg.graphs.length > 1 ? styles.columns : undefined}>
+          {cfg.graphs.map((kind) => (
+            <Graph
+              key={kind}
+              kind={kind}
+              cfg={cfg}
+              history={history}
+              showTolerance={showTolerance}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

@@ -1,13 +1,18 @@
 import type { GraphModel, GraphSeries } from "./graphTypes";
 import { GraphType } from "../model/constants";
-import { controllerKeys } from "../model/semantics";
-import { isVelocity, isDirect } from "../model/semantics";
+import {
+  controllerKeys,
+  isVelocity,
+  isDirect,
+  positionUnit,
+} from "../model/semantics";
 import { type Config, type State, type Sample } from "../model/types";
 import { type GraphKind } from "../model/constants";
 export function graphModel(
   history: Sample[],
   kind: GraphKind,
   cfg: Config,
+  showTolerance = false,
 ): GraphModel {
   const velocity = isVelocity(cfg);
   const metric = (state: State): number => {
@@ -68,8 +73,12 @@ export function graphModel(
         ),
       });
   }
-  let min = 0;
-  let max = 1;
+  const toleranceBand =
+    showTolerance && kind === GraphType.Response && !isDirect(cfg)
+      ? { low: cfg.target - cfg.tolerance, high: cfg.target + cfg.tolerance }
+      : undefined;
+  let min = Math.min(0, toleranceBand?.low ?? 0);
+  let max = Math.max(1, toleranceBand?.high ?? 1);
   for (const { values } of series)
     for (const value of values) {
       min = Math.min(min, value);
@@ -83,9 +92,7 @@ export function graphModel(
       ? cfg.request === "torque"
         ? "A"
         : "V"
-      : cfg.mechanism === "elevator"
-        ? "m"
-        : "rad";
+      : positionUnit(cfg);
   const suffix =
     kind === "velocity" ||
     ((kind === "response" || kind === "error") && velocity)
@@ -93,5 +100,5 @@ export function graphModel(
       : kind === "acceleration"
         ? "/s²"
         : "";
-  return { series, min, max, unit, suffix };
+  return { series, min, max, unit, suffix, toleranceBand };
 }
