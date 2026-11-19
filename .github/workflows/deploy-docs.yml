@@ -39,6 +39,8 @@ jobs:
             IdentitiesOnly yes
           EOF
       - name: Fetch Javadoc
+        env:
+          JAVADOC_REPO_URL: git@github.com:Desert-Eagles-6104/offseason2026.git
         run: npm run prefetch-javadoc
         
       - name: Build
