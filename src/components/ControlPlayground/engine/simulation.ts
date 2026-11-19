@@ -4,7 +4,12 @@ import { supports } from "../model/semantics";
 import { type Config, type Sample, type Simulation } from "../model/types";
 export function createSimulation(initialVelocity = 0): Simulation {
   const start = { ...initial(), v: initialVelocity };
-  return { a: start, b: { ...start }, ticks: 0, disturbanceUntil: 0 };
+  return {
+    a: start,
+    b: { ...start },
+    ticks: 0,
+    disturbanceUntil: 0,
+  };
 }
 
 export function advanceSimulation(

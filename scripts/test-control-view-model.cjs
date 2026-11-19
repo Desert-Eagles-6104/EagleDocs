@@ -37,6 +37,32 @@ test("empty charts remain renderable and torque goals use current units and limi
   assert.deepEqual([input.min, input.max, input.value], [-40, 40, 5]);
 });
 
+test("wheel teaching graphs can display rotations without changing voltage", () => {
+  const rotation = 2 * Math.PI;
+  const cfg = {
+    ...defaults,
+    mechanism: "wheel",
+    request: "velocity",
+    target: rotation,
+  };
+  const state = {
+    ...initial(),
+    v: rotation / 2,
+    reference: rotation,
+    output: 0.7,
+  };
+  const sample = [{ a: state, b: state }];
+  const speed = graphModel(sample, "response", cfg, false, true);
+  const output = graphModel(sample, "output", cfg, false, true);
+  assert.equal(speed.unit + speed.suffix, "rev/s");
+  assert.deepEqual(
+    speed.series.map((series) => series.values),
+    [[0.5], [1]],
+  );
+  assert.equal(output.unit, "V");
+  assert.deepEqual(output.series[0].values, [0.7]);
+});
+
 test("a position tolerance band appears only on the requested response graph", () => {
   const cfg = { ...defaults, mechanism: "slide", target: 1.5, tolerance: 0.05 };
   const graph = graphModel([], "response", cfg, true);

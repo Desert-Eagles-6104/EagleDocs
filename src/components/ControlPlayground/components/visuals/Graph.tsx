@@ -30,17 +30,20 @@ export const Graph = memo(function Graph({
   kind,
   cfg,
   showTolerance,
+  showRotations,
 }: {
   history: Sample[];
   kind: GraphKind;
   cfg: Config;
   showTolerance?: boolean;
+  showRotations?: boolean;
 }) {
   const { series, min, max, unit, suffix, toleranceBand } = graphModel(
     history,
     kind,
     cfg,
     showTolerance,
+    showRotations,
   );
   const plotY = (value: number) => 15 + ((max - value) / (max - min)) * 130;
   return (
@@ -119,7 +122,11 @@ export const Graph = memo(function Graph({
           <span style={{ borderBottom: "3px solid #d9770640" }}>
             תחום סבילות{" "}
             <bdi>
-              ±{cfg.tolerance} {unit}
+              ±
+              {Number(
+                ((toleranceBand.high - toleranceBand.low) / 2).toPrecision(6),
+              )}{" "}
+              {unit}
               {suffix}
             </bdi>
           </span>

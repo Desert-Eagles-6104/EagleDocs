@@ -96,12 +96,14 @@ import ControlDemo from "@site/src/components/ControlPlayground/ControlDemo";
 | `tune`                  | פרמטרים שהלומדים יכולים לשנות                                                   | ללא                          |
 | `adjustTarget`          | מתיר שינוי יעד במחוון וגם בגרירת המנגנון                                        | `false`                      |
 | `adjustInitialVelocity` | מציג מחוון למהירות ההתחלתית. הערך נשמר באיפוס.                                  | `false`                      |
+| `noiseToggle`           | מציג תיבה להפעלה ולכיבוי של רעש מדידה בעוצמה הנתונה ביחידות המודל.              | ללא                          |
 | `showMechanism`         | מציג את אנימציית המנגנון                                                        | `true`                       |
 | `showStep`              | מציג התקדמות בצעדים של 20 ms                                                    | `true`                       |
 | `showSpeed`             | מציג בחירת מהירות הרצה                                                          | `false`                      |
 | `disturbance`           | מציג כפתור הפרעה לחצי שנייה                                                     | `false`                      |
 | `showTolerance`         | מסמן בגרף התגובה פס סביב היעד הסופי לפי `config.tolerance`                      | `false`                      |
 | `showSettlingTime`      | מציג את זמן ההתייצבות של כל בקר לפי מיקום או מהירות, קצב שינוי ומשך אישור       | `false`                      |
+| `wheelSpeedInRotations` | מציג מהירות גלגל בסיבובים לשנייה באנימציה ובגרפים של הדגמת מהירות.              | `false`                      |
 
 `tune={["kp", "kd"]}` חושף אותם פרמטרים בכל הבקרים המוצגים. `tune={{ a: ["kp"], b: [] }}` מאפשר לשנות רק את הבקר הראשון. הפרמטרים הזמינים הם `kp`, `ki`, `kd`, `ks`, `kv`, `ka`, `kg`, `output`, `hysteresis`, `low`, `high`, `vmax`, `amax`, `jmax`. חשפו רק פרמטרים ששיטת הבקר משתמשת בהם: למשל `kp` בבקר עם P מופעל, או `vmax` בבקר פרופיל תנועה.
 

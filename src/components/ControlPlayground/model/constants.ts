@@ -47,6 +47,7 @@ export const GraphType = {
 } as const;
 export type GraphKind = (typeof GraphType)[keyof typeof GraphType];
 export const DT = 0.005;
+export const RADIANS_PER_ROTATION = 2 * Math.PI;
 export const SAMPLE_TICKS = 4;
 export const HISTORY_LIMIT = 600;
 export const MAX_FRAME_TICKS = 80;
