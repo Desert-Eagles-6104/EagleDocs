@@ -1,5 +1,5 @@
 import type { GraphModel, GraphSeries } from "./graphTypes";
-import { GraphType } from "../model/constants";
+import { GraphType, RADIANS_PER_ROTATION } from "../model/constants";
 import {
   controllerKeys,
   isVelocity,
@@ -13,6 +13,7 @@ export function graphModel(
   kind: GraphKind,
   cfg: Config,
   showTolerance = false,
+  showRotations = false,
 ): GraphModel {
   const velocity = isVelocity(cfg);
   const metric = (state: State): number => {
@@ -73,9 +74,19 @@ export function graphModel(
         ),
       });
   }
+  const isOutput = kind === "output" || kind === "terms";
+  const scale = showRotations && !isOutput ? RADIANS_PER_ROTATION : 1;
+  if (scale !== 1) {
+    for (const line of series) {
+      line.values = line.values.map((value) => value / scale);
+    }
+  }
   const toleranceBand =
     showTolerance && kind === GraphType.Response && !isDirect(cfg)
-      ? { low: cfg.target - cfg.tolerance, high: cfg.target + cfg.tolerance }
+      ? {
+          low: (cfg.target - cfg.tolerance) / scale,
+          high: (cfg.target + cfg.tolerance) / scale,
+        }
       : undefined;
   let min = Math.min(0, toleranceBand?.low ?? 0);
   let max = Math.max(1, toleranceBand?.high ?? 1);
@@ -87,11 +98,12 @@ export function graphModel(
   const pad = (max - min) * 0.1;
   min -= pad;
   max += pad;
-  const unit =
-    kind === "output" || kind === "terms"
-      ? cfg.request === "torque"
-        ? "A"
-        : "V"
+  const unit = isOutput
+    ? cfg.request === "torque"
+      ? "A"
+      : "V"
+    : showRotations
+      ? "rev"
       : positionUnit(cfg);
   const suffix =
     kind === "velocity" ||

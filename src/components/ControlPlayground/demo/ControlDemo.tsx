@@ -15,7 +15,7 @@ import { MechanismView } from "../components/visuals/MechanismView";
 import { SettlingReadout } from "../components/visuals/ControllerReadout";
 import { Graph } from "../components/visuals/Graph";
 import { Slider } from "../components/controls/Slider";
-import { positionUnit } from "../model/semantics";
+import { isVelocity, positionUnit } from "../model/semantics";
 import styles from "../styles.module.css";
 
 export interface ControlDemoProps {
@@ -30,9 +30,11 @@ export interface ControlDemoProps {
   showStep?: boolean;
   showSpeed?: boolean;
   disturbance?: boolean;
+  noiseToggle?: number;
   showTolerance?: boolean;
   showSettlingTime?: boolean;
   adjustInitialVelocity?: boolean;
+  wheelSpeedInRotations?: boolean;
 }
 
 /** Focused MDX simulation. Each instance owns its state and never reads the URL. */
@@ -64,9 +66,11 @@ function DemoSession({
   showStep = true,
   showSpeed = false,
   disturbance = false,
+  noiseToggle,
   showTolerance = false,
   showSettlingTime = false,
   adjustInitialVelocity = false,
+  wheelSpeedInRotations = false,
 }: ControlDemoProps & { initialConfig: Config }) {
   const id = useId();
   const {
@@ -87,6 +91,8 @@ function DemoSession({
     changeInitialVelocity,
   } = useExperiment(initialConfig);
   const target = targetModel(cfg);
+  const showRotations =
+    wheelSpeedInRotations && cfg.mechanism === "wheel" && isVelocity(cfg);
   return (
     <section
       className={`${styles.playground} ${styles.demo}`}
@@ -167,6 +173,7 @@ function DemoSession({
                   label={`בקר ${index + 1} - ${methods[cfg[key].method]}`}
                   state={current[key]}
                   cfg={cfg}
+                  showRotations={showRotations}
                   interactive={adjustTarget}
                   onTarget={(target) => update({ ...cfg, target })}
                 />
@@ -175,7 +182,25 @@ function DemoSession({
           ))}
         </div>
       )}
-      <DemoTuning cfg={cfg} keys={keys} tune={tune} update={update} />
+      <DemoTuning
+        cfg={cfg}
+        keys={keys}
+        tune={tune}
+        update={update}
+        showRotations={showRotations}
+      />
+      {noiseToggle !== undefined && (
+        <label>
+          <input
+            type="checkbox"
+            checked={cfg.noise > 0}
+            onChange={(event) =>
+              update({ ...cfg, noise: event.target.checked ? noiseToggle : 0 })
+            }
+          />{" "}
+          הוספת רעש למדידה
+        </label>
+      )}
       {cfg.graphs.length > 0 && (
         <div className={cfg.graphs.length > 1 ? styles.columns : undefined}>
           {cfg.graphs.map((kind) => (
@@ -185,6 +210,7 @@ function DemoSession({
               cfg={cfg}
               history={history}
               showTolerance={showTolerance}
+              showRotations={showRotations}
             />
           ))}
         </div>

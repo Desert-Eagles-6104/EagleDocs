@@ -8,6 +8,7 @@ import {
   targetUnit,
 } from "../../model/semantics";
 import { type Config, type State } from "../../model/types";
+import { RADIANS_PER_ROTATION } from "../../model/constants";
 import styles from "../../styles.module.css";
 export function MechanismView({
   state,
@@ -15,12 +16,14 @@ export function MechanismView({
   onTarget,
   label,
   interactive = true,
+  showRotations = false,
 }: {
   state: State;
   cfg: Config;
   onTarget: (n: number) => void;
   label: string;
   interactive?: boolean;
+  showRotations?: boolean;
 }) {
   const [lo, hi] = bounds(cfg.mechanism),
     y = 170 - ((state.x - lo) / (hi - lo)) * 140,
@@ -28,6 +31,11 @@ export function MechanismView({
   const slideX = (position: number) => 30 + ((position - lo) / (hi - lo)) * 240;
   const showPositionTarget = !isDirect(cfg) && !isVelocity(cfg);
   const angle = state.x;
+  const actualSpeed = state.v / RADIANS_PER_ROTATION;
+  const requestedSpeed = cfg.target / RADIANS_PER_ROTATION;
+  const speedLimit = Math.max(1, 2 * Math.abs(requestedSpeed));
+  const speedX = (speed: number) =>
+    150 + (110 * clamp(speed, -speedLimit, speedLimit)) / speedLimit;
   const point = (a: number) => ({
     x: 150 + 85 * Math.cos(a),
     y: 110 - 85 * Math.sin(a),
@@ -41,7 +49,11 @@ export function MechanismView({
         data-interactive={interactive && !isDirect(cfg)}
         viewBox="0 0 300 210"
         role="img"
-        aria-label={`${label}: מיקום ${state.x.toFixed(2)}, מהירות ${state.v.toFixed(2)}`}
+        aria-label={
+          showRotations
+            ? `${label}: מהירות ${actualSpeed.toFixed(2)} סיבובים לשנייה`
+            : `${label}: מיקום ${state.x.toFixed(2)}, מהירות ${state.v.toFixed(2)}`
+        }
         onPointerDown={(e) => {
           if (!interactive || isDirect(cfg)) return;
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -118,17 +130,50 @@ export function MechanismView({
           <>
             <circle
               cx="150"
-              cy="110"
-              r={cfg.mechanism === "wheel" ? 65 : 10}
+              cy={showRotations ? 87 : 110}
+              r={showRotations ? 54 : cfg.mechanism === "wheel" ? 65 : 10}
               fill="none"
               stroke="currentColor"
               strokeWidth="5"
             />
-            <path
-              d={`M150 110 L${end.x} ${end.y}`}
-              stroke="var(--ifm-color-primary)"
-              strokeWidth="10"
-            />
+            {showRotations ? (
+              <>
+                <path d="M150 20 V27" stroke="currentColor" strokeWidth="3" />
+                <path
+                  d="M150 40 V65"
+                  transform={`rotate(${((angle % RADIANS_PER_ROTATION) / RADIANS_PER_ROTATION) * 360} 150 87)`}
+                  stroke="var(--ifm-color-primary)"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                />
+                <g aria-label="מד מהירות">
+                  <path
+                    d="M40 170 H260 M150 162 V178"
+                    stroke="currentColor"
+                    strokeOpacity="0.3"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d={`M150 170 H${speedX(actualSpeed)}`}
+                    stroke="var(--ifm-color-primary)"
+                    strokeWidth="7"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d={`M${speedX(requestedSpeed)} 157 V183`}
+                    stroke="#d97706"
+                    strokeWidth="3"
+                    strokeDasharray="4 3"
+                  />
+                </g>
+              </>
+            ) : (
+              <path
+                d={`M150 110 L${end.x} ${end.y}`}
+                stroke="var(--ifm-color-primary)"
+                strokeWidth="10"
+              />
+            )}
             {cfg.mechanism === "arm" && showPositionTarget && (
               <path
                 d={`M150 110 L${target.x} ${target.y}`}
@@ -146,11 +191,13 @@ export function MechanismView({
           fill="currentColor"
           fontSize="12"
         >
-          {cfg.mechanism === "wheel"
-            ? "מהירות: " + state.v.toFixed(2) + " rad/s"
-            : "מיקום: " +
-              state.x.toFixed(2) +
-              (cfg.mechanism === "arm" ? " rad" : " m")}
+          {showRotations
+            ? `${actualSpeed.toFixed(2)} סיבובים לשנייה`
+            : cfg.mechanism === "wheel"
+              ? "מהירות: " + state.v.toFixed(2) + " rad/s"
+              : "מיקום: " +
+                state.x.toFixed(2) +
+                (cfg.mechanism === "arm" ? " rad" : " m")}
         </text>
       </svg>
       <small>
@@ -158,7 +205,9 @@ export function MechanismView({
           ? "בניסוי הזה קובעים את הפלט ובודקים את התנועה שמתקבלת."
           : interactive
             ? "גררו ושחררו לקביעת יעד; אפשר גם להשתמש במחוון היעד."
-            : `יעד קבוע: ${cfg.target} ${targetUnit(cfg)}`}
+            : showRotations
+              ? `מהירות יעד (סיבובים לשנייה): ${Number(requestedSpeed.toFixed(2))}`
+              : `יעד קבוע: ${cfg.target} ${targetUnit(cfg)}`}
       </small>
     </div>
   );
