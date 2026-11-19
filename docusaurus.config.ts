@@ -21,6 +21,7 @@ const config: Config = {
   baseUrl: '/docs/',
   trailingSlash: true,
   noIndex: true,
+  clientModules: [require.resolve('./src/clientModules/readingPosition')],
 
   onBrokenLinks: 'warn',
   markdown: {
