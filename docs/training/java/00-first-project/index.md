@@ -20,7 +20,7 @@ slug: /java/first-project
 
 זו תהיה התיקייה שבה נשמור את פרויקטי התרגול. לכל תלמיד יהיה פרויקט משלו, עם השם שלו, כדי שיהיה קל למצוא את העבודה גם במחשב משותף.
 
-## 2. יוצרים פרויקט Java {#creating-project}
+## 2. יוצרים פרויקט Java {/* #creating-project */}
 
 1. פתחו **WPILib VS Code 2026**.
 2. פתחו את [חלון הפקודות](../../getting-started/working-in-vscode.mdx#command-palette) (`Ctrl + Shift + P`).

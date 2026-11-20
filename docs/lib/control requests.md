@@ -3,7 +3,7 @@ title: בקשות בקרה
 unlisted: true
 ---
 
-## בקרה בחוג פתוח (Open-loop) {#open-loop}
+## בקרה בחוג פתוח (Open-loop) {/* #open-loop */}
 
 - **`DutyCycleOut`**
 
@@ -19,7 +19,7 @@ unlisted: true
   - הערות: זו עדיין בקרה בחוג פתוח, ללא PID. אפשר להוסיף גם `.withEnableFOC(true)`.
   - מתי להשתמש: כשרוצים פלט עקבי במצבי סוללה שונים, בלי צורך בבקרה שמווסתת את המנגנון לערך יעד.
 
-## בקרה בחוג סגור (PID) {#closed-loop-pid}
+## בקרה בחוג סגור (PID) {/* #closed-loop-pid */}
 
 - **`PositionVoltage`**
 
@@ -33,7 +33,7 @@ unlisted: true
   - הערות: משתמשת במקדמי בקרת המהירות שב־slot הנבחר. אפשר להוסיף `.withFeedForward(volts)` עבור Feedforward בסגנון kS/kV/kA.
   - מתי להשתמש: גלגלי ירי וגלגלי הנעה של swerve, כשצריך ״להסתובב במהירות הזאת ולשמור עליה״.
 
-### חוג סגור עם פרופיל תנועה (Motion Magic) {#closed-loop--profiling-motion-magic}
+### חוג סגור עם פרופיל תנועה (Motion Magic) {/* #closed-loop--profiling-motion-magic */}
 
 - **`MotionMagicVoltage`**
 
@@ -49,7 +49,7 @@ unlisted: true
 
 ---
 
-## מדריך קצר לבחירת בקשת בקרה {#tiny-when-to-pick-what-cheat-sheet}
+## מדריך קצר לבחירת בקשת בקרה {/* #tiny-when-to-pick-what-cheat-sheet */}
 
 - הפעלה פשוטה של המנוע: **`DutyCycleOut`**
 - פלט ידני עקבי, ללא תלות במתח הסוללה: **`VoltageOut`**
@@ -58,7 +58,7 @@ unlisted: true
 - תנועה חלקה למיקום, ללא שינויי תאוצה חדים: **`MotionMagicVoltage`**
 - מעבר הדרגתי למהירות, ללא שינויי תאוצה חדים: **`MotionMagicVelocityVoltage`**
 
-## דוגמאות קוד {#example-snippets}
+## דוגמאות קוד {/* #example-snippets */}
 
 ```java
 // Open-loop percent
@@ -80,7 +80,7 @@ fx.setControl(new MotionMagicVoltage(15.0).withSlot(1));
 fx.setControl(new MotionMagicVelocityVoltage(70.0).withSlot(0));
 ```
 
-## דגשים וטיפים {#gotchas--tips}
+## דגשים וטיפים {/* #gotchas--tips */}
 
 - **יחידות**: כברירת מחדל, Phoenix 6 משתמש ב־**סיבובים** וב־**סיבובים לשנייה** עבור החיישן המובנה.
 - **Slots**: ודאו שמקדמי ה־PID המתאימים מוגדרים ב־slot שאתם בוחרים באמצעות `.withSlot(n)`.

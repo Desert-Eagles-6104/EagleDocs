@@ -11,7 +11,7 @@ slug: /java/installation
 
 ההוראות כאן מיועדות למחשב **Windows עם מעבד x64**. אם יש לכם מחשב מסוג אחר, בקשו מהמנטור עזרה בהתקנה.
 
-## 1. מורידים את WPILib {#install-wpilib}
+## 1. מורידים את WPILib {/* #install-wpilib */}
 
 1. פתחו את [דף ההורדה של WPILib 2026.2.1](https://github.com/wpilibsuite/allwpilib/releases/tag/v2026.2.1).
 2. גללו לכותרת **Downloads** ולחצו על **Windows**.
@@ -47,7 +47,7 @@ slug: /java/installation
 
 גם אם כבר מותקן במחשב VS Code רגיל, בהכשרה נשתמש ב־**WPILib VS Code 2026**.
 
-## 5. מוסיפים את התוסף ליצירת פרויקט Java {#java-support}
+## 5. מוסיפים את התוסף ליצירת פרויקט Java {/* #java-support */}
 
 התוסף **Project Manager for Java** מאפשר לנו ליצור את פרויקט התרגול שלנו מתוך VS Code.
 

@@ -34,7 +34,7 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
 
 ודאו שהשלמתם את [הורדת ספריית הקבוצה](./02-template-repository.mdx#initialize-submodules) ושהבנייה הצליחה. אם עדיין לא קיבלתם `BUILD SUCCESSFUL`, חזרו ל[בנייה הראשונה ופתרון תקלות](./02-template-repository.mdx#first-build).
 
-## מפעילים סימולציה {#run-simulation}
+## מפעילים סימולציה {/* #run-simulation */}
 
 1. שמרו את הקבצים ששיניתם.
 2. לחצו **F5**, או פתחו את [חלון הפקודות](../../getting-started/working-in-vscode.mdx#command-palette) ובחרו **WPILib: Simulate Robot Code**. אם מופיעה בחירת תצורת הרצה, בחרו **WPILib Desktop Debug**.
@@ -67,7 +67,7 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
 
 אלה צילומים מהתיעוד הרשמי; עיצוב החלון ורשימת ההרחבות יכולים להיות שונים במחשב שלכם. אם החלון לא נפתח, בדקו את פלט ההרצה ב־VS Code. אם הבנייה נכשלה, חזרו להוראות הבנייה. אם התוכנית מסתיימת בשגיאת הרצה, הראו אותה למנטור.
 
-## סרגל ה־Debug {#debug-toolbar}
+## סרגל ה־Debug {/* #debug-toolbar */}
 
 בזמן הרצת Debug מופיע ב־VS Code הסרגל הבא:
 
@@ -85,7 +85,7 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
 - **החץ המעגלי הירוק - Restart:** מפעיל את הסימולציה מחדש.
 - **הברק הצהוב - Apply Code Changes:** מחיל שינויי קוד באמצעות Hot Replace. החץ הכחול בתמונה מצביע עליו.
 
-## מיקום החלפת מצב הרובוט {#robot-state}
+## מיקום החלפת מצב הרובוט {/* #robot-state */}
 
 באזור **Robot State**, המסומן במספר **1** בצילום, מחליפים את מצב הרובוט. נשתמש בו בהמשך ההכשרה.
 
@@ -99,7 +99,7 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
   />
 </a>
 
-## מחברים שלט לסימולציה {#controller}
+## מחברים שלט לסימולציה {/* #controller */}
 
 לבדיקת מצבי הרובוט אין צורך בשלט. לפני תרגיל הכפתורים, חברו שלט USB ובצעו את החיבור הבא כשהרובוט Disabled:
 
@@ -118,11 +118,11 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
 
 הצילום מהתיעוד הרשמי מציג שלט Xbox; אותו עיקרון משמש גם לשלט אחר. אם אין שלט זמין, אפשר למפות מקלדת דרך **DS → Keyboard 0 Settings** ולגרור את Keyboard 0 לערוץ 0, בעזרת המנטור. [מיפוי שלט ומקלדת בסימולציה](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html#adding-a-system-joystick-to-joysticks).
 
-## מפסיקים את הסימולציה {#stop-simulation}
+## מפסיקים את הסימולציה {/* #stop-simulation */}
 
 לחצו על **הריבוע האדום - Stop** ב[סרגל ה־Debug](#debug-toolbar), או סגרו את טרמינל ההרצה באמצעות **אייקון הפח** ב־VS Code. כפתור ה־X שמסתיר את חלונית הטרמינל אינו מסיים את ההרצה.
 
-## מפעילים מחדש {#restart-simulation}
+## מפעילים מחדש {/* #restart-simulation */}
 
 שמרו את שינויי הקוד ולחצו על **החץ המעגלי הירוק - Restart** ב[סרגל ה־Debug](#debug-toolbar).
 
@@ -131,7 +131,7 @@ import JoystickAssignment from "./assets/interfaces/sim-gui-dragging-joysticks.p
 
 אפשר להשאיר את AdvantageScope פתוח. לאחר שהסימולציה עולה מחדש הוא מנסה להתחבר שוב אוטומטית. אם החיבור לא חוזר, בצעו שוב את [שלבי החיבור](#advantagescope).
 
-## מעדכנים קוד עם Hot Replace {#hot-replace}
+## מעדכנים קוד עם Hot Replace {/* #hot-replace */}
 
 **Hot Code Replace** מחיל שינויים בקוד Java בתוך הרצת Debug פעילה, בלי להפעיל את כל התוכנית מחדש. כשתשנו קוד בהמשך ההכשרה, אפשר לחזור לשלבים האלה:
 
@@ -144,7 +144,7 @@ Hot Replace אינו מאתחל את התוכנית ואינו מריץ מחדש
 
 אם אייקון הברק חסר, ודאו שיש הרצת Java Debug פעילה. בהגדרות VS Code, האפשרות `java.debug.settings.hotCodeReplace` צריכה להיות `manual` כדי להחיל שינויים בלחיצה; במצב `auto` הם מוחלים אוטומטית לאחר הקומפילציה. [תיעוד Hot Code Replace](https://code.visualstudio.com/docs/java/java-debugging#_hot-code-replace).
 
-## פותחים ומחברים AdvantageScope {#advantagescope}
+## פותחים ומחברים AdvantageScope {/* #advantagescope */}
 
 **AdvantageScope** היא תוכנה לצפייה בנתונים שהרובוט שולח - מספרים, גרפים ומיקום על מגרש. **NetworkTables** מעביר את הנתונים מתוכנית הסימולציה אל התוכנה.
 

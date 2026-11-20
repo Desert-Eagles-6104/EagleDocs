@@ -40,7 +40,7 @@ import { commandCompositionDemo } from "./demos/command-composition";
 
 <CommandLifecycleDemo {...commandCompositionDemo} />
 
-### איך המתזמן מקצה תתי־מערכות לפקודות? {#מי-מקבל-שליטה-במנגנון}
+### איך המתזמן מקצה תתי־מערכות לפקודות? {/* #מי-מקבל-שליטה-במנגנון */}
 
 השילוב מחזיק ב־requirements של כל הפקודות שבתוכו לאורך כל הריצה. ברצף אפשר להשתמש באותו רולר בשלבים שונים כי רק שלב אחד פעיל בכל רגע. WPILib דוחה שילוב מקביל אם שתי פקודות דורשות את אותו מופע של תת־מערכת. לכן נריץ במקביל פקודה אחת לרולר ופקודה אחת לגלגל התנופה. פקודת ההמתנה מודדת זמן בלי לדרוש תת־מערכת. [סוגי השילובים וה־requirements בתיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.html)
 

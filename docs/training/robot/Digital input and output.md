@@ -43,12 +43,12 @@ led.set(true);  // turn ON (send 5V out)
 led.set(false); // turn OFF (0V)
 ```
 
-## ההבדל המרכזי {#key-difference}
+## ההבדל המרכזי {/* #key-difference */}
 
 * **DigitalInput** = *הקשבה*: קריאת מידע מהעולם החיצוני, כמו מפסקים, חיישנים וחיישני beam break.
 * **DigitalOutput** = *דיבור*: שליחת אות פשוט של הפעלה או כיבוי לרכיב.
 
-### חיישן beam break {#beam-break-sensor}
+### חיישן beam break {/* #beam-break-sensor */}
 
 * כדי לקרוא אם הקרן חסומה, משתמשים ב־**DigitalInput**.
 * משתמשים ב־**DigitalOutput** רק אם רוצים *לשלוח* אות, למשל להדליק נורת חיווי כשהקרן חסומה.
