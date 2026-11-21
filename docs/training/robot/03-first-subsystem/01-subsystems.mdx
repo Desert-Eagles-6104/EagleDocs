@@ -52,25 +52,14 @@ import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
 באזור השדות, ליד תתי־המערכות הקיימות, הוסיפו:
 
 ```java
-public final Optional<TrainingFlywheel> trainingFlywheel;
+public final TrainingFlywheel trainingFlywheel;
 ```
 
 בבנאי `private RobotContainer()`, אחרי יצירת `visionSubsystem`, הוסיפו:
 
 ```java
-this.trainingFlywheel = isSim
-    ? Optional.of(new TrainingFlywheel())
-    : Optional.empty();
+this.trainingFlywheel = new TrainingFlywheel();
 ```
-
-לפי מה שלמדנו על `Optional` ועל התנאי `? :`, מה יישמר בשדה בסימולציה ומה יישמר בהרצה על חומרה? הסבירו למה רק אחד משני צדי התנאי מתבצע.
-
-<ExerciseHelp
-  hints={["בדקו מה הערך של isSim בכל סביבת הרצה ואיזה צד הוא בוחר."]}
-  solution="בסימולציה isSim היא true, ולכן נוצרת TrainingFlywheel ונשמרת בתוך Optional. בחומרה נבחרת Optional.empty(), ללא יצירת תת־המערכת. הביטוי בוחר ומחשב רק את הצד המתאים לתנאי."
-  solutionLanguage="text"
-/>
-`Optional` כבר מיובאת בתבנית.
 
 **נוצר מופע אחד, פעם אחת בעת האתחול.** לא יוצרים את המנוע או את תת־המערכת מחדש בכל מחזור.
 
@@ -79,10 +68,10 @@ this.trainingFlywheel = isSim
 בתוך `logTelemetry()`, לפני הסוגר שמסיים את המתודה, הוסיפו:
 
 ```java
-this.trainingFlywheel.ifPresent(TrainingFlywheel::logTelemetry);
+this.trainingFlywheel.logTelemetry();
 ```
 
-`ifPresent` קוראת ל־`logTelemetry` על המופע של `TrainingFlywheel` כשהוא קיים. `TrainingFlywheel::logTelemetry` היא הפניה למתודה שתפרסם את המדידות. השאירו את החיבורים של שאר תתי־המערכות במקומם. [הפניה למתודה עם `::`](../../java/09-lambdas/index.mdx#method-references)
+`this.trainingFlywheel.logTelemetry()` קוראת למתודה שמפרסמת את המדידות על המופע שיצרנו בבנאי. השאירו את החיבורים של שאר תתי־המערכות במקומם.
 
 ## 4. רואים את נתוני גלגל התנופה בלוגים {/* #4-רואים-את-המערכת-בלוגים */}
 

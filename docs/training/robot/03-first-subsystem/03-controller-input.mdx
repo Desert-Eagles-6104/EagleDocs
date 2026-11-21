@@ -13,7 +13,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 לפני השינוי הריצו ובדקו את גרסת ההפעלה המחזורית, ושמרו commit עם תוצאות המדידה. הקוד הזה נשאר בהיסטוריה; החיבור, הקבוע והלוגים נשארים בקבצים הפעילים.
 
-ב־`Robot.java`, הסירו מתוך `teleopPeriodic()` את הקריאה ל־`trainingFlywheel.ifPresent(...)` שהוספנו בניסוי. השאירו את המתודה עצמה ואת כל הקוד שהיה בה לפני התרגיל. המדידות והלוגים ממשיכים להתעדכן באמצעות התשתית המוכנה.
+ב־`Robot.java`, הסירו מתוך `teleopPeriodic()` את הקריאה ל־`RobotContainer.getInstance().trainingFlywheel.setPercentOutput(...)` שהוספנו בניסוי. השאירו את המתודה עצמה ואת כל הקוד שהיה בה לפני התרגיל. המדידות והלוגים ממשיכים להתעדכן באמצעות התשתית המוכנה.
 
 היכן שמרנו את `TRAINING_OUTPUT`, ואיך קראנו אותו מתוך `Robot`?
 
@@ -39,51 +39,50 @@ import frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercenta
 בתוך `configureTeleopBindings()`, לצד החיבורים הקיימים, הוסיפו:
 
 ```java
-this.trainingFlywheel.ifPresent(flywheel -> {
-    this.driverController.northButton().whileTrue(
-        new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT));
-});
+this.driverController.northButton().whileTrue(
+    new MotorSubsystemSetPercentage<>(
+        this.trainingFlywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
+    );
 ```
 
 ### קוראים את תחביר ה־lambda
 
-למבדה היא פעולה קצרה שמעבירים לקוד אחר. משמאל ל־`->` כותבים את הפרמטרים, ומימין את הפעולה. בדוגמה יש שתיים.
+למבדה היא פעולה קצרה שמעבירים לקוד אחר. משמאל ל־`->` כותבים את הפרמטרים, ומימין את הפעולה.
 
-- `flywheel -> { ... }` מקבלת את המופע מ־`ifPresent` ומחברת לכפתור פקודה עבורו. [המחלקה `Optional`](../../java/10-enrichment/01-optional.mdx)
-- `() -> TrainingFlywheel.TRAINING_OUTPUT` היא הפעולה שהפקודה מקבלת כ־`DoubleSupplier`. היא מקבלת אפס פרמטרים ומחזירה את אחוז הפלט בכל פעם שהפקודה קוראת לה. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
+`() -> TrainingFlywheel.TRAINING_OUTPUT` היא הפעולה שהפקודה מקבלת כ־`DoubleSupplier`. היא מקבלת אפס פרמטרים ומחזירה את אחוז הפלט בכל פעם שהפקודה קוראת לה. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
 
 ### מה אומרות הסוגריים הזוויתיות?
 
-`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של תתי־מערכות שיורשות מ־`MotorSubsystemTalon`. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `flywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-generics/index.mdx)
+`MotorSubsystemSetPercentage` היא מחלקה **גנרית** שמתאימה לכמה טיפוסים של תתי־מערכות שיורשות מ־`MotorSubsystemTalon`. אפשר לציין את הטיפוס במפורש, למשל `MotorSubsystemSetPercentage<TrainingFlywheel>`. כשכותבים `new MotorSubsystemSetPercentage<>(...)`, Java מסיקה את הטיפוס מהאובייקט `this.trainingFlywheel` שקיבל הבנאי. [טיפוסים גנריים ב־Java](../../java/08-generics/index.mdx)
 
 ### בדקו את עצמכם
 
-למה `flywheel -> { ... }` מקבלת פרמטר, אבל `() -> TrainingFlywheel.TRAINING_OUTPUT` אינה מקבלת פרמטרים? איזה סוג Java מסיקה בתוך `<>` בדוגמה שלנו?
+למה `() -> TrainingFlywheel.TRAINING_OUTPUT` אינה מקבלת פרמטרים? איזה טיפוס Java מסיקה בתוך `<>` בדוגמה שלנו?
 
 <ExerciseHelp
   hints={[
-    "מה ifPresent צריכה למסור לפעולה, ומה הפקודה צריכה לקבל מה־DoubleSupplier?",
+    "מה הפקודה צריכה לקבל מה־DoubleSupplier?",
     "מה הסוג של האובייקט שהעברנו כפרמטר הראשון לבנאי?",
   ]}
-  solution="ifPresent מוסרת לפעולה את תת־המערכת שבתוך ה־Optional, ולכן ה־lambda הראשונה מקבלת את flywheel. ה־DoubleSupplier רק מתבקשת להחזיר מספר ואינה צריכה לקבל פרמטר, ולכן נכתבים סוגריים ריקים. מתוך flywheel, Java מסיקה שסוג תת־המערכת של הפקודה הוא TrainingFlywheel."
+  solution="ה־DoubleSupplier מתבקשת להחזיר מספר ואינה צריכה לקבל פרמטר, ולכן נכתבים סוגריים ריקים. מתוך this.trainingFlywheel, Java מסיקה שסוג תת־המערכת של הפקודה הוא TrainingFlywheel."
   solutionLanguage="text"
 />
+
 נקרא את החיבור בחלקים:
 
-- מה יקרה לחיבור הזה אם ה־`Optional` ריקה?
 - `northButton()` הוא הכפתור העליון בקבוצת ארבעת הכפתורים: Triangle ב־PS5 או Y ב־Xbox.
 - `whileTrue` מתזמנת את הפקודה בתחילת הלחיצה ומבטלת אותה בשחרור.
-- לאיזה מופע מתייחס כאן השם `flywheel`? היכן יצרנו אותו?
 - `() -> TrainingFlywheel.TRAINING_OUTPUT` היא lambda שמחזירה את ערך השדה כשהפקודה מבקשת אותו. הסוגריים הריקים מציינים שאינה מקבלת פרמטרים.
 
+לאיזה מופע מתייחס כאן השם `trainingFlywheel`? היכן יצרנו אותו?
+
 <ExerciseHelp
-  hints={["חזרו לחיבור הלוגים וליצירת המופע בבנאי."]}
-  solution="אם ה־Optional ריקה, בלוק החיבור אינו מתבצע ולא נרשם binding למנגנון. flywheel הוא אותו מופע שנוצר בבנאי RobotContainer. ה־lambda קוראת את אחוז הפלט מהשדה הסטטי TrainingFlywheel.TRAINING_OUTPUT, בלי צורך במתודת getter."
+  hints={["חזרו ליצירת המופע בבנאי ולחיבור הלוגים."]}
+  solution="this.trainingFlywheel הוא אותו מופע שנוצר בבנאי RobotContainer ומשמש גם לפרסום המדידות. ה־lambda קוראת את אחוז הפלט מהשדה הסטטי TrainingFlywheel.TRAINING_OUTPUT, בלי צורך במתודת getter."
   solutionLanguage="text"
 />
 
 הפקודה מצהירה שהיא משתמשת בתת־המערכת הזאת. כך המתזמן יכול לתאם בינה לבין פקודות נוספות שמצהירות על אותה תת־מערכת. נלמד בהמשך מה קורה כששתי פקודות מבקשות אותו משאב.
-
 
 ## 3. בודקים את ההתנהגות החדשה
 
@@ -137,11 +136,11 @@ this.trainingFlywheel.ifPresent(flywheel -> {
     "צריך לשנות את המתודה שמחברת את הכפתור לפקודה; הפקודה עצמה נשארת כפי שהיא.",
     "שחרור אינו לחיצה חדשה. איזו פעולה תבטל עכשיו את הפקודה?",
   ]}
-  solution={`this.trainingFlywheel.ifPresent(flywheel -> {
-    this.driverController.northButton().toggleOnTrue(
-        new MotorSubsystemSetPercentage<>(
-            flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT));
-});`}
+  solution={`this.driverController.northButton().toggleOnTrue(
+    new MotorSubsystemSetPercentage<>(
+        this.trainingFlywheel, () -> TrainingFlywheel.TRAINING_OUTPUT
+    )
+  );`}
   solutionLanguage="java"
 />
 

@@ -141,7 +141,7 @@ DashboardUtils.setData(CYCLE_KEY, new TrainingRollerCycle());
 
 ## 5. מתאמים את הרולר וגלגל התנופה
 
-נשתמש ב־`trainingFlywheel` שכבר קיים ב־`RobotContainer`, וב־`TrainingFlywheel.TRAINING_OUTPUT` מהחיבור הראשון לשלט. בדיקת הרולר זמינה כשקיים רולר. בתוך `binding()` נפרסם את הפקודה המשותפת בעזרת `ifPresent(...)` על גלגל התנופה, כך שהכרטיס יופיע כששני המנגנונים זמינים.
+נשתמש ב־`trainingFlywheel` שכבר קיים ב־`RobotContainer`, וב־`TrainingFlywheel.TRAINING_OUTPUT` מהחיבור הראשון לשלט. שני המנגנונים נוצרים בבנאי ה־container. בתוך `binding()` נפרסם פקודה משותפת שמשתמשת באותם מופעים.
 
 ב־`TrainingRollerBindings.java` הוסיפו את ה־imports הבאים אם הם חסרים.
 
@@ -161,16 +161,16 @@ private static final String COORDINATED_KEY = COMMANDS_FOLDER + "Coordinated";
 בתוך `binding()` הוסיפו את השילוב. הארגומנט הראשון של `Commands.deadline(...)` הוא פקודת ההמתנה, שקובעת מתי הבדיקה תסתיים. שתי פקודות המנוע מתחילות יחד עם ההמתנה.
 
 ```java
-RobotContainer.getInstance().trainingFlywheel.ifPresent(flywheel -> {
-    Command coordinated = Commands.deadline(
-        Commands.waitSeconds(2.0),
-        new TrainingRollerCollect().withTimeout(1.0),
-        new MotorSubsystemSetPercentage<>(flywheel, () -> TrainingFlywheel.TRAINING_OUTPUT)
-            .withTimeout(3.0)
-    );
-    coordinated.setName("Roller and Flywheel");
-    DashboardUtils.setData(COORDINATED_KEY, coordinated);
-});
+Command coordinated = Commands.deadline(
+    Commands.waitSeconds(2.0),
+    new TrainingRollerCollect().withTimeout(1.0),
+    new MotorSubsystemSetPercentage<>(
+      RobotContainer.getInstance().trainingFlywheel, 
+      () -> TrainingFlywheel.TRAINING_OUTPUT
+    ).withTimeout(3.0)
+);
+coordinated.setName("Roller and Flywheel");
+DashboardUtils.setData(COORDINATED_KEY, coordinated);
 ```
 
 בנו והפעילו מחדש. הוסיפו את הכרטיס `/SmartDashboard/Training Roller/Commands/Coordinated` ואת מתחי שני המנועים. כדי למצוא את המדידה של גלגל התנופה, חפשו `TrainingFlywheel` ב־AdvantageScope או השתמשו בנתיב `/AdvantageKit/Subsystems/TrainingFlywheel/Inputs/AppliedVoltage` ב־Elastic. [צפייה במדידות של גלגל התנופה](../03-first-subsystem/01-subsystems.mdx#4-רואים-את-המערכת-בלוגים)

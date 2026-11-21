@@ -71,7 +71,7 @@ import { rollerLifecycleDemo } from "./demos/roller-lifecycle";
 
 כדי שהתיאום יעבוד, שתי הפקודות צריכות להשתמש באותו מופע של `TrainingRoller` שיצרנו ב־`RobotContainer`. אם יוצרים שני מופעים לאותו CAN ID, המתזמן מתייחס אליהם כשתי תתי־מערכות נפרדות. באותו אופן, קריאה ישירה להפעלת מנוע מתוך `teleopPeriodic()` עוקפת את התיאום של המתזמן.
 
-`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את תתי־המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה הוא `Optional<TrainingRoller>`, ולכן נבדוק שהוא מכיל רולר לפני יצירת הפקודה. הבנאי שולף את הרולר באמצעות `orElseThrow()`, שמחזירה את המופע כשהוא קיים וזורקת חריגה כשהתוצאה ריקה. [בדיקה ושליפה מתוך `Optional`](../../java/10-enrichment/01-optional.mdx)
+`RobotContainer` הוא **Singleton**. `RobotContainer.getInstance()` מחזירה את המופע היחיד שלו. ניצור את הפקודות בשלב חיבור הכפתורים, אחרי שה־container סיים ליצור את תתי־המערכות. פקודה שמיועדת לרולר ניגשת לשדה `trainingRoller` דרך ה־container. השדה מחזיק את המופע מסוג `TrainingRoller` שיצרנו בבנאי, ולכן הפקודה יכולה לשמור אותו ולהשתמש בו ישירות.
 
 לפקודות שנכתוב נותנים שם בתבנית `<שם תת־המערכת><מה הפקודה עושה>`. לדוגמה, `TrainingRollerSetPercentage` מתאים לפקודה שקובעת אחוז פלט לרולר.
 
@@ -91,7 +91,7 @@ public class TrainingRollerHoldCollect extends Command {
     private final TrainingRoller roller;
 
     public TrainingRollerHoldCollect() {
-        this.roller = RobotContainer.getInstance().trainingRoller.orElseThrow();
+        this.roller = RobotContainer.getInstance().trainingRoller;
         addRequirements(roller);
     }
 
@@ -111,12 +111,10 @@ public class TrainingRollerHoldCollect extends Command {
 
 ### מחברים ובודקים את הפקודה שכתבנו
 
-ב־`RobotContainer.configureTeleopBindings()` החליפו את החיבור הקודם לרולר בקטע הבא. `isPresent()` בודקת שיש רולר לפני יצירת הפקודה:
+ב־`RobotContainer.configureTeleopBindings()` החליפו את החיבור הקודם לרולר בקטע הבא:
 
 ```java
-if (this.trainingRoller.isPresent()) {
-    this.driverController.northButton().whileTrue(new TrainingRollerHoldCollect());
-}
+this.driverController.northButton().whileTrue(new TrainingRollerHoldCollect());
 ```
 
 הוסיפו import של `frc.robot.subsystems.trainingRoller.commands.TrainingRollerHoldCollect`. `whileTrue` מתזמנת בלחיצה ומבטלת בשחרור. בנו והפעילו סימולציה: ודאו שהמתח והמהירות מגיבים בלחיצה ושבשחרור הפלט מתבטל. מהירות יכולה לדעוך גם אחרי ביטול הפלט.
@@ -181,7 +179,7 @@ public class TrainingRollerCollectForTime extends Command {
     private final Timer timer = new Timer();
 
     public TrainingRollerCollectForTime() {
-        this.roller = RobotContainer.getInstance().trainingRoller.orElseThrow();
+        this.roller = RobotContainer.getInstance().trainingRoller;
         addRequirements(roller);
     }
 
@@ -275,14 +273,12 @@ this.motorSubsystem.setPercentOutput(
 כדי להפעיל אחוז פלט בזמן החזקת כפתור, אפשר להמשיך להשתמש בפקודה מהספרייה. היא כללית, ולכן מקבלת את תת־המערכת שתפעיל ואת הפעולה שמספקת את אחוז הפלט. כדי להשוות לפקודה שכתבתם, החליפו את חיבור הרולר לכפתור North בתוך `RobotContainer.configureTeleopBindings()` בקטע הבא:
 
 ```java
-this.trainingRoller.ifPresent(roller -> {
-    this.driverController.northButton().whileTrue(
-        new MotorSubsystemSetPercentage<>(
-            roller, () -> TrainingRollerConstants.TRAINING_OUTPUT));
-});
+this.driverController.northButton().whileTrue(
+    new MotorSubsystemSetPercentage<>(
+        this.trainingRoller, () -> TrainingRollerConstants.TRAINING_OUTPUT));
 ```
 
-ה־imports הם `frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage` ו־`frc.robot.constants.Constants.TrainingRollerConstants`. הקריאה ל־`ifPresent` מחברת את הכפתור רק אם נוצר רולר, כלומר בסימולציה.
+ה־imports הם `frc.DELib26.subsystems.motorSubsystems.commands.MotorSubsystemSetPercentage` ו־`frc.robot.constants.Constants.TrainingRollerConstants`. הפקודה מקבלת את אותו מופע של הרולר שנוצר בבנאי ה־container.
 
 ### מתמחים בפקודה קיימת
 
@@ -302,7 +298,7 @@ import frc.robot.subsystems.trainingRoller.TrainingRoller;
 
 public class TrainingRollerCollect extends MotorSubsystemSetPercentage<TrainingRoller> {
     public TrainingRollerCollect() {
-        super(RobotContainer.getInstance().trainingRoller.orElseThrow(),
+        super(RobotContainer.getInstance().trainingRoller,
             () -> TrainingRollerConstants.TRAINING_OUTPUT);
     }
 }
@@ -310,12 +306,10 @@ public class TrainingRollerCollect extends MotorSubsystemSetPercentage<TrainingR
 
 הקריאה ל־`super(...)` מעבירה לבנאי של הספרייה את הרולר ואת קבוע האיסוף באמצעות ה־lambda. הפקודה מקבלת בירושה את הביצוע, את רישום ה־requirement ואת ביטול הפלט בסיום.
 
-ב־`RobotContainer` ייבאו את `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` והחליפו את החיבור הקודם בקטע הבא. `isPresent()` בודקת שהרולר קיים לפני יצירת הפקודה, ואת המופע עצמו הפקודה מקבלת מה־container.
+ב־`RobotContainer` ייבאו את `frc.robot.subsystems.trainingRoller.commands.TrainingRollerCollect` והחליפו את החיבור הקודם בקטע הבא. את המופע של הרולר הפקודה מקבלת מה־container.
 
 ```java
-if (this.trainingRoller.isPresent()) {
-    this.driverController.northButton().whileTrue(new TrainingRollerCollect());
-}
+this.driverController.northButton().whileTrue(new TrainingRollerCollect());
 ```
 
 בנו והפעילו מחדש. בדקו לחיצה ושחרור. בזמן שהפקודה רצה, בלוג `Subsystems/TrainingRoller/Command` יופיע `TrainingRollerCollect`.
@@ -333,7 +327,7 @@ if (this.trainingRoller.isPresent()) {
     "ה־lambda מחזירה TrainingRollerConstants.EJECT_OUTPUT. את execute ואת end מקבלים בירושה.",
   ]}
   solutionLanguage="text"
-  solution="בבנאי TrainingRollerEject() קוראים ל־super עם RobotContainer.getInstance().trainingRoller.orElseThrow() ועם lambda שמחזירה את TrainingRollerConstants.EJECT_OUTPUT. בזמן החזקה execute שולחת בקשת פלט שלילית. בשחרור whileTrue מבטלת את הפקודה ו־end מבטלת את הפלט."
+  solution="בבנאי TrainingRollerEject() קוראים ל־super עם RobotContainer.getInstance().trainingRoller ועם lambda שמחזירה את TrainingRollerConstants.EJECT_OUTPUT. בזמן החזקה execute שולחת בקשת פלט שלילית. בשחרור whileTrue מבטלת את הפקודה ו־end מבטלת את הפלט."
 />
 
 ## 7. מתי ה־supplier קוראת את הערך?

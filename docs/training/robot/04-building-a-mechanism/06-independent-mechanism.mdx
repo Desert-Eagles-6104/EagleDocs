@@ -2,6 +2,7 @@
 title: "בונים תת־מערכת עצמאית מדרישות"
 sidebar_position: 6
 description: "מתכננים, מממשים ובודקים מנגנון הזנה עם פחות הנחיות ועם ראיות מהרצה."
+unlisted: true
 ---
 
 import ExerciseHelp from "@site/src/components/ExerciseHelp";
@@ -58,7 +59,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 | קדימה              | פלט `0.12` בסימולציה                                                |
 | לאחור              | פלט `-0.08` בסימולציה                                               |
 
-אין צורך בחישוב מכני. אלה ערכי מודל וניסוי שסופקו למשימה. מעבר לחומרה דורש מהמנטור כתובת, מגבלות זרם, פלטים ותצורת עמדה מאושרים; החיבור שתבנו כעת ייצור את תת־המערכת בסימולציה בלבד, כפי שעשיתם לרולר.
+אין צורך בחישוב מכני. אלה ערכי מודל וניסוי שסופקו למשימה. כמו ברולר, שמרו את תת־המערכת בשדה רגיל וצרו אותה פעם אחת בבנאי של `RobotContainer`. את הבדיקות בפרויקט הזה מבצעים בסימולציה. מעבר לחומרה דורש מהמנטור כתובת, מגבלות זרם, פלטים ותצורת עמדה מאושרים.
 
 ### התנהגויות נדרשות
 
@@ -93,8 +94,8 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 | `src/main/java/frc/robot/subsystems/trainingFeeder/TrainingFeeder.java`             | תת־מערכת שיורשת מבסיס המנוע ומקבלת בבנאי הבסיס את ה־`CONFIG` שלה                                                               |
 | `src/main/java/frc/robot/subsystems/trainingFeeder/commands/`                       | רק מחלקות/פונקציות יצירה שיש בהן צורך לפי הבחירה שלכם                                                                       |
 | `src/main/java/frc/robot/subsystems/trainingFeeder/TrainingFeederBindings.java` | בדיקת `Bindings` ששולפת את המופע הקיים דרך `RobotContainer.getInstance()` ומפרסמת את הפקודות שלו |
-| `src/main/java/frc/robot/RobotContainer.java`                                       | יצירת מופע אחד בסימולציה, שמירתו וקריאה ללוגים שלו                                                                          |
-| `src/main/java/frc/robot/TestModeBindings.java`                                     | אפשרות `TRAINING_FEEDER`, זמינה רק כשקיים המנגנון                                                                           |
+| `src/main/java/frc/robot/RobotContainer.java`                                       | שדה רגיל מסוג `TrainingFeeder`, יצירת מופע אחד בבנאי וקריאה ללוגים שלו                                                     |
+| `src/main/java/frc/robot/TestModeBindings.java`                                     | אפשרות `TRAINING_FEEDER` שמחזירה מופע של `TrainingFeederBindings`, בדומה לרישום הרולר                                       |
 | `dashboards/training-feeder.json` במאגר האישי                                       | פריסת הבדיקה שתשמרו מ־Elastic                                                                                               |
 
 תנו שמות ברורים לפעולות ולשילוב החיצוני. כדי שחבר יוכל לחזור על הבדיקה, השתמשו במפתחות הבאים לכרטיסים: `Training Feeder/Commands/Forward`, `Reverse`, `Batch` ו־`Stop`, תחת אותה תיקיית `Commands`. אלו פרסומים שתוסיפו; הם אינם מגיעים מהתבנית.
@@ -166,7 +167,7 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
 
 סמנו סעיף רק אחרי שראיתם את התוצאה, ושמרו ראיה מתאימה. הבנייה מאמתת חתימות ותחביר; גרף וצפייה בהרצה מאמתים התנהגות.
 
-- [ ] הפרויקט נבנה בדרך הרגילה של WPILib ללא שגיאות. תת־המערכת נוצרה פעם אחת בלבד בסימולציה, עם שם וכתובת נפרדים.
+- [ ] הפרויקט נבנה בדרך הרגילה של WPILib ללא שגיאות. תת־המערכת נוצרת פעם אחת בלבד בבנאי ונשמרת בשדה רגיל. היא נבדקה בסימולציה עם שם וכתובת נפרדים.
 - [ ] `TrainingFeederConstants.CONFIG` מכילה את התצורה; הפלטים והזמנים בעלי שמות ונמצאים באותה מחלקת קבועים.
 - [ ] בתחילת ההרצה ובכניסה ל־Test אין הנעה בלי בקשת פעולה.
 - [ ] קדימה ולאחור פועלות בנפרד, עד ביטול. Stop קוטעת כל אחת ומבטלת פלט.

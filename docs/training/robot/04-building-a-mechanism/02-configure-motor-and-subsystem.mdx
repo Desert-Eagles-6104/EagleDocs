@@ -215,8 +215,8 @@ output.NeutralMode = NeutralModeValue.Coast;
 
 בנו את הפרויקט ותקנו שגיאות לפני ההרצה. כעת חזרו לדרך החיבור של `TrainingFlywheel` בפרק הקודם ובצעו בעצמכם את אותם שלבים עבור הרולר:
 
-1. הוסיפו ב־`RobotContainer` את השדה `public final Optional<TrainingRoller> trainingRoller;`. בבנאי צרו בו מופע אחד כש־`isSim` הוא `true`, ובכל מצב אחר שמרו `Optional.empty()`.
-2. חברו את `logTelemetry()` של אותו מופע ל־`logTelemetry()` של ה־container.
+1. הוסיפו ב־`RobotContainer` את השדה `public final TrainingRoller trainingRoller;`. בבנאי צרו בו מופע אחד באמצעות `this.trainingRoller = new TrainingRoller();`. הוסיפו import של `frc.robot.subsystems.trainingRoller.TrainingRoller`.
+2. בתוך `logTelemetry()` של ה־container הוסיפו קריאה ל־`this.trainingRoller.logTelemetry()`.
 3. חברו פקודת `MotorSubsystemSetPercentage` מוכנה לכפתור פנוי באמצעות `whileTrue`. השתמשו ב־`TrainingRollerConstants.TRAINING_OUTPUT`. אם משתמשים בכפתור של הגלגל הקודם, הסירו ממנו את החיבור הישן.
 4. אל תוסיפו הפעלה מקבילה מתוך `teleopPeriodic()`.
 5. הפעילו מחדש סימולציה, מצאו `Subsystems/TrainingRoller/Inputs` ב־AdvantageScope והציגו מתח ומהירות, כל אחד בציר המתאים.
@@ -225,7 +225,7 @@ output.NeutralMode = NeutralModeValue.Coast;
 <ExerciseHelp
   hints={[
     "השדה והיצירה דומים לחיבור TrainingFlywheel, עם סוג ושם חדשים. לא יוצרים מופע נוסף לצורך הלוגים או הכפתור.",
-    "ב־ifPresent מקבלים את אותו מופע ומעבירים אותו לפקודה. ה־supplier מחזירה את קבוע הפלט מתוך TrainingRollerConstants.",
+    "העבירו לפקודה את this.trainingRoller. ה־supplier מחזירה את קבוע הפלט מתוך TrainingRollerConstants.",
     "אם לא רואים מדידות, בדקו יצירת מופע, חיבור לוגים וחיבור להרצה הנוכחית. אם אין תגובה לכפתור, בדקו גם את מצב הרובוט וחיבור השלט.",
   ]}
   solution="שלושת החיבורים - יצירה, מדידות וכפתור - צריכים להתייחס לאותו מופע של TrainingRoller. לוגים לבדם אינם מפעילים מנוע, וקיום הקובץ לבדו אינו יוצר מופע. שחרור הכפתור מבטל את הפקודה שמבטלת את הפלט."
@@ -248,7 +248,13 @@ output.NeutralMode = NeutralModeValue.Coast;
 
 ### תרגיל 2: אותו פלט, כיוון חיובי אחר
 
-שנו רק את `counterClockwisePositive` מ־`true` ל־`false`. חזרו על בקשת פלט חיובית. כתבו מה אמור לקרות **במנוע פיזי**, ומאיזה צד אתם מסתכלים. האם זה אותו שינוי כמו להשאיר את התצורה ולהפוך את סימן הפלט? מתי מתאים כל שינוי?
+**תרגיל מחשבתי בלבד – אין צורך לשנות את הקוד או להריץ את הרובוט.**
+
+דמיינו שהיינו משנים את `counterClockwisePositive` מ־`true` ל־`false`, ומשאירים את בקשת הפלט החיובית ללא שינוי.
+
+מה היה קורה **במנוע פיזי** בעקבות השינוי? ציינו מאיזה צד אתם מסתכלים על המנוע.
+
+האם התוצאה הייתה זהה לזו שהיינו מקבלים אילו השארנו את התצורה המקורית והפכנו את סימן הפלט? מה ההבדל בין שתי האפשרויות, ומתי מתאים להשתמש בכל אחת מהן?
 
 <ExerciseHelp
   hints={["אחד השינויים מגדיר את מוסכמת הכיוון של המנגנון; השני בוחר פעולה בכיוון ההפוך בזמן הריצה."]}

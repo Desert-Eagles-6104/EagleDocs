@@ -70,7 +70,7 @@ detected.ifPresent(target -> System.out.println(target));
 missing.ifPresent(target -> System.out.println(target));
 ```
 
-`orElseThrow()` מחזירה את הערך כשהוא קיים וזורקת `NoSuchElementException` כשה־`Optional` ריקה. השתמשו בה כשקיום הערך כבר נבדק או כשהיעדרו מעיד על שגיאה. למשל, בשיעור הרובוט בודקים שהרולר קיים לפני יצירת פקודה ששולפת אותו.
+`orElseThrow()` מחזירה את הערך כשהוא קיים וזורקת `NoSuchElementException` כשה־`Optional` ריקה. השתמשו בה כשקיום הערך כבר נבדק או כשהיעדרו מעיד על שגיאה. בדוגמה הבאה בודקים שיש זיהוי לפני ששולפים את שם המטרה.
 
 ```java
 if (detected.isPresent()) {

@@ -50,7 +50,7 @@ public class TrainingRollerBindings extends Bindings {
 
     @Override
     protected void binding() {
-        TrainingRoller roller = RobotContainer.getInstance().trainingRoller.orElseThrow();
+        TrainingRoller roller = RobotContainer.getInstance().trainingRoller;
 
         DashboardUtils.setData(COLLECT_KEY, new TrainingRollerCollect());
         DashboardUtils.setData(EJECT_KEY, new TrainingRollerEject());
@@ -76,15 +76,10 @@ import frc.robot.subsystems.trainingRoller.TrainingRollerBindings;
 בתוך רשימת ערכי ה־`enum`, **לפני `NONE`**, הוסיפו את הערך הבא, כולל הפסיק.
 
 ```java
-TRAINING_ROLLER((RobotContainer container) -> {
-    if (container.trainingRoller.isPresent()) {
-        return new TrainingRollerBindings();
-    }
-    return null;
-}),
+TRAINING_ROLLER((RobotContainer container) -> new TrainingRollerBindings()),
 ```
 
-הלמבדה שמסרנו ל־`TRAINING_ROLLER` מקבלת את ה־`RobotContainer` ובודקת אם קיים בו רולר. אם כן, היא מחזירה את הבדיקה. אם ה־`Optional` ריקה, `null` מסמן ל־`BindingsManager` להשמיט את הבדיקה מהבורר. לכן `TRAINING_ROLLER` תופיע בסימולציה, שבה יצרנו את הרולר. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
+הלמבדה שמסרנו ל־`TRAINING_ROLLER` מקבלת פרמטר מסוג `RobotContainer`, כפי שממשק הרישום דורש, ומחזירה מופע חדש של `TrainingRollerBindings`. כאן אין צורך להשתמש בפרמטר: `binding()` ניגשת לרולר דרך `RobotContainer.getInstance()`. הרולר עצמו כבר נוצר בבנאי ה־container, ולכן אין צורך בבדיקת קיום לפני רישום הבדיקה. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
 
 הסירו מ־`RobotContainer.configureTeleopBindings()` את חיבור North הזמני של הרולר. בנו את הפרויקט והפעילו מחדש את הסימולציה כדי שהאפשרות החדשה תיטען.
 
@@ -154,7 +149,7 @@ TRAINING_ROLLER((RobotContainer container) -> {
 
 לשם הפקודה בחרו תצוגת טקסט, ולמדידות תצוגה מספרית. אפשר לשנות כותרת דרך לחיצה ימנית ו־**Edit Properties**, למשל ״מתח רולר [V]״. מדידות כאן מיועדות לצפייה; אין לשנות את ערכן דרך שדה עריכה. ההבדל בנתיבים נובע מכך ש־`Inputs` נרשמים ב־`Logger.processInputs`, ושם הפקודה נרשם ב־`Logger.recordOutput` תחת `RealOutputs`. [הוספה והתאמת כרטיסים](https://frc-elastic.gitbook.io/docs/customizing-your-dashboard/adding-and-customizing-widgets) ו[סוגי הכרטיסים](https://frc-elastic.gitbook.io/docs/additional-features-and-references/widgets-list-and-properties-reference).
 
-אם מדידה חסרה, בדקו ש־Elastic מחוברת להרצה הנוכחית וש־`RobotContainer.logTelemetry()` קוראת ל־`trainingRoller.ifPresent(TrainingRoller::logTelemetry)`. אם כרטיסי הפקודות חסרים, בדקו ש־`TRAINING_ROLLER` נבחרה לפני ה־Enable במצב Test. המדידות מתפרסמות בכל ארבעה מחזורי רובוט, ופקודת העצירה יכולה להסתיים בין שתי דגימות.
+אם מדידה חסרה, בדקו ש־Elastic מחוברת להרצה הנוכחית וש־`RobotContainer.logTelemetry()` קוראת ל־`this.trainingRoller.logTelemetry()`. אם כרטיסי הפקודות חסרים, בדקו ש־`TRAINING_ROLLER` נבחרה לפני ה־Enable במצב Test. המדידות מתפרסמות בכל ארבעה מחזורי רובוט, ופקודת העצירה יכולה להסתיים בין שתי דגימות.
 
 ## 5. ניסוי: בקשה, פקודה ומדידה
 

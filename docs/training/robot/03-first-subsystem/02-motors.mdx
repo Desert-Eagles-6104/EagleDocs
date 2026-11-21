@@ -37,13 +37,11 @@ import frc.robot.subsystems.trainingFlywheel.TrainingFlywheel;
 ```java
 @Override
 public void teleopPeriodic() {
-    RobotContainer.getInstance().trainingFlywheel.ifPresent(flywheel -> {
-        flywheel.setPercentOutput(TrainingFlywheel.TRAINING_OUTPUT, false);
-    });
+    RobotContainer.getInstance().trainingFlywheel.setPercentOutput(
+        TrainingFlywheel.TRAINING_OUTPUT, false
+      );
 }
 ```
-
-`flywheel -> { ... }` היא למבדה שמתארת מה לעשות עם המופע ש־`ifPresent` מעבירה לה. [ביטויי למבדה ב־Java](../../java/09-lambdas/index.mdx)
 
 לפני שממשיכים: איזו תת־מערכת מקבלים דרך `RobotContainer.getInstance().trainingFlywheel`? האם נוצר כאן אובייקט חדש? היעזרו בחיבור שכתבתם בשיעור הקודם.
 
@@ -53,17 +51,10 @@ public void teleopPeriodic() {
   solutionLanguage="text"
 />
 
-מה `ifPresent` עושה אם תת־המערכת אינה קיימת?
+בקריאה הזאת, `TrainingFlywheel.TRAINING_OUTPUT` הוא ערך הפלט שהגדרנו בתת־המערכת,
+ו־`trainingFlywheel.setPercentOutput(...)` מעבירה אותו למנוע.
 
-<ExerciseHelp
-  hints={["מה מכילה Optional.empty()?"]}
-  solution="אם ה־Optional ריקה, הפעולה אינה מתבצעת: לא שולחים בקשת פלט למנוע. אם יש בה תת־מערכת, הפעולה מתבצעת עליה."
-  solutionLanguage="text"
-/>
-בתוך הפעולה, `TrainingFlywheel.TRAINING_OUTPUT` הוא ערך הפלט שהגדרנו בתת־המערכת,
-ו־`flywheel.setPercentOutput(...)` מעבירה אותו למנוע.
-
-הקריאה `flywheel.setPercentOutput(...)` מפעילה מתודה על אובייקט תת־המערכת. אנחנו משתמשים במנוע שכבר נוצר, ולא מגדירים או יוצרים אותו כאן. מכיוון שהקריאה נעשית מתוך `Robot`, משתמשים באובייקט `flywheel` כדי לגשת למתודה שלו.
+הקריאה `trainingFlywheel.setPercentOutput(...)` מפעילה מתודה על אובייקט תת־המערכת. אנחנו משתמשים במנוע שכבר נוצר, ולא מגדירים או יוצרים אותו כאן. מתוך `Robot` ניגשים למופע דרך השדה `trainingFlywheel` של `RobotContainer.getInstance()`.
 
 ### מתי הקוד הזה רץ?
 
@@ -79,7 +70,7 @@ public void teleopPeriodic() {
 
 ## 2. בוחרים כמה כוח להפעיל
 
-`flywheel.setPercentOutput(0.15, false)` מבקשת **15% פלט**, ולא מהירות של 0.15 סיבובים לשנייה. הטווח הוא מ־`-1` עד `1`; הסימן קובע את כיוון הסיבוב. הפרמטר `false` משאיר את מגבלות התוכנה בתוקף.
+`trainingFlywheel.setPercentOutput(0.15, false)` מבקשת **15% פלט**, ולא מהירות של 0.15 סיבובים לשנייה. הטווח הוא מ־`-1` עד `1`; הסימן קובע את כיוון הסיבוב. הפרמטר `false` משאיר את מגבלות התוכנה בתוקף.
 
 הפלט משפיע על תנועת המנוע, אבל המהירות בפועל היא מדידה נפרדת. **אנקודר** הוא חיישן שמודד סיבוב; בסימולציה המדידה מחושבת באמצעות המודל המוכן.
 

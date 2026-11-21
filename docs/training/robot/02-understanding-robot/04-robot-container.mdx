@@ -33,13 +33,13 @@ final SwerveIO swerveIO = isSim
 
 `SwerveIO` הוא ממשק שמגדיר את הפעולות המשותפות למימושים של מערכת הנהיגה. לכן המשתנה `swerveIO` יכול להחזיק את המימוש שנבחר לפי סביבת ההרצה. [ממשקים ב־Java](../../java/10-enrichment/03-interfaces.mdx)
 
-### Optional: יכול להיות שיש אובייקט, ויכול להיות שאין
+### Optional בקוד הקיים בתבנית
 
 ```java
 public final Optional<SimCoordinator> simCoordinator;
 ```
 
-`Optional<SimCoordinator>` מציינת שהשדה יכול להכיל `SimCoordinator` או להיות ריק. `Optional.of(...)` עוטפת את האובייקט כשיצרנו אותו, ו־`Optional.empty()` מייצגת הרצה שבה הוא חסר. [המחלקה `Optional` ב־Java](../../java/10-enrichment/01-optional.mdx)
+`Optional<SimCoordinator>` מציינת שהשדה יכול להכיל `SimCoordinator` או להיות ריק. `Optional.of(...)` עוטפת את האובייקט כשיצרנו אותו, ו־`Optional.empty()` מייצגת הרצה שבה הוא חסר. השאירו את השימוש הזה בתבנית כפי שהוא. את תתי־המערכות שנוסיף בהכשרה נשמור בשדות רגילים וניצור פעם אחת בבנאי. [המחלקה `Optional` ב־Java](../../java/10-enrichment/01-optional.mdx)
 
 ## 1. יוצרים פעם אחת, ומשתמשים לאורך הריצה
 
