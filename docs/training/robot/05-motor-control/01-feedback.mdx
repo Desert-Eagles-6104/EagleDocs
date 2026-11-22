@@ -21,16 +21,22 @@ import ExerciseHelp from "@site/src/components/ExerciseHelp";
   title="מתח קבוע עד סמוך לסימון"
   config={{
     mechanism: "slide",
-    goal: "position",
     target: 1.5,
     tolerance: 0.005,
     duration: 8,
     damping: 1.2,
     friction: 0.1,
-    a: { method: "open", output: 3, stop: "target" },
+    a: {
+      method: "open",
+      output: 3,
+      stop: "target",
+    },
+    request: "position",
+    graphs: ["response", "output"],
+    view: {
+      step: false,
+    },
   }}
-  graphs={["response", "output"]}
-  showStep={false}
 />
 
 ## 2. מתחילים להאט לפני שמגיעים
@@ -103,13 +109,19 @@ $$
     friction: 0.1,
     rateTolerance: 0.05,
     dwell: 0.5,
-    a: { kp: 0 },
+    a: {
+      kp: 0,
+    },
+    graphs: ["response"],
+    view: {
+      step: false,
+      tolerance: true,
+      settlingTime: true,
+    },
+    controls: {
+      a: ["kp"],
+    },
   }}
-  graphs={["response"]}
-  tune={["kp"]}
-  showTolerance
-  showSettlingTime
-  showStep={false}
 />
 
 ## 4. D - בודקים כמה מהר הקופסה מתקרבת
@@ -135,11 +147,17 @@ P מקבל באותו רגע אותו מרחק בשני המקרים. אם המ�
     duration: 5,
     damping: 1.2,
     friction: 0.1,
-    a: { kp: 1 },
+    a: {
+      kp: 1,
+    },
+    graphs: [],
+    view: {
+      step: false,
+    },
+    controls: {
+      experiment: ["initialVelocity"],
+    },
   }}
-  graphs={[]}
-  adjustInitialVelocity
-  showStep={false}
 />
 
 ### שלב 3 - מה D מוסיף?
@@ -175,14 +193,27 @@ D משווה את השגיאה עכשיו לשגיאה מהמדידה הקודמ
     damping: 1.2,
     friction: 0.1,
     compare: true,
-    a: { kp: 0.8, kd: 0 },
-    b: { method: "pid", kp: 8, kd: 0, i: false, d: true },
+    a: {
+      kp: 0.8,
+      kd: 0,
+    },
+    b: {
+      method: "pid",
+      kp: 8,
+      kd: 0,
+      i: false,
+      d: true,
+    },
+    graphs: ["response"],
+    view: {
+      step: false,
+      tolerance: true,
+      settlingTime: true,
+    },
+    controls: {
+      b: ["kp", "kd"],
+    },
   }}
-  graphs={["response"]}
-  tune={{ b: ["kp", "kd"] }}
-  showTolerance
-  showSettlingTime
-  showStep={false}
 />
 
 **שאלת הסבר.** למה הקופסה של בקר 2 מקבלת אותה דחיפה ברגע הראשון בשתי ההרצות, אבל נעצרת אחרת?

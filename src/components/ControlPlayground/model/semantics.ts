@@ -93,10 +93,6 @@ export const demandBounds = (config: Config): NumericRange =>
     : config.request === ControlRequest.Torque
       ? [-40, 40]
       : [-12, 12];
-export const positionUnit = (config: Config) =>
-  isLinear(config.mechanism) ? "m" : "rad";
-export const targetUnit = (config: Config) =>
-  positionUnit(config) + (isVelocity(config) ? "/s" : "");
 export const outputUnit = (config: Config) =>
   config.request === ControlRequest.Torque ? "A" : "V";
 export const demandUnit = (config: Config) =>

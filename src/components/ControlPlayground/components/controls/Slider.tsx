@@ -15,7 +15,7 @@ export function Slider({
   value: number;
   min?: number;
   max: number;
-  step?: number;
+  step?: number | "any";
   onChange: (n: number) => void;
   hint?: string;
 }) {
@@ -25,7 +25,7 @@ export function Slider({
         <span>
           {label} <Help label={label} text={hint ?? hintFor(label)} />
         </span>{" "}
-        <bdi>{value.toFixed(2)}</bdi>
+        <bdi>{value.toLocaleString("en-US", { maximumSignificantDigits: 6 })}</bdi>
       </span>
       <input
         type="range"

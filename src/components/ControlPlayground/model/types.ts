@@ -6,6 +6,8 @@ import {
   type StopMode,
   type GraphKind,
 } from "./constants";
+import type { Units } from "./units";
+import type { Controls, View } from "./interface";
 export interface Controller {
   method: Method;
   kp: number;
@@ -31,6 +33,10 @@ export interface Controller {
   stopAfter: number;
 }
 export interface Config {
+  units: Units;
+  view: View;
+  controls: Controls;
+  initialVelocity: number;
   mechanism: Mechanism;
   target: number;
   a: Controller;

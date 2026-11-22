@@ -1,19 +1,13 @@
 import type { GraphModel, GraphSeries } from "./graphTypes";
-import { GraphType, RADIANS_PER_ROTATION } from "../model/constants";
-import {
-  controllerKeys,
-  isVelocity,
-  isDirect,
-  positionUnit,
-} from "../model/semantics";
+import { GraphType } from "../model/constants";
+import { motionUnit } from "../model/units";
+import { controllerKeys, isVelocity, isDirect } from "../model/semantics";
 import { type Config, type State, type Sample } from "../model/types";
 import { type GraphKind } from "../model/constants";
 export function graphModel(
   history: Sample[],
   kind: GraphKind,
   cfg: Config,
-  showTolerance = false,
-  showRotations = false,
 ): GraphModel {
   const velocity = isVelocity(cfg);
   const metric = (state: State): number => {
@@ -75,17 +69,18 @@ export function graphModel(
       });
   }
   const isOutput = kind === "output" || kind === "terms";
-  const scale = showRotations && !isOutput ? RADIANS_PER_ROTATION : 1;
+  const unit = motionUnit(cfg);
+  const scale = isOutput ? 1 : unit.factor;
   if (scale !== 1) {
     for (const line of series) {
-      line.values = line.values.map((value) => value / scale);
+      line.values = line.values.map((value) => value * scale);
     }
   }
   const toleranceBand =
-    showTolerance && kind === GraphType.Response && !isDirect(cfg)
+    cfg.view.tolerance && kind === GraphType.Response && !isDirect(cfg)
       ? {
-          low: (cfg.target - cfg.tolerance) / scale,
-          high: (cfg.target + cfg.tolerance) / scale,
+          low: (cfg.target - cfg.tolerance) * scale,
+          high: (cfg.target + cfg.tolerance) * scale,
         }
       : undefined;
   let min = Math.min(0, toleranceBand?.low ?? 0);
@@ -98,13 +93,11 @@ export function graphModel(
   const pad = (max - min) * 0.1;
   min -= pad;
   max += pad;
-  const unit = isOutput
+  const symbol = isOutput
     ? cfg.request === "torque"
       ? "A"
       : "V"
-    : showRotations
-      ? "rev"
-      : positionUnit(cfg);
+    : unit.symbol;
   const suffix =
     kind === "velocity" ||
     ((kind === "response" || kind === "error") && velocity)
@@ -112,5 +105,5 @@ export function graphModel(
       : kind === "acceleration"
         ? "/s²"
         : "";
-  return { series, min, max, unit, suffix, toleranceBand };
+  return { series, min, max, unit: symbol, suffix, toleranceBand };
 }

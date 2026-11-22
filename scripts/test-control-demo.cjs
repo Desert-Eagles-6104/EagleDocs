@@ -7,6 +7,126 @@ const { defaults } = load("model/defaults");
 const { supports } = load("model/semantics");
 const { createSimulation, advanceSimulation } = load("engine/simulation");
 const { step } = load("engine/step");
+const { experimentConfig } = load("config/experiment");
+const { serialize, readConfig } = load("config/url");
+const { graphModel } = load("view-model/graphs");
+
+test("author units convert gains, targets, damping and initial conditions together", () => {
+  const rotation = 2 * Math.PI;
+  const canonical = experimentConfig({
+    mechanism: "wheel",
+    request: "velocity",
+    target: rotation,
+    tolerance: 0.05 * rotation,
+    noise: 0.01 * rotation,
+    initialVelocity: 0.5 * rotation,
+    damping: 0.6 / rotation,
+    a: {
+      kp: 2 / rotation,
+      kv: 0.6 / rotation,
+      i: false,
+      d: false,
+      method: "combined",
+    },
+  });
+  const rotations = experimentConfig({
+    mechanism: "wheel",
+    request: "velocity",
+    units: { angle: "rev" },
+    target: 1,
+    tolerance: 0.05,
+    noise: 0.01,
+    initialVelocity: 0.5,
+    damping: 0.6,
+    a: { kp: 2, kv: 0.6, i: false, d: false, method: "combined" },
+  });
+  for (const key of [
+    "target",
+    "noise",
+    "initialVelocity",
+    "tolerance",
+    "damping",
+  ]) {
+    assert.ok(Math.abs(rotations[key] - canonical[key]) < 1e-12, key);
+  }
+  for (const key of ["kp", "kv"]) {
+    assert.ok(Math.abs(rotations.a[key] - canonical.a[key]) < 1e-12, key);
+  }
+  const first = createSimulation(canonical.initialVelocity);
+  const second = createSimulation(rotations.initialVelocity);
+  advanceSimulation(first, canonical, 80);
+  advanceSimulation(second, rotations, 80);
+  assert.ok(Math.abs(first.a.v - second.a.v) < 1e-12);
+  assert.ok(Math.abs(first.a.output - second.a.output) < 1e-12);
+  assert.deepEqual(readConfig(serialize(rotations)), rotations);
+  const graph = graphModel(
+    [{ a: second.a, b: second.b }],
+    "response",
+    rotations,
+  );
+  assert.equal(graph.unit + graph.suffix, "rev/s");
+  assert.equal(graph.series[1].values[0], 1);
+});
+
+test("centimetres and degrees preserve physical values, including feedforward coefficients", () => {
+  const centimetres = experimentConfig({
+    mechanism: "slide",
+    units: { length: "cm" },
+    target: 150,
+    tolerance: 5,
+    initialVelocity: 20,
+    a: { kp: 0.08, kv: 0.006, ka: 0.01, vmax: 80, amax: 100 },
+  });
+  assert.equal(centimetres.target, 1.5);
+  assert.equal(centimetres.tolerance, 0.05);
+  assert.equal(centimetres.initialVelocity, 0.2);
+  assert.equal(centimetres.a.kp, 8);
+  assert.equal(centimetres.a.kv, 0.6);
+  assert.equal(centimetres.a.ka, 1);
+  assert.equal(centimetres.a.vmax, 0.8);
+  const degrees = experimentConfig({
+    mechanism: "arm",
+    units: { angle: "deg" },
+    target: 45,
+  });
+  assert.ok(Math.abs(degrees.target - Math.PI / 4) < 1e-12);
+});
+
+test("the config-only embed API exposes full settings and keeps instance state independent", () => {
+  const options = {
+    request: "velocity",
+    mechanism: "wheel",
+    units: { angle: "rev" },
+    target: 1,
+    controls: {
+      experiment: "all",
+      a: ["method", "p", "kp", "stop", "stopAfter"],
+    },
+    view: { graphSelection: true, disturbance: true },
+    graphs: ["response", "output"],
+  };
+  const first = demoConfig(undefined, options);
+  const second = demoConfig(undefined, options);
+  assert.equal(first.target, 2 * Math.PI);
+  assert.equal(first.controls.experiment, "all");
+  assert.deepEqual(first.controls.a, options.controls.a);
+  assert.deepEqual(first.graphs, options.graphs);
+  assert.equal(first.view.disturbance, true);
+  first.controls.a.push("kd");
+  first.units.angle = "deg";
+  first.view.mechanism = false;
+  assert.deepEqual(second.controls.a, options.controls.a);
+  assert.equal(second.units.angle, "rev");
+  assert.equal(second.view.mechanism, true);
+  const invalid = experimentConfig({
+    units: { angle: "bogus" },
+    controls: {
+      a: ["notAControllerField", { key: "kp", as: "toggle", on: Infinity }],
+    },
+  });
+  assert.equal(invalid.units.angle, "rad");
+  assert.deepEqual(invalid.controls.a, []);
+});
 
 test("partial overrides preserve teaching presets and defaults", () => {
   const cfg = demoConfig("gravity", { duration: 10, a: { kp: 3 } });
@@ -18,9 +138,9 @@ test("partial overrides preserve teaching presets and defaults", () => {
   assert.equal(defaults.a.kp, 8);
 });
 
-test("public goal selects the quantity and direct experiments default to an output graph", () => {
+test("request selects the quantity and direct experiments default to an output graph", () => {
   const cfg = demoConfig(undefined, {
-    goal: "velocity",
+    request: "velocity",
     mechanism: "wheel",
     target: 8,
     a: { method: "bang" },
@@ -29,7 +149,7 @@ test("public goal selects the quantity and direct experiments default to an outp
   assert.equal(cfg.request, "velocity");
   assert.deepEqual(cfg.graphs, ["response"]);
   assert.deepEqual(demoConfig("open").graphs, ["output"]);
-  assert.deepEqual(demoConfig("open", {}, []).graphs, []);
+  assert.deepEqual(demoConfig("open", { graphs: [] }).graphs, []);
 });
 
 test("instances own independent controller and graph settings", () => {
@@ -87,7 +207,7 @@ test("the horizontal slide illustrates cutoff, P tuning, and D damping", () => {
   function run(a, tolerance = 0.05) {
     const cfg = demoConfig(undefined, {
       mechanism: "slide",
-      goal: "position",
+      request: "position",
       target: 1.5,
       tolerance,
       duration: 8,

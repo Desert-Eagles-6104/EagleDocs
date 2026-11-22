@@ -5,7 +5,7 @@ import { type Config, type Sample } from "../model/types";
 import { advanceSimulation, createSimulation } from "../engine/simulation";
 
 export function useSimulation(config: Config) {
-  const simulation = useRef(createSimulation());
+  const simulation = useRef(createSimulation(config.initialVelocity));
   const [running, setRunning] = useState(false);
   const [history, setHistory] = useState<Sample[]>([]);
   const [error, setError] = useState("");

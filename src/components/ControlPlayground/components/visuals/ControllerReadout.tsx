@@ -4,16 +4,13 @@ import type { Config, State } from "../../model/types";
 import { DT } from "../../model/constants";
 import { Help } from "../common/Help";
 import styles from "../../styles.module.css";
+import { measuredUnit, motionUnit } from "../../model/units";
 export function ControllerReadout({
   cfg,
   state,
-  time,
-  targetUnit,
 }: {
   cfg: Config;
   state: State;
-  time: number;
-  targetUnit: string;
 }) {
   return (
     <>
@@ -27,7 +24,8 @@ export function ControllerReadout({
               text="ההפרש בין יעד הבקר למדידה. בפרופיל תנועה זהו יעד הביניים; ההתייצבות נבדקת ביחס ליעד הסופי."
             />
             <bdi>
-              e = {state.error.toFixed(2)} {targetUnit}
+              e = {(state.error * motionUnit(cfg).factor).toFixed(2)}{" "}
+              {measuredUnit(cfg)}
             </bdi>
           </span>
         )}
@@ -43,7 +41,6 @@ export function ControllerReadout({
         </span>
         {Math.abs(state.raw - state.output) > 0.01 ? " • רוויה" : ""}
       </div>
-      <SettlingReadout cfg={cfg} state={state} time={time} />
       {state.stoppedAt >= 0 && (
         <p className={styles.readout}>
           הפלט נותק אחרי {state.stoppedAt.toFixed(2)} שניות; המנגנון ממשיך לנוע

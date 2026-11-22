@@ -31,6 +31,20 @@ export const controller: Controller = {
   stopAfter: 8,
 };
 export const defaults: Config = {
+  units: { length: "m", angle: "rad" },
+  view: {
+    mechanism: true,
+    readout: true,
+    settlingTime: true,
+    step: true,
+    speed: true,
+    disturbance: true,
+    tolerance: false,
+    graphSelection: true,
+    explanations: true,
+  },
+  controls: { experiment: "all", a: "all", b: "all" },
+  initialVelocity: 0,
   mechanism: MechanismType.Elevator,
   target: 1.5,
   a: { ...controller },

@@ -1,8 +1,3 @@
 export { default } from "./demo/ControlDemo";
 export type { ControlDemoProps } from "./demo/ControlDemo";
-export type {
-  DemoConfig,
-  DemoGraph,
-  DemoTuning,
-  TuningParameter,
-} from "./model/demo";
+export type { ConfigInput } from "./model/config";

@@ -7,16 +7,6 @@ export const methods: Record<Method, string> = {
   bang: "Bang-Bang",
   profile: "פרופיל תנועה",
 };
-export const requests: Record<Request, string> = {
-  duty: "Duty Cycle - אחוזי עוצמה",
-  voltage: "Voltage - מתח",
-  velocity: "Velocity - מהירות",
-  position: "Position - מיקום",
-  torque: "Torque Current - זרם מומנט",
-  magic: "Motion Magic - תנועה לפי פרופיל",
-};
-// Goal names describe the experiment; Phoenix request names are implementation
-// details kept separately for existing links and the optional teaching material.
 export const goals: Record<Request, string> = {
   position: "להגיע למיקום ולהחזיק בו",
   velocity: "לשמור על מהירות",

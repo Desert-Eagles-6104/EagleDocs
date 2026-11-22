@@ -24,7 +24,7 @@ saved experiment URLs continue to work after internal files move.
 ## Boundaries
 
 - `model/` and `engine/` do not import React, CSS or browser APIs.
-- Configuration validation uses domain constants, not translated UI labels.
+- Configuration validation uses domain constants and shared field keys, never translated labels.
 - `useSimulation` owns animation frames and bounded history; `useExperiment`
   shares reset, tuning and playback behavior between both interfaces.
 - `usePlayground` alone restores URL state and observes reduced-motion settings.
@@ -33,6 +33,30 @@ saved experiment URLs continue to work after internal files move.
   `components/visuals/Graph.tsx`.
 - Numeric controller ranges live in `model/constraints.ts`. Validation and MDX
   tuning inputs use the same limits.
+
+## Shared configuration and interface
+
+`components/ExperimentView.tsx` renders both the lab and MDX experiments.
+`config/fields.ts` defines every editable experiment and controller field,
+including labels, ranges, units and method compatibility. The shared
+`SettingsFields` renderer exposes the fields selected by `config.controls`.
+Add a setting there once to make it available in both entry points.
+Fields marked `advanced` are collapsed when the selection is `"all"`.
+Explicit field lists stay visible, so focused lessons expose their exercise controls.
+
+`config.view` selects the visible controls, readouts and explanations.
+The lab defaults to all settings. Embeds default to locked settings and opt in
+through `config.controls`, with `"all"` available for a full lab inside a page.
+MDX embeds accept only the shared `config`; settings and view options have no separate props.
+
+`model/units.ts` owns display conversions. The engine and validated runtime
+`Config` always contain metres and radians. Author-facing `ConfigInput` uses
+the units selected in `config.units`; `experimentConfig` converts explicit
+inputs once and merges them with canonical defaults or presets. UI changes
+convert back to canonical values. Changing units must preserve targets,
+controller output, trajectories, tolerances and initial conditions.
+Saved URLs contain canonical runtime values plus the unit selection, so restoring
+them must use `validate`, without a second input-unit conversion.
 
 ## Types and constants
 

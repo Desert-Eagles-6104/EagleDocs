@@ -29,21 +29,15 @@ export const Graph = memo(function Graph({
   history,
   kind,
   cfg,
-  showTolerance,
-  showRotations,
 }: {
   history: Sample[];
   kind: GraphKind;
   cfg: Config;
-  showTolerance?: boolean;
-  showRotations?: boolean;
 }) {
   const { series, min, max, unit, suffix, toleranceBand } = graphModel(
     history,
     kind,
     cfg,
-    showTolerance,
-    showRotations,
   );
   const plotY = (value: number) => 15 + ((max - value) / (max - min)) * 130;
   return (

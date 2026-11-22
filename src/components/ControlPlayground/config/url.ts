@@ -1,14 +1,14 @@
 /* global URLSearchParams */
 import { defaults } from "../model/defaults";
 import { type Config, type Controller } from "../model/types";
-import { ControlMethod, ControlRequest } from "../model/constants";
+import { ControlRequest } from "../model/constants";
 import { isEnumValue } from "../model/guards";
 import { presets } from "./presets";
 import { validate } from "./validation";
 export const MAX_QUERY_LENGTH = 36000;
 export function readConfig(search: string): Config {
   try {
-    // Check before parsing the query; old full-state links remain supported.
+    // Bound the query before parsing it.
     if (search.length > MAX_QUERY_LENGTH) return validate(defaults);
     const q = new URLSearchParams(search),
       encoded = q.get("experiment");
@@ -20,18 +20,6 @@ export function readConfig(search: string): Config {
         ? { ...defaults, ...presets[preset].config }
         : defaults,
     );
-    const method = q.get("method");
-    if (isEnumValue(ControlMethod, method))
-      c = validate({
-        ...c,
-        request:
-          method === "open"
-            ? "voltage"
-            : method === "bang" || method === "ff"
-              ? "velocity"
-              : c.request,
-        a: { ...c.a, method },
-      });
     const request = q.get("request");
     if (isEnumValue(ControlRequest, request))
       c = validate({

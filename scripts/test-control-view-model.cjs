@@ -44,6 +44,7 @@ test("wheel teaching graphs can display rotations without changing voltage", () 
     mechanism: "wheel",
     request: "velocity",
     target: rotation,
+    units: { ...defaults.units, angle: "rev" },
   };
   const state = {
     ...initial(),
@@ -52,8 +53,8 @@ test("wheel teaching graphs can display rotations without changing voltage", () 
     output: 0.7,
   };
   const sample = [{ a: state, b: state }];
-  const speed = graphModel(sample, "response", cfg, false, true);
-  const output = graphModel(sample, "output", cfg, false, true);
+  const speed = graphModel(sample, "response", cfg);
+  const output = graphModel(sample, "output", cfg);
   assert.equal(speed.unit + speed.suffix, "rev/s");
   assert.deepEqual(
     speed.series.map((series) => series.values),
@@ -64,11 +65,23 @@ test("wheel teaching graphs can display rotations without changing voltage", () 
 });
 
 test("a position tolerance band appears only on the requested response graph", () => {
-  const cfg = { ...defaults, mechanism: "slide", target: 1.5, tolerance: 0.05 };
-  const graph = graphModel([], "response", cfg, true);
+  const cfg = {
+    ...defaults,
+    mechanism: "slide",
+    target: 1.5,
+    tolerance: 0.05,
+    view: { ...defaults.view, tolerance: true },
+  };
+  const graph = graphModel([], "response", cfg);
   assert.equal(graph.unit, "m");
   assert.deepEqual(graph.toleranceBand, { low: 1.45, high: 1.55 });
   assert.ok(graph.min < 1.45 && graph.max > 1.55);
-  assert.equal(graphModel([], "response", cfg).toleranceBand, undefined);
-  assert.equal(graphModel([], "output", cfg, true).toleranceBand, undefined);
+  assert.equal(
+    graphModel([], "response", {
+      ...cfg,
+      view: { ...cfg.view, tolerance: false },
+    }).toleranceBand,
+    undefined,
+  );
+  assert.equal(graphModel([], "output", cfg).toleranceBand, undefined);
 });

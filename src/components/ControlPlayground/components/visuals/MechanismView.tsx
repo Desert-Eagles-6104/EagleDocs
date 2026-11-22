@@ -5,8 +5,8 @@ import {
   targetBounds,
   clamp,
   isVelocity,
-  targetUnit,
 } from "../../model/semantics";
+import { measuredUnit, motionUnit } from "../../model/units";
 import { type Config, type State } from "../../model/types";
 import { RADIANS_PER_ROTATION } from "../../model/constants";
 import styles from "../../styles.module.css";
@@ -16,14 +16,12 @@ export function MechanismView({
   onTarget,
   label,
   interactive = true,
-  showRotations = false,
 }: {
   state: State;
   cfg: Config;
   onTarget: (n: number) => void;
   label: string;
   interactive?: boolean;
-  showRotations?: boolean;
 }) {
   const [lo, hi] = bounds(cfg.mechanism),
     y = 170 - ((state.x - lo) / (hi - lo)) * 140,
@@ -31,8 +29,12 @@ export function MechanismView({
   const slideX = (position: number) => 30 + ((position - lo) / (hi - lo)) * 240;
   const showPositionTarget = !isDirect(cfg) && !isVelocity(cfg);
   const angle = state.x;
-  const actualSpeed = state.v / RADIANS_PER_ROTATION;
-  const requestedSpeed = cfg.target / RADIANS_PER_ROTATION;
+  const unit = motionUnit(cfg);
+  const showSpeedGauge = cfg.mechanism === "wheel" && isVelocity(cfg);
+  const actualSpeed = state.v * unit.factor;
+  const requestedSpeed = cfg.target * unit.factor;
+  const speedLabel =
+    unit.symbol === "rev" ? "סיבובים לשנייה" : unit.symbol + "/s";
   const speedLimit = Math.max(1, 2 * Math.abs(requestedSpeed));
   const speedX = (speed: number) =>
     150 + (110 * clamp(speed, -speedLimit, speedLimit)) / speedLimit;
@@ -50,9 +52,9 @@ export function MechanismView({
         viewBox="0 0 300 210"
         role="img"
         aria-label={
-          showRotations
-            ? `${label}: מהירות ${actualSpeed.toFixed(2)} סיבובים לשנייה`
-            : `${label}: מיקום ${state.x.toFixed(2)}, מהירות ${state.v.toFixed(2)}`
+          showSpeedGauge
+            ? `${label}: מהירות ${actualSpeed.toFixed(2)} ${speedLabel}`
+            : `${label}: מיקום ${(state.x * unit.factor).toFixed(2)} ${unit.symbol}, מהירות ${actualSpeed.toFixed(2)} ${speedLabel}`
         }
         onPointerDown={(e) => {
           if (!interactive || isDirect(cfg)) return;
@@ -130,13 +132,13 @@ export function MechanismView({
           <>
             <circle
               cx="150"
-              cy={showRotations ? 87 : 110}
-              r={showRotations ? 54 : cfg.mechanism === "wheel" ? 65 : 10}
+              cy={showSpeedGauge ? 87 : 110}
+              r={showSpeedGauge ? 54 : cfg.mechanism === "wheel" ? 65 : 10}
               fill="none"
               stroke="currentColor"
               strokeWidth="5"
             />
-            {showRotations ? (
+            {showSpeedGauge ? (
               <>
                 <path d="M150 20 V27" stroke="currentColor" strokeWidth="3" />
                 <path
@@ -191,13 +193,14 @@ export function MechanismView({
           fill="currentColor"
           fontSize="12"
         >
-          {showRotations
-            ? `${actualSpeed.toFixed(2)} סיבובים לשנייה`
+          {showSpeedGauge
+            ? `${actualSpeed.toFixed(2)} ${speedLabel}`
             : cfg.mechanism === "wheel"
-              ? "מהירות: " + state.v.toFixed(2) + " rad/s"
+              ? "מהירות: " + actualSpeed.toFixed(2) + " " + speedLabel
               : "מיקום: " +
-                state.x.toFixed(2) +
-                (cfg.mechanism === "arm" ? " rad" : " m")}
+                (state.x * unit.factor).toFixed(2) +
+                " " +
+                unit.symbol}
         </text>
       </svg>
       <small>
@@ -205,9 +208,9 @@ export function MechanismView({
           ? "בניסוי הזה קובעים את הפלט ובודקים את התנועה שמתקבלת."
           : interactive
             ? "גררו ושחררו לקביעת יעד; אפשר גם להשתמש במחוון היעד."
-            : showRotations
-              ? `מהירות יעד (סיבובים לשנייה): ${Number(requestedSpeed.toFixed(2))}`
-              : `יעד קבוע: ${cfg.target} ${targetUnit(cfg)}`}
+            : showSpeedGauge
+              ? `מהירות יעד (${speedLabel}): ${Number(requestedSpeed.toFixed(2))}`
+              : `יעד קבוע: ${Number((cfg.target * unit.factor).toFixed(2))} ${measuredUnit(cfg)}`}
       </small>
     </div>
   );

@@ -6,105 +6,141 @@ unlisted: true
 
 import ControlDemo from "@site/src/components/ControlPlayground/ControlDemo";
 
-# סימולציה קטנה בתוך ההסבר
-
-`ControlDemo` מציג ניסוי ממוקד בתוך דף MDX. מגדירים מראש את המערכת, המטרה והבקרים, ובוחרים מה הלומדים יוכלו לשנות. אין תפריט ניסויים או הגדרות בקר מלאות. כל הדגמה עצמאית: הפעלה ושינוי פרמטרים בה אינם משפיעים על הדגמות אחרות או על כתובת הדף.
-
-מוסיפים בראש קובץ ה־MDX:
+`ControlDemo` ומעבדת הבקרה משתמשים באותה קונפיגורציה, באותם שדות ובאותו מנוע סימולציה. בדף בוחרים את ערכי ההתחלה, את היחידות, מה יופיע ואילו שדות הלומדים יוכלו לשנות.
 
 ```jsx
 import ControlDemo from "@site/src/components/ControlPlayground/ControlDemo";
 ```
 
-## הדגמה עם הגדרות קבועות
+## ניסוי ממוקד
 
-שני בקרים מנסים להחזיק את אותה זרוע. ההגדרות והיעד נעולים; הלומדים מפעילים את הניסוי ומשווים את התגובה.
+כל ערכי הניסוי נמצאים בתוך `config`. `request` מתאר את המטרה, `a` ו־`b` הם הגדרות הבקרים, ו־`compare` מפעיל השוואה. אפשר לבחור `preset` קיים ולשנות רק חלק מערכיו.
 
 <ControlDemo
-  title="האם משוב לבדו מספיק כדי להחזיק זרוע?"
-  preset="gravity"
-  config={{ duration: 10 }}
-  showStep={false}
+  title="מה משתנה כשמגדילים את kP?"
+  preset="p"
+  config={{
+    duration: 8,
+    a: { kp: 2 },
+    graphs: ["response"],
+    controls: { a: ["kp"] },
+    view: { mechanism: false, step: false },
+  }}
 />
 
 ```jsx
 <ControlDemo
-  title="האם משוב לבדו מספיק כדי להחזיק זרוע?"
-  preset="gravity"
-  config={{ duration: 10 }}
-  showStep={false}
+  title="מה משתנה כשמגדילים את kP?"
+  preset="p"
+  config={{
+    duration: 8,
+    a: { kp: 2 },
+    graphs: ["response"],
+    controls: { a: ["kp"] },
+    view: { mechanism: false, step: false },
+  }}
 />
 ```
 
-## תרגיל עם פרמטר אחד
+## בחירת יחידות
 
-אפשר לחשוף רק את הפרמטר שנחקר ולהסתפק בגרף, כדי להשאיר את המיקוד בתרגיל.
+`units.length` יכול להיות `m` או `cm`. `units.angle` יכול להיות `rad`, `rev` או `deg`. מהירות משתמשת באותה יחידה לשנייה. למשל, כשהיחידה היא `rev`, יעד `1` פירושו סיבוב אחד לשנייה בבקשת מהירות.
+
+הערכים שכותבים בקונפיגורציה הם ביחידות שנבחרו. גם המקדמים מתייחסים לאותן יחידות. למשל, `kV = 0.6` ביחידות `rev` מוסיף 0.6 וולט לכל סיבוב לשנייה של מהירות יעד. אין צורך להכניס חישובי המרה לדף.
+
+בבחירה אחרת של יחידות בזמן הרצה, הממשק ממיר יחד את היעד, המדידות, המקדמים והגרפים. התנועה הפיזית נשארת זהה. בתוך מנוע הסימולציה החישוב נשאר במטרים וברדיאנים.
 
 <ControlDemo
-  title="תרגיל: מה משתנה כשמגדילים את kP?"
-  preset="p"
-  config={{ duration: 8, a: { kp: 2 } }}
-  tune={["kp"]}
-  showMechanism={false}
->
-  הפעילו את הניסוי עם kP נמוך. הגדילו אותו ובדקו מה קורה לזמן ההגעה, לתנודות
-  ולשגיאה שנשארת. כל שינוי מתחיל ניסוי חדש ממנוחה.
-</ControlDemo>
-
-```jsx
-<ControlDemo
-  title="תרגיל: מה משתנה כשמגדילים את kP?"
-  preset="p"
-  config={{ duration: 8, a: { kp: 2 } }}
-  tune={["kp"]}
-  showMechanism={false}
->
-  הגדילו את kP ובדקו את התגובה. כל שינוי מתחיל ניסוי חדש ממנוחה.
-</ControlDemo>
-```
-
-## הגדרת ניסוי משלכם
-
-`config.goal` מתאר את המטרה: `position`, `velocity`, `voltage`, `torque` או `duty`. `a` ו־`b` מגדירים איך כל בקר פועל. `compare: true` מציג את שניהם. ההגדרות מתמזגות עם הניסוי שנבחר ב־`preset`, או עם ברירות המחדל של המעבדה אם לא נבחר ניסוי.
-
-```jsx
-<ControlDemo
-  title="PID מול Bang-Bang אחרי הפרעה"
+  title="רולר במהירות סיבוב אחד לשנייה"
   config={{
     mechanism: "wheel",
-    goal: "velocity",
-    target: 8,
-    duration: 12,
-    compare: true,
-    a: { method: "pid", kp: 2, ki: 2, kd: 0 },
-    b: { method: "bang", hysteresis: 0.2 },
+    request: "velocity",
+    units: { angle: "rev" },
+    target: 1,
+    duration: 6,
+    damping: 0.6,
+    inertia: 0.2,
+    friction: 0.1,
+    a: {
+      method: "combined",
+      kp: 2,
+      i: false,
+      d: false,
+      ks: 0.1,
+      kv: 0.6,
+      ka: 0,
+    },
+    controls: { experiment: ["units", "target"], a: ["kp", "kv"] },
+    graphs: ["response", "output"],
+    view: { step: false },
   }}
-  graphs={["response", "output"]}
-  tune={{ a: ["kp"], b: ["hysteresis"] }}
-  disturbance
-  showSpeed
+/>
+
+```jsx
+config={{
+  mechanism: "wheel",
+  request: "velocity",
+  units: { angle: "rev" },
+  target: 1,
+  a: { method: "combined", kp: 2, i: false, d: false, kv: 0.6 },
+  controls: { experiment: ["units", "target"], a: ["kp", "kv"] },
+  graphs: ["response", "output"],
+}}
+```
+
+## מה אפשר לשנות?
+
+`controls.experiment` בוחר שדות של הניסוי. `controls.a` ו־`controls.b` בוחרים שדות של כל בקר. רשימה ריקה נועלת את ההגדרות. הערך `"all"` מציג את כל השדות הרלוונטיים, בדיוק כמו במעבדה. במצב הזה ההגדרות המתקדמות מרוכזות באזור נפתח, סגור בתחילת העבודה. בבחירה מפורשת של שדות, כולם נשארים גלויים כדי שהתרגיל יהיה נגיש.
+
+| מקום                       | שדות לבחירה                                                                                                                                                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `controls.experiment`      | `mechanism`, `request`, `units`, `target`, `demand`, `compare`, `initialVelocity`, `duration`, `speed`, `limit`, `battery`, `inertia`, `damping`, `friction`, `disturbance`, `noise`, `tolerance`, `rateTolerance`, `dwell` |
+| `controls.a`, `controls.b` | `method`, `p`, `i`, `d`, `kp`, `ki`, `kd`, `antiWindup`, `ks`, `kv`, `ka`, `kg`, `output`, `hysteresis`, `low`, `high`, `profile`, `vmax`, `amax`, `jmax`, `stop`, `stopAfter`                                              |
+
+השדות מתאימים את עצמם לשיטת הבקר ולמנגנון. למשל, `kg` מופיע במנגנון שמושפע מכבידה, ו־`kd` מופיע כשהבקר משתמש ב־D.
+
+אפשר להציג שדה מספרי כתיבת סימון, עם ערך קבוע כשהתיבה מסומנת. למשל, הוספת רעש של 0.01 סיבובים לשנייה כשהיחידות הן `rev`.
+
+```jsx
+controls: {
+  experiment: [{ key: "noise", as: "toggle", on: 0.01 }],
+  a: ["kp"],
+}
+```
+
+## בחירת התצוגה
+
+| הגדרה ב־`view`   | מה מופיע                           |
+| ---------------- | ---------------------------------- |
+| `mechanism`      | אנימציית המנגנון                   |
+| `readout`        | שגיאה ופלט נוכחיים                 |
+| `settlingTime`   | זמן התייצבות מעל כל בקר            |
+| `step`           | כפתור התקדמות בצעדים               |
+| `speed`          | בחירת קצב ההרצה                    |
+| `disturbance`    | כפתור הפרעה לחצי שנייה             |
+| `tolerance`      | תחום הסבילות סביב היעד בגרף התגובה |
+| `graphSelection` | תיבות לבחירת הגרפים                |
+| `explanations`   | הסברי שיטת הבקר ומגבלות המודל      |
+
+בהדגמה בדף, האנימציה וכפתור הצעדים מוצגים כברירת מחדל. שאר אפשרויות התצוגה כבויות. `graphs` בוחר את הגרפים עצמם, ואפשר לקבוע `graphs: []` כדי להציג אנימציה בלבד.
+
+כדי להטמיע את כל אפשרויות המעבדה בתוך דף, מגדירים אותן באותה קונפיגורציה.
+
+```jsx
+<ControlDemo
+  title="ניסוי חופשי"
+  config={{
+    controls: { experiment: "all", a: "all", b: "all" },
+    view: {
+      readout: true,
+      settlingTime: true,
+      graphSelection: true,
+      explanations: true,
+      speed: true,
+      disturbance: true,
+    },
+  }}
 />
 ```
 
-| אפשרות                  | משמעות                                                                          | ברירת מחדל                   |
-| ----------------------- | ------------------------------------------------------------------------------- | ---------------------------- |
-| `title`                 | כותרת ההדגמה                                                                    | הדגמת בקרה                   |
-| תוכן בין התגיות         | הסבר או הוראות לתרגיל                                                           | ללא                          |
-| `preset`                | ניסוי קיים, למשל `p`, `gravity`, `windup`, `flywheel` או `profiles`             | הגדרות המעבדה                |
-| `config`                | הגדרות התחלה: מטרה, יעד, מנגנון, תנאי פיזיקה ובקרים                             | לפי הניסוי                   |
-| `graphs`                | גרפים להצגה: `response`, `error`, `output`, `velocity`, `acceleration`, `terms` | תגובה; בניסוי פלט קבוע - פלט |
-| `tune`                  | פרמטרים שהלומדים יכולים לשנות                                                   | ללא                          |
-| `adjustTarget`          | מתיר שינוי יעד במחוון וגם בגרירת המנגנון                                        | `false`                      |
-| `adjustInitialVelocity` | מציג מחוון למהירות ההתחלתית. הערך נשמר באיפוס.                                  | `false`                      |
-| `noiseToggle`           | מציג תיבה להפעלה ולכיבוי של רעש מדידה בעוצמה הנתונה ביחידות המודל.              | ללא                          |
-| `showMechanism`         | מציג את אנימציית המנגנון                                                        | `true`                       |
-| `showStep`              | מציג התקדמות בצעדים של 20 ms                                                    | `true`                       |
-| `showSpeed`             | מציג בחירת מהירות הרצה                                                          | `false`                      |
-| `disturbance`           | מציג כפתור הפרעה לחצי שנייה                                                     | `false`                      |
-| `showTolerance`         | מסמן בגרף התגובה פס סביב היעד הסופי לפי `config.tolerance`                      | `false`                      |
-| `showSettlingTime`      | מציג את זמן ההתייצבות של כל בקר לפי מיקום או מהירות, קצב שינוי ומשך אישור       | `false`                      |
-| `wheelSpeedInRotations` | מציג מהירות גלגל בסיבובים לשנייה באנימציה ובגרפים של הדגמת מהירות.              | `false`                      |
-
-`tune={["kp", "kd"]}` חושף אותם פרמטרים בכל הבקרים המוצגים. `tune={{ a: ["kp"], b: [] }}` מאפשר לשנות רק את הבקר הראשון. הפרמטרים הזמינים הם `kp`, `ki`, `kd`, `ks`, `kv`, `ka`, `kg`, `output`, `hysteresis`, `low`, `high`, `vmax`, `amax`, `jmax`. חשפו רק פרמטרים ששיטת הבקר משתמשת בהם: למשל `kp` בבקר עם P מופעל, או `vmax` בבקר פרופיל תנועה.
-
-שינוי פרמטר או יעד עוצר ומאתחל את הסימולציה. **איפוס** מחזיר את המנגנון למנוחה ושומר את ערכי הכוונון שהלומדים בחרו. אין הפעלה אוטומטית. אפשר להסתיר את כל הגרפים עם `graphs={[]}` ולהציג רק את המנגנון.
+שינוי ערך מאתחל את הניסוי עם המקדמים שנבחרו. `initialVelocity` קובע את המהירות בתחילת כל הרצה. שינוי יחידות ממיר את הערכים המוצגים ושומר על תנאי הניסוי הפיזיים.

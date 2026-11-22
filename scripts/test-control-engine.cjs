@@ -25,7 +25,7 @@ test("all teaching experiments preserve their pre-refactor trajectories", () => 
   }
 });
 
-test("URL configurations preserve both controllers and legacy preset links", () => {
+test("URL configurations preserve both controllers and preset links", () => {
   for (const [name, preset] of Object.entries(presets)) {
     const cfg = validate({ ...defaults, ...preset.config });
     assert.deepEqual(readConfig(serialize(cfg)), cfg);
