@@ -5,11 +5,19 @@ sidebar_position: -1
 slug: /java/first-project
 ---
 
+import LessonVideos from '@site/src/components/LessonVideos';
+
 # יוצרים ומריצים פרויקט ראשון
 
 הגיע הזמן לכתוב קוד! ניצור פרויקט קטן ונריץ הודעה משלנו. עדיין לא צריך להבין את כל חלקי הקוד - נלמד אותם בהכשרה.
 
 לפני שמתחילים, השלימו את [בדיקת המחשב](../../getting-started/check-setup/check-setup.mdx).
+
+<LessonVideos
+  english={{href: "https://www.youtube.com/watch?v=5Q312TuYNUg", channel: "Code Bear"}}
+>
+  <p>בפרויקט שלכם השתמשו בתיקייה ובשם שמופיעים בהוראות השיעור.</p>
+</LessonVideos>
 
 ## 1. מכינים מקום לפרויקטים
 
